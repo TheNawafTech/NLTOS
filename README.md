@@ -101,12 +101,12 @@ The system enforces real-world constraints such as:
 ## Technologies Used
 
 - C#
+- .NET Framework
 - Windows Forms
 - SQL Server
 - ADO.NET
 - 3-Tier Architecture
 - Visual Studio
-
 ---
 
 ## What This Project Demonstrates
