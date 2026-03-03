@@ -132,8 +132,7 @@ Ensure it matches your local SQL Server configuration.
 3. Run the application
 
 ---
-
-## Screenshots
+## Some of Screenshots
 
 ### Login Screen
 ![Login](assets/Login%20(2).png)
@@ -144,8 +143,17 @@ Ensure it matches your local SQL Server configuration.
 ### Manage People
 ![People](assets/Manage_LocalApp.png)
 
-### Manage Users
-![Users](assets/Manage_applications.png)
+### Manage Applications
+![Applications](assets/Manage_applications.png)
+
+### New Local License
+![New Local License](assets/New_Local_License.png)
+
+### Take Test
+![Take Test](assets/Take_Test.png)
+
+### User Information
+![User Info](assets/User_Info.png)
 
 ---
 
