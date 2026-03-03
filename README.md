@@ -98,19 +98,19 @@ The system is structured using:
 
 ---
 
-## 👨‍💻 Author
+## 👨‍💻 Developed By
 
-**Nawaf Aluwairiji**  
-Desktop Application Developer  
+This system was fully designed and developed by **Nawaf Aluwairiji**.
+
+The project focuses on backend architecture, business logic design, and structured database integration using a clean multi-layer architecture.
 
 GitHub: https://github.com/TheNawafTech
 
 ---
 
-## 📬 Contact
+## 📬 Feedback & Collaboration
 
-If you have any questions, suggestions, or collaboration opportunities,  
-feel free to reach out through GitHub.
+If you have suggestions, improvements, or ideas that could enhance the system architecture or functionality,  
+feel free to share them through GitHub issues or discussions.
 
----
-⭐ If you find this project valuable, consider giving it a star.
+Constructive feedback is always welcome.
