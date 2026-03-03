@@ -1,4 +1,4 @@
-# 🚦 National Licensing & Traffic Operations System (NLTOS)
+#  National Licensing & Traffic Operations System (NLTOS)
 
 > Enterprise-Level Desktop Application  
 > Built with C#, Windows Forms & Clean 3-Tier Architecture
