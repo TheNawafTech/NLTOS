@@ -1,4 +1,3 @@
----
 # National Licensing & Traffic Operations System (NLTOS)
 
 Enterprise-Level Desktop Application
