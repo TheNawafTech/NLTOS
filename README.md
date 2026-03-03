@@ -1,3 +1,4 @@
+---
 # National Licensing & Traffic Operations System (NLTOS)
 
 Enterprise-Level Desktop Application
@@ -265,5 +266,3 @@ Suggestions, architectural discussions, or improvement ideas are welcome.
 Feel free to open an issue or start a discussion on GitHub.
 
 ---
-
-لو تبغى نسخة أقوى شوي موجهة للتوظيف (Recruiter-Oriented Version) أكتب لك نسخة ثانية أقصر لكن تأثيرها أعلى 👌
