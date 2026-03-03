@@ -1,4 +1,4 @@
-# National Licensing & Traffic Operations System (NLTOS)
+<img width="1914" height="1018" alt="User_Info" src="https://github.com/user-attachments/assets/04036db4-fa87-46c3-9935-18346245c9c9" /># National Licensing & Traffic Operations System (NLTOS)
 
 Enterprise-Level Desktop Application  
 Built with C#, Windows Forms, and Clean 3-Tier Architecture
@@ -132,8 +132,7 @@ Ensure it matches your local SQL Server configuration.
 3. Run the application
 
 ---
-
-## Screenshots
+## Some of Screenshots
 
 ### Login Screen
 ![Login](assets/Login%20(2).png)
@@ -144,8 +143,17 @@ Ensure it matches your local SQL Server configuration.
 ### Manage People
 ![People](assets/Manage_LocalApp.png)
 
-### Manage Users
-![Users](assets/Manage_applications.png)
+### Manage Applications
+![Applications](assets/Manage_applications.png)
+
+### New Local License
+![New Local License](assets/New_Local_License.png)
+
+### Take Test
+![Take Test](assets/Take_Test.png)
+
+### User Information
+![User Info](assets/User_Info.png)
 
 ---
 
