@@ -1,42 +1,48 @@
 # National Licensing & Traffic Operations System (NLTOS)
 
-> Enterprise-Level Desktop Application  
-> Built with C#, Windows Forms, and Clean 3-Tier Architecture
+Enterprise-Level Desktop Application  
+Built with C#, Windows Forms, and Clean 3-Tier Architecture
 
 ---
 
 ## Overview
 
-**NLTOS (National Licensing & Traffic Operations System)** is a full desktop-based management system that simulates real-world licensing and traffic operations workflows.
+NLTOS (National Licensing & Traffic Operations System) is a full desktop-based management system that simulates real-world licensing and traffic authority workflows.
 
-The system is developed using **C# and Windows Forms**, following a structured **3-Tier Architecture (Presentation, Business Logic, Data Access)** to ensure separation of concerns, scalability, and maintainability.
+The system was designed and implemented to reflect structured governmental-style processes, including controlled state transitions, validation rules, and layered architecture principles.
 
-This project focuses on implementing controlled business workflows, validation mechanisms, and structured database interaction similar to real governmental licensing systems.
+This project is not a simple CRUD application. It focuses on workflow control, business rule enforcement, and proper separation between presentation, business logic, and data access layers.
 
 ---
 
 ## Architecture
 
-The system follows a clean multi-layer architecture:
+The system follows a structured 3-Tier Architecture:
 
 ### Presentation Layer (UI)
-- Structured Windows Forms navigation
-- Controlled screen transitions
-- Context menus and dynamic filtering
-- Input validation before submission
+- Windows Forms interface
+- Controlled navigation between screens
+- Form validation before submission
+- Dynamic filtering and contextual actions
+- Clear separation from business logic
 
 ### Business Logic Layer (BLL)
-- Centralized business rule enforcement
-- License eligibility validation
-- Test sequencing logic (Vision → Written → Street)
-- Pass / Fail state tracking
-- Workflow state management and transitions
+- Centralized rule enforcement
+- Eligibility validation
+- Sequential test logic (Vision → Written → Street)
+- Pass/Fail tracking
+- Workflow state management
+- Prevention of invalid transitions
+- Edge-case handling
 
 ### Data Access Layer (DAL)
 - ADO.NET implementation
 - Parameterized SQL queries
 - Centralized connection handling
 - Secure CRUD operations
+- Controlled database interaction isolated from UI
+
+This separation ensures maintainability, scalability, and clean system structure.
 
 ---
 
@@ -59,23 +65,71 @@ The system follows a clean multi-layer architecture:
   - Sequential validation between test stages
   - Retake logic handling
   - Appointment scheduling with locking mechanism
-- Strong validation layer:
-  - Age eligibility enforcement
-  - Duplicate prevention
-  - License state verification
-  - Prevention of invalid state transitions
 
 ---
 
 ## Workflow Logic Highlights
 
-The system enforces real-world constraints such as:
+The system enforces real-world operational constraints such as:
 
 - An applicant cannot proceed to the next test without passing the previous one.
 - A license cannot be issued unless all required tests are successfully completed.
 - Duplicate active licenses are prevented.
 - Detained licenses cannot be processed until properly released.
 - Application states transition only through valid business paths.
+- Age and eligibility rules are validated before processing.
+- Invalid state transitions are blocked at the business layer.
+
+---
+
+## Database Architecture
+
+The system is powered by a structured relational database built on SQL Server.
+
+The schema was designed to reflect realistic licensing authority data relationships, including:
+
+- Normalized relational design
+- Identity-based primary keys
+- Foreign key constraints enforcing referential integrity
+- Logical separation of entities (People, Users, Applications, Licenses, Tests)
+- Business-driven relationships supporting workflow validation
+
+All database objects can be recreated using the provided SQL script:
+
+Database/NLTOS_Database.sql
+
+---
+
+## How to Run the Project
+
+### 1. Setup the Database
+
+1. Open SQL Server Management Studio (SSMS)
+2. Create a new database named:
+
+   NLTOS
+
+3. Open and execute:
+
+   Database/NLTOS_Database.sql
+
+---
+
+### 2. Configure the Connection String
+
+Update the connection string in:
+
+NLTOS_DataAccess/clsDataAccessSettings.cs
+
+Ensure it matches your local SQL Server configuration.
+
+---
+
+### 3. Run the Application
+
+1. Open NLTOS.sln
+2. Build the solution
+3. Run the application
 
 ---
 
@@ -93,81 +147,69 @@ The system enforces real-world constraints such as:
 ### Manage Users
 ![Users](assets/Manage_applications.png)
 
-### Street Test Appointments
-![Street Test](assets/Driving_Licenses.png)
-
----
-
-## Technologies Used
-
-- C#
-- .NET Framework
-- Windows Forms
-- SQL Server
-- ADO.NET
-- 3-Tier Architecture
-- Visual Studio
-
 ---
 
 ## Development Scope
 
-This system was fully designed and implemented from concept to completion by the developer.
+This system was fully designed and implemented from start to finish by me, covering all stages of development.
 
-The development process included:
+The work included:
 
-- Requirements analysis and system design
-- Relational database schema design
-- Multi-layer architecture implementation
-- Business logic and workflow state management
-- Validation rules and eligibility enforcement
-- Test sequencing and appointment logic design
-- Secure database integration using ADO.NET
-- End-to-end workflow testing
+- Requirements analysis
+- System architecture design
+- Database schema design
+- Multi-layer implementation
+- Business logic modeling
+- Workflow rule design
+- Validation enforcement
+- Data integrity control
+- UI development
+- Debugging and testing across layers
+
+The project was built from concept to final execution without relying on auto-generated frameworks or scaffolding tools.
 
 ---
 
-## Professional Growth & Learning Outcomes
+## Problem-Solving & Logical Thinking Growth
 
-Developing this system significantly strengthened my problem-solving skills and logical thinking in real-world scenarios.
+Developing this system significantly strengthened my logical thinking and structured problem-solving skills.
 
-Throughout the implementation process, I worked on:
+Throughout the development process, I worked on:
 
-- Designing structured workflows with controlled state transitions
-- Handling complex business rules and edge cases
-- Preventing invalid operations through layered validation
-- Translating real-world requirements into logical system behavior
-- Debugging multi-layer interactions between UI, BLL, and DAL
-- Optimizing database interactions and enforcing data integrity
+- Translating real-world licensing rules into enforceable system logic
+- Designing controlled workflow transitions
+- Preventing invalid system states
+- Handling edge cases and sequencing constraints
+- Debugging interactions between UI, BLL, and DAL
+- Structuring database relationships to support business validation
 
-This project enhanced my ability to think architecturally, break down complex requirements into manageable components, and implement scalable solutions using a clean layered approach.
+This project helped me improve my ability to break down complex requirements into manageable, logical components and implement them in a scalable and maintainable way.
 
 ---
 
 ## What This Project Demonstrates
 
-- Clean Architecture Implementation
-- Strong Separation of Concerns
-- Business Rule Enforcement
-- Controlled Workflow & State Management
-- Structured Database Design
-- Modular Desktop System Development
+- Clean 3-Tier Architecture implementation
+- Strong separation of concerns
+- Backend-oriented system design
+- Structured business rule enforcement
+- Controlled workflow state management
+- Database integrity and relational design
+- Logical system thinking and architectural structuring
 
 ---
 
 ## Developed By
 
-This system was fully designed and developed by **Nawaf Aluwairiji**.
+This system was fully designed and developed by Nawaf Aluwairiji.
 
-The project emphasizes backend architecture, business logic design, and structured database integration within a clean multi-layer desktop environment.
+The project emphasizes backend structure, business logic design, and layered architecture implementation.
 
 GitHub: https://github.com/TheNawafTech
 
 ---
 
-## Feedback & Collaboration
+## Feedback
 
-If you have suggestions, improvements, or architectural ideas that could enhance the system,  
-feel free to share them through GitHub issues or discussions.
-
-Constructive feedback is always welcome.
+Suggestions, improvements, or architectural ideas are welcome.  
+Feel free to open an issue or start a discussion on GitHub.
