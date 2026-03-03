@@ -209,7 +209,7 @@ This project helped me improve my ability to break down complex requirements int
 
 ## Developed By
 
-This system was fully designed and developed by Nawaf Aluwairiji.
+This system was fully designed and developed by Nawaf Altowairqi.
 
 The project emphasizes backend structure, business logic design, and layered architecture implementation.
 
