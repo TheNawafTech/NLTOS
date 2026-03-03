@@ -1,4 +1,4 @@
-<img width="1914" height="1018" alt="User_Info" src="https://github.com/user-attachments/assets/04036db4-fa87-46c3-9935-18346245c9c9" /># National Licensing & Traffic Operations System (NLTOS)
+# National Licensing & Traffic Operations System (NLTOS)
 
 Enterprise-Level Desktop Application  
 Built with C#, Windows Forms, and Clean 3-Tier Architecture
