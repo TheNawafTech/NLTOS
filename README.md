@@ -1,82 +1,104 @@
-#  National Licensing & Traffic Operations System (NLTOS)
+# National Licensing & Traffic Operations System (NLTOS)
 
 > Enterprise-Level Desktop Application  
-> Built with C#, Windows Forms & Clean 3-Tier Architecture
+> Built with C#, Windows Forms, and Clean 3-Tier Architecture
 
 ---
 
-## 📌 Overview
+## Overview
 
 **NLTOS (National Licensing & Traffic Operations System)** is a full desktop-based management system that simulates real-world licensing and traffic operations workflows.
 
-The system is built using **C# and Windows Forms**, following a structured **3-Tier Architecture (UI, Business Logic, Data Access)** to ensure clean separation of concerns, scalability, and maintainability.
+The system is developed using **C# and Windows Forms**, following a structured **3-Tier Architecture (Presentation, Business Logic, Data Access)** to ensure separation of concerns, scalability, and maintainability.
 
-This project demonstrates strong understanding of business rules enforcement, workflow control, and professional desktop application design.
-
----
-
-## 🏗️ Architecture
-
-The system is structured using:
-
-- **Presentation Layer (UI)**  
-  Windows Forms-based interface with controlled navigation and structured menus.
-
-- **Business Logic Layer (BLL)**  
-  Implements core business rules, eligibility validation, workflow transitions, and test result processing.
-
-- **Data Access Layer (DAL)**  
-  Uses ADO.NET with parameterized queries for secure database operations and centralized connection management.
+This project focuses on implementing controlled business workflows, validation mechanisms, and structured database interaction similar to real governmental licensing systems.
 
 ---
 
-## ⚙️ Key Features
+## Architecture
 
-- 🔐 Secure Login System (with Remember Me & password management)
-- 👥 Full People Management (CRUD + image handling)
-- 👤 User Management (activation, filtering, validation)
-- 🪪 Driving License Services:
+The system follows a clean multi-layer architecture:
+
+### Presentation Layer (UI)
+- Structured Windows Forms navigation
+- Controlled screen transitions
+- Context menus and dynamic filtering
+- Input validation before submission
+
+### Business Logic Layer (BLL)
+- Centralized business rule enforcement
+- License eligibility validation
+- Test sequencing logic (Vision → Written → Street)
+- Pass / Fail state tracking
+- Workflow state management and transitions
+
+### Data Access Layer (DAL)
+- ADO.NET implementation
+- Parameterized SQL queries
+- Centralized connection handling
+- Secure CRUD operations
+
+---
+
+## Key Features
+
+- Secure authentication system (Login, Remember Me, Change Password)
+- Full People Management (Create, Update, Delete, Image Handling)
+- User Management with activation control and filtering
+- Driving License Services:
   - New Local License
   - International License
   - License Renewal
   - Replacement (Lost / Damaged)
-- 🚫 Detained License Management (Detain / Release logic)
-- 📋 Application Tracking System (status lifecycle control)
-- 🧪 Integrated Test Workflow:
+- Detained License Management (Detain / Release with rule validation)
+- Application lifecycle tracking (New, Completed, Cancelled)
+- Integrated Test Management System:
   - Vision Test
   - Written Test
   - Street Test
-  - Pass / Fail tracking
-  - Retake logic enforcement
+  - Sequential validation between test stages
+  - Retake logic handling
   - Appointment scheduling with locking mechanism
-- 🛡️ Strong Validation & Business Rule Enforcement:
-  - Age eligibility checks
+- Strong validation layer:
+  - Age eligibility enforcement
   - Duplicate prevention
-  - License state validation
-  - Controlled workflow transitions
+  - License state verification
+  - Prevention of invalid state transitions
 
 ---
 
-## 🖥️ Screenshots
+## Workflow Logic Highlights
 
-### 🔑 Login Screen
+The system enforces real-world constraints such as:
+
+- An applicant cannot proceed to the next test without passing the previous one.
+- A license cannot be issued unless all required tests are successfully completed.
+- Duplicate active licenses are prevented.
+- Detained licenses cannot be processed until properly released.
+- Application states transition only through valid business paths.
+
+---
+
+## Screenshots
+
+### Login Screen
 ![Login](assets/Login%20(2).png)
 
-### 🏠 Main Dashboard
+### Main Dashboard
 ![Main](assets/Driving_Licenses.png)
 
-### 👥 Manage People
+### Manage People
 ![People](assets/Manage_LocalApp.png)
 
-### 👤 Manage Users
+### Manage Users
 ![Users](assets/Manage_applications.png)
 
-### 🧪 Street Test Appointments
+### Street Test Appointments
 ![Street Test](assets/Driving_Licenses.png)
 
 ---
 
-## 🛠️ Technologies Used
+## Technologies Used
 
 - C#
 - Windows Forms
@@ -87,30 +109,30 @@ The system is structured using:
 
 ---
 
-## 🎯 What This Project Demonstrates
+## What This Project Demonstrates
 
 - Clean Architecture Implementation
-- Separation of Concerns
-- Real Business Workflow Simulation
-- Strong Validation Logic
-- Structured Database Interaction
-- Modular Desktop Application Design
+- Strong Separation of Concerns
+- Business Rule Enforcement
+- Controlled Workflow & State Management
+- Structured Database Design
+- Modular Desktop System Development
 
 ---
 
-## 👨‍💻 Developed By
+## Developed By
 
 This system was fully designed and developed by **Nawaf Aluwairiji**.
 
-The project focuses on backend architecture, business logic design, and structured database integration using a clean multi-layer architecture.
+The project emphasizes backend architecture, business logic design, and structured database integration within a clean multi-layer desktop environment.
 
 GitHub: https://github.com/TheNawafTech
 
 ---
 
-## 📬 Feedback & Collaboration
+## Feedback & Collaboration
 
-If you have suggestions, improvements, or ideas that could enhance the system architecture or functionality,  
+If you have suggestions, improvements, or architectural ideas that could enhance the system,  
 feel free to share them through GitHub issues or discussions.
 
 Constructive feedback is always welcome.
