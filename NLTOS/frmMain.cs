@@ -175,5 +175,10 @@ namespace NLTOS
             frm.ShowDialog();
 
         }
+
+        private void msMainMenue_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
+        {
+
+        }
     }
 }
