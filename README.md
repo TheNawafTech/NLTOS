@@ -82,7 +82,131 @@ This structure ensures maintainability, scalability, and clean separation of con
 
 ---
 
-## Workflow & Business Logic Highlights
+## Project Structure
+
+The project is organized into clear functional modules that reflect the real-world licensing workflow.
+Each module represents a domain area of the system while the Business and Data layers handle logic and persistence separately.
+
+```
+NLTOS
+│
+├── Database
+│   └── NLTOS_Database.sql
+│
+├── NLTOS (Presentation Layer)
+│
+│   ├── Applications
+│   │
+│   │   ├── Application Types
+│   │   │   ├── frmListApplicationTypes
+│   │   │   └── frmEditApplicationType
+│   │   │
+│   │   ├── Local Driving License
+│   │   │   ├── frmAddUpdateLocalDrivingLicenseApplication
+│   │   │   ├── frmListLocalDrivingLicenseApplications
+│   │   │   └── ctrlDrivingLicenseApplicationInfo
+│   │   │
+│   │   ├── International License
+│   │   │   ├── frmNewInternationalLicenseApplication
+│   │   │   └── frmListInternationalLicenseApplications
+│   │   │
+│   │   ├── Renew Local License
+│   │   │   └── frmRenewLocalDrivingLicenseApplication
+│   │   │
+│   │   ├── Replace Lost or Damaged License
+│   │   │   └── frmReplaceLostOrDamagedLicenseApplication
+│   │   │
+│   │   └── Release Detained License
+│   │       ├── frmListDetainedLicenses
+│   │       └── frmReleaseDetainedLicenseApplication
+│   │
+│   ├── Drivers
+│   │   └── frmListDrivers
+│   │
+│   ├── Licenses
+│   │   ├── Detain License
+│   │   │   └── frmDetainLicenseApplication
+│   │   │
+│   │   ├── International Licenses
+│   │   │   └── frmShowInternationalLicenseInfo
+│   │   │
+│   │   └── Local Licenses
+│   │       └── frmShowPersonLicenseHistory
+│   │
+│   ├── People
+│   │   ├── frmAddUpdatePerson
+│   │   ├── frmFindPerson
+│   │   ├── frmListPeople
+│   │   └── frmShowPersonInfo
+│   │
+│   ├── Login
+│   │   └── frmLogin
+│   │
+│   ├── Tests
+│   │   ├── Test Types
+│   │   │   ├── frmScheduleTest
+│   │   │   ├── frmTakeTest
+│   │   │   └── frmListTestAppointments
+│   │   │
+│   │   └── Controls
+│   │       ├── ctrlScheduleTest
+│   │       └── ctrlScheduledTest
+│   │
+│   └── Global Classes
+│       ├── clsFormat
+│       ├── clsGlobal
+│       ├── clsValidation
+│       └── util
+│
+├── NLTOS_Business (Business Logic Layer)
+│
+│   ├── clsApplication
+│   ├── clsApplicationType
+│   ├── clsCountry
+│   ├── clsDriver
+│   ├── clsPerson
+│   ├── clsLicense
+│   ├── clsLicenseClass
+│   ├── clsLocalDrivingLicenseApplication
+│   ├── clsInternationalLicense
+│   ├── clsDetainedLicense
+│   ├── clsTest
+│   ├── clsTestAppointment
+│   ├── clsTestType
+│   └── clsUser
+│
+└── NLTOS_DataAccess (Data Access Layer)
+    │
+    ├── clsApplication
+    ├── clsCountryData
+    ├── clsDriver
+    ├── clsLicense
+    ├── clsLocalDrivingLicenseApplicationData
+    ├── clsPersonData
+    ├── clsDetainedLicense
+    ├── clsTest
+    ├── clsTestAppointment
+    ├── clsTestType
+    └── clsUserData
+```
+
+---
+
+### Structure Philosophy
+
+The project structure follows a **domain-oriented organization** where each functional module represents a real operational component of a licensing authority system.
+
+This design provides:
+
+* Clear separation of responsibilities
+* Easier navigation for developers
+* Modular expansion of new licensing services
+* Strict architectural boundaries between UI, Business Logic, and Data Access
+
+Each layer communicates only with the layer directly beneath it, maintaining a clean and maintainable architecture.
+
+---
+
 
 The system enforces strict operational constraints such as:
 
