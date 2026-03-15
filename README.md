@@ -7,6 +7,13 @@ Built with C#, Windows Forms, and Structured 3-Tier Architecture
 
 ## Overview
 
+## System Demo
+
+A full walkthrough of the system showcasing the main workflow and core features.
+
+▶ Watch the demo:  
+https://youtu.be/0dtG_A0FHwM
+
 **NLTOS (National Licensing & Traffic Operations System)** is a full desktop-based licensing management system that simulates real-world traffic authority operations.
 
 This project was designed and developed **end-to-end (from A to Z)** — starting from database modeling and system architecture design, all the way to business rule implementation, workflow control, and UI development.
