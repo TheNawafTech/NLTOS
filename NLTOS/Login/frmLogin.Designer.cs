@@ -54,7 +54,7 @@
             this.label8.Location = new System.Drawing.Point(348, 182);
             this.label8.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(362, 39);
+            this.label8.Size = new System.Drawing.Size(350, 38);
             this.label8.TabIndex = 145;
             this.label8.Text = "Login to your account";
             // 

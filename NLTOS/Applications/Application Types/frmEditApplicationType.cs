@@ -32,7 +32,7 @@ namespace NLTOS.Applications
 
             _ApplicationType = clsApplicationType.Find(_ApplicationTypeID);
 
-            if (_ApplicationType!=null)
+            if (_ApplicationType != null)
             {
                 txtTitle.Text = _ApplicationType.Title;
                 txtFees.Text = _ApplicationType.Fees.ToString();
@@ -50,7 +50,6 @@ namespace NLTOS.Applications
                 //Here we dont continue becuase the form is not valid
                 MessageBox.Show("Some fileds are not valide!, put the mouse over the red icon(s) to see the erro", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
-
             }
 
             _ApplicationType.Title= txtTitle.Text.Trim();

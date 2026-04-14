@@ -81,5 +81,10 @@ namespace NLTOS.Controls.ApplicationControls
             LoadApplicationInfo(_ApplicationID);
 
         }
+
+        private void groupBox1_Enter(object sender, EventArgs e)
+        {
+
+        }
     }
 }

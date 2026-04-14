@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Microsoft.Win32;
 
 namespace NLTOS.Login
 {
@@ -21,22 +22,67 @@ namespace NLTOS.Login
 
         private void frmLogin_Load(object sender, EventArgs e)
         {
-            string UserName = "", Password = "";
             this.ActiveControl = btnLogin;
 
-            if (clsGlobal.GetStoredCredential(ref UserName, ref Password))
-            {
-                txtUserName.Text = UserName;
-                txtPassword.Text = Password;
-                chkRememberMe.Checked = true;
-            }
-            else
-                chkRememberMe.Checked = false;
+            LoadCredentials();
+
+            chkRememberMe.Checked = true;
+           
         }
 
         private void btnClose_Click(object sender, EventArgs e)
         {
             this.Close();
+        }
+
+        public void SaveCredentials()
+        {
+            if (chkRememberMe.Checked)
+            {
+                Registry.SetValue(@"HKEY_CURRENT_USER\Software\NLTOS", "Username", txtUserName.Text.Trim());
+                Registry.SetValue(@"HKEY_CURRENT_USER\Software\NLTOS", "Password", txtPassword.Text.Trim());
+            }
+            else
+            {
+                using (RegistryKey key = Registry.CurrentUser.OpenSubKey(@"Software\NLTOS", true))
+                {
+                    if (key != null)
+                    {
+                        key.DeleteValue("Username", false);
+                        key.DeleteValue("Password", false);
+                    }
+                }
+            }
+        }
+
+        public void LoadCredentials()
+        {
+            try
+            {
+                string savedUser = (string)Registry.GetValue(@"HKEY_CURRENT_USER\Software\NLTOS", "Username", "");
+                string savedPass = (string)Registry.GetValue(@"HKEY_CURRENT_USER\Software\NLTOS", "Password", "");
+
+                if (!string.IsNullOrEmpty(savedUser))
+                {
+                    txtUserName.Text = savedUser;
+                    txtPassword.Text = savedPass;
+                    
+                    chkRememberMe.Checked = true;
+
+                }
+                else
+                {
+                    chkRememberMe.Checked = false;
+                }
+            }
+            catch (UnauthorizedAccessException)
+            {
+                MessageBox.Show("Sorry, you don't have permission to access the registry.", "Access Denied", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"An unexpected error occurred: {ex.Message}", "System Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void btnLogin_Click(object sender, EventArgs e)
@@ -46,18 +92,20 @@ namespace NLTOS.Login
             if (user != null)
             {
 
-                if (chkRememberMe.Checked)
-                {
-                    //store username and password
-                    clsGlobal.RememberUsernameAndPassword(txtUserName.Text.Trim(), txtPassword.Text.Trim());
+                SaveCredentials();
 
-                }
-                else
-                {
-                    //store empty username and password
-                    clsGlobal.RememberUsernameAndPassword("", "");
+                //if (chkRememberMe.Checked)
+                //{
+                //    //store username and password
+                //    clsGlobal.RememberUsernameAndPassword(txtUserName.Text.Trim(), txtPassword.Text.Trim());
 
-                }
+                //}
+                //else
+                //{
+                //    //store empty username and password
+                //    clsGlobal.RememberUsernameAndPassword("", "");
+
+                //}
 
                 //incase the user is not active
                 if (!user.IsActive)
@@ -81,5 +129,6 @@ namespace NLTOS.Login
                 MessageBox.Show("Invalid Username/Password.", "Wrong Credintials", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
     }
 }
