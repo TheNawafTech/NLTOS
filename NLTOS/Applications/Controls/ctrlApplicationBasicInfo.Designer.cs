@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.llViewPersonInfo = new System.Windows.Forms.LinkLabel();
             this.lblStatusDate = new System.Windows.Forms.Label();
             this.pictureBox8 = new System.Windows.Forms.PictureBox();
             this.label12 = new System.Windows.Forms.Label();
@@ -53,7 +54,6 @@
             this.label5 = new System.Windows.Forms.Label();
             this.lblApplicationID = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
-            this.llViewPersonInfo = new System.Windows.Forms.LinkLabel();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox8)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox7)).BeginInit();
@@ -98,6 +98,18 @@
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Application Basic Info";
+            this.groupBox1.Enter += new System.EventHandler(this.groupBox1_Enter);
+            // 
+            // llViewPersonInfo
+            // 
+            this.llViewPersonInfo.AutoSize = true;
+            this.llViewPersonInfo.Location = new System.Drawing.Point(720, 171);
+            this.llViewPersonInfo.Name = "llViewPersonInfo";
+            this.llViewPersonInfo.Size = new System.Drawing.Size(164, 25);
+            this.llViewPersonInfo.TabIndex = 187;
+            this.llViewPersonInfo.TabStop = true;
+            this.llViewPersonInfo.Text = "View Person Info.";
+            this.llViewPersonInfo.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.llViewPersonInfo_LinkClicked);
             // 
             // lblStatusDate
             // 
@@ -106,7 +118,7 @@
             this.lblStatusDate.Location = new System.Drawing.Point(762, 69);
             this.lblStatusDate.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblStatusDate.Name = "lblStatusDate";
-            this.lblStatusDate.Size = new System.Drawing.Size(109, 20);
+            this.lblStatusDate.Size = new System.Drawing.Size(136, 25);
             this.lblStatusDate.TabIndex = 186;
             this.lblStatusDate.Text = "[??/??/????]";
             // 
@@ -127,7 +139,7 @@
             this.label12.Location = new System.Drawing.Point(606, 69);
             this.label12.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(111, 20);
+            this.label12.Size = new System.Drawing.Size(132, 25);
             this.label12.TabIndex = 184;
             this.label12.Text = "Status Date:";
             // 
@@ -148,7 +160,7 @@
             this.lblType.Location = new System.Drawing.Point(148, 132);
             this.lblType.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblType.Name = "lblType";
-            this.lblType.Size = new System.Drawing.Size(49, 20);
+            this.lblType.Size = new System.Drawing.Size(62, 25);
             this.lblType.TabIndex = 182;
             this.lblType.Text = "[???]";
             // 
@@ -159,7 +171,7 @@
             this.label10.Location = new System.Drawing.Point(50, 132);
             this.label10.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(52, 20);
+            this.label10.Size = new System.Drawing.Size(68, 25);
             this.label10.TabIndex = 181;
             this.label10.Text = "Type:";
             // 
@@ -180,7 +192,7 @@
             this.lblApplicant.Location = new System.Drawing.Point(148, 165);
             this.lblApplicant.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblApplicant.Name = "lblApplicant";
-            this.lblApplicant.Size = new System.Drawing.Size(59, 20);
+            this.lblApplicant.Size = new System.Drawing.Size(74, 25);
             this.lblApplicant.TabIndex = 179;
             this.lblApplicant.Text = "[????]";
             // 
@@ -191,7 +203,7 @@
             this.label8.Location = new System.Drawing.Point(13, 165);
             this.label8.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(89, 20);
+            this.label8.Size = new System.Drawing.Size(109, 25);
             this.label8.TabIndex = 178;
             this.label8.Text = "Applicant:";
             // 
@@ -212,7 +224,7 @@
             this.lblStatus.Location = new System.Drawing.Point(147, 69);
             this.lblStatus.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblStatus.Name = "lblStatus";
-            this.lblStatus.Size = new System.Drawing.Size(49, 20);
+            this.lblStatus.Size = new System.Drawing.Size(62, 25);
             this.lblStatus.TabIndex = 176;
             this.lblStatus.Text = "[???]";
             // 
@@ -223,7 +235,7 @@
             this.label3.Location = new System.Drawing.Point(35, 69);
             this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(67, 20);
+            this.label3.Size = new System.Drawing.Size(81, 25);
             this.label3.TabIndex = 175;
             this.label3.Text = "Status:";
             // 
@@ -254,7 +266,7 @@
             this.label1.Location = new System.Drawing.Point(614, 101);
             this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(103, 20);
+            this.label1.Size = new System.Drawing.Size(127, 25);
             this.label1.TabIndex = 172;
             this.label1.Text = "Created By:";
             // 
@@ -265,7 +277,7 @@
             this.lblCreatedByUser.Location = new System.Drawing.Point(763, 101);
             this.lblCreatedByUser.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblCreatedByUser.Name = "lblCreatedByUser";
-            this.lblCreatedByUser.Size = new System.Drawing.Size(59, 20);
+            this.lblCreatedByUser.Size = new System.Drawing.Size(74, 25);
             this.lblCreatedByUser.TabIndex = 171;
             this.lblCreatedByUser.Text = "[????]";
             // 
@@ -276,7 +288,7 @@
             this.lblFees.Location = new System.Drawing.Point(148, 102);
             this.lblFees.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblFees.Name = "lblFees";
-            this.lblFees.Size = new System.Drawing.Size(49, 20);
+            this.lblFees.Size = new System.Drawing.Size(62, 25);
             this.lblFees.TabIndex = 170;
             this.lblFees.Text = "[$$$]";
             // 
@@ -287,7 +299,7 @@
             this.label2.Location = new System.Drawing.Point(48, 100);
             this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(54, 20);
+            this.label2.Size = new System.Drawing.Size(67, 25);
             this.label2.TabIndex = 168;
             this.label2.Text = "Fees:";
             // 
@@ -308,7 +320,7 @@
             this.lblDate.Location = new System.Drawing.Point(762, 37);
             this.lblDate.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblDate.Name = "lblDate";
-            this.lblDate.Size = new System.Drawing.Size(109, 20);
+            this.lblDate.Size = new System.Drawing.Size(136, 25);
             this.lblDate.TabIndex = 164;
             this.lblDate.Text = "[??/??/????]";
             // 
@@ -329,7 +341,7 @@
             this.label5.Location = new System.Drawing.Point(664, 37);
             this.label5.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(53, 20);
+            this.label5.Size = new System.Drawing.Size(64, 25);
             this.label5.TabIndex = 162;
             this.label5.Text = "Date:";
             // 
@@ -340,7 +352,7 @@
             this.lblApplicationID.Location = new System.Drawing.Point(147, 37);
             this.lblApplicationID.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblApplicationID.Name = "lblApplicationID";
-            this.lblApplicationID.Size = new System.Drawing.Size(49, 20);
+            this.lblApplicationID.Size = new System.Drawing.Size(62, 25);
             this.lblApplicationID.TabIndex = 161;
             this.lblApplicationID.Text = "[???]";
             // 
@@ -351,24 +363,13 @@
             this.label4.Location = new System.Drawing.Point(69, 37);
             this.label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(33, 20);
+            this.label4.Size = new System.Drawing.Size(40, 25);
             this.label4.TabIndex = 160;
             this.label4.Text = "ID:";
             // 
-            // llViewPersonInfo
-            // 
-            this.llViewPersonInfo.AutoSize = true;
-            this.llViewPersonInfo.Location = new System.Drawing.Point(720, 171);
-            this.llViewPersonInfo.Name = "llViewPersonInfo";
-            this.llViewPersonInfo.Size = new System.Drawing.Size(133, 20);
-            this.llViewPersonInfo.TabIndex = 187;
-            this.llViewPersonInfo.TabStop = true;
-            this.llViewPersonInfo.Text = "View Person Info.";
-            this.llViewPersonInfo.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.llViewPersonInfo_LinkClicked);
-            // 
             // ctrlApplicationBasicInfo
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.Controls.Add(this.groupBox1);
