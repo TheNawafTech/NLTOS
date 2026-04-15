@@ -1,7 +1,8 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using NLTOS_DataAccess;
+using System;
 using System.Data;
 using System.Runtime.InteropServices;
-using NLTOS_DataAccess;
 
 namespace NLTOS_Buisness
 {
@@ -154,6 +155,69 @@ namespace NLTOS_Buisness
             return clsUserData.IsUserExistForPersonID(PersonID);
         }
 
+        public static bool SaveCredentials(string userName, string password, bool isRemembered, ref string errorMessage)
+        {
+            try
+            {
+                if (isRemembered)
+                {
+                    Registry.SetValue(@"HKEY_CURRENT_USER\Software\NLTOS", "Username", userName);
+                    Registry.SetValue(@"HKEY_CURRENT_USER\Software\NLTOS", "Password", password);
+                }
+                else
+                {
+                    using (RegistryKey key = Registry.CurrentUser.OpenSubKey(@"Software\NLTOS", true))
+                    {
+                        if (key != null)
+                        {
+                            key.DeleteValue("Username", false);
+                            key.DeleteValue("Password", false);
+                        }
+                    }
+                }
+                return true;
+            }
+            catch (UnauthorizedAccessException)
+            {
+                errorMessage = "Access Denied: You don't have permission to write to the Registry.";
+                return false;
+            }
+            catch (Exception ex)
+            {
+                errorMessage = "An unexpected error occurred while saving: " + ex.Message;
+                return false;
+            }
+        }
+        public static bool LoadCredentials(out string userName, out string password, out bool isRemembered, ref string errorMessage)
+        {
+            userName = "";
+            password = "";
+            isRemembered = false;
 
+            try
+            {
+                string savedUser = (string)Registry.GetValue(@"HKEY_CURRENT_USER\Software\NLTOS", "Username", null);
+                string savedPass = (string)Registry.GetValue(@"HKEY_CURRENT_USER\Software\NLTOS", "Password", null);
+
+                if (!string.IsNullOrEmpty(savedUser))
+                {
+                    userName = savedUser;
+                    password = savedPass;
+                    isRemembered = true;
+                    return true;
+                }
+                return false;
+            }
+            catch (UnauthorizedAccessException)
+            {
+                errorMessage = "Access Denied: No permission to read from the Registry.";
+                return false;
+            }
+            catch (Exception ex)
+            {
+                errorMessage = "Error loading credentials: " + ex.Message;
+                return false;
+            }
+        }
     }
 }
