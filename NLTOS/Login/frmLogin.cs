@@ -20,11 +20,37 @@ namespace NLTOS.Login
             InitializeComponent();
         }    
 
+        void LoadCredentials_UI()
+        {
+            string error = "";
+
+            if (clsUser.LoadCredentials(out string u, out string p, out bool rem, ref error))
+            {
+                txtUserName.Text = u;
+                txtPassword.Text = p;
+                chkRememberMe.Checked = rem;
+            }
+            else if (!string.IsNullOrEmpty(error))
+            {
+                MessageBox.Show(error, "Registry Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+        }
+
+        void SaveCredentials_UI()
+        {
+            string error = "";
+            bool success = clsUser.SaveCredentials(txtUserName.Text, txtPassword.Text, chkRememberMe.Checked, ref error);
+
+            if (!success && !string.IsNullOrEmpty(error))
+            {
+                MessageBox.Show(error, "Save Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
         private void frmLogin_Load(object sender, EventArgs e)
         {
             this.ActiveControl = btnLogin;
 
-            LoadCredentials();
+            LoadCredentials_UI();
 
             chkRememberMe.Checked = true;
            
@@ -35,77 +61,13 @@ namespace NLTOS.Login
             this.Close();
         }
 
-        public void SaveCredentials()
-        {
-            if (chkRememberMe.Checked)
-            {
-                Registry.SetValue(@"HKEY_CURRENT_USER\Software\NLTOS", "Username", txtUserName.Text.Trim());
-                Registry.SetValue(@"HKEY_CURRENT_USER\Software\NLTOS", "Password", txtPassword.Text.Trim());
-            }
-            else
-            {
-                using (RegistryKey key = Registry.CurrentUser.OpenSubKey(@"Software\NLTOS", true))
-                {
-                    if (key != null)
-                    {
-                        key.DeleteValue("Username", false);
-                        key.DeleteValue("Password", false);
-                    }
-                }
-            }
-        }
-
-        public void LoadCredentials()
-        {
-            try
-            {
-                string savedUser = (string)Registry.GetValue(@"HKEY_CURRENT_USER\Software\NLTOS", "Username", "");
-                string savedPass = (string)Registry.GetValue(@"HKEY_CURRENT_USER\Software\NLTOS", "Password", "");
-
-                if (!string.IsNullOrEmpty(savedUser))
-                {
-                    txtUserName.Text = savedUser;
-                    txtPassword.Text = savedPass;
-                    
-                    chkRememberMe.Checked = true;
-
-                }
-                else
-                {
-                    chkRememberMe.Checked = false;
-                }
-            }
-            catch (UnauthorizedAccessException)
-            {
-                MessageBox.Show("Sorry, you don't have permission to access the registry.", "Access Denied", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"An unexpected error occurred: {ex.Message}", "System Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
         private void btnLogin_Click(object sender, EventArgs e)
         {
             clsUser user = clsUser.FindByUsernameAndPassword(txtUserName.Text.Trim(), txtPassword.Text.Trim());
 
             if (user != null)
             {
-
-                SaveCredentials();
-
-                //if (chkRememberMe.Checked)
-                //{
-                //    //store username and password
-                //    clsGlobal.RememberUsernameAndPassword(txtUserName.Text.Trim(), txtPassword.Text.Trim());
-
-                //}
-                //else
-                //{
-                //    //store empty username and password
-                //    clsGlobal.RememberUsernameAndPassword("", "");
-
-                //}
+                SaveCredentials_UI();
 
                 //incase the user is not active
                 if (!user.IsActive)
