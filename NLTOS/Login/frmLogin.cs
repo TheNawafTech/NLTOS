@@ -18,7 +18,7 @@ namespace NLTOS.Login
         public frmLogin()
         {
             InitializeComponent();
-        }    
+        }
 
         void LoadCredentials_UI()
         {

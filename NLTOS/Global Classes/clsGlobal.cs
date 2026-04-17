@@ -13,7 +13,7 @@ namespace NLTOS.Classes
     internal static  class clsGlobal
     {
         public static clsUser CurrentUser;
-
+        public const string SourceName = "NLTOS";
         public static bool RememberUsernameAndPassword(string Username, string Password)
         {
 

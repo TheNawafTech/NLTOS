@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
 using System.Data;
+using System.Data.SqlClient;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -63,8 +64,12 @@ namespace NLTOS_DataAccess
                 {
                     //Console.WriteLine("Error: " + ex.Message);
                     isFound = false;
-                }
-                finally
+
+                EventLog.WriteEntry("NLTOS", $"[{DateTime.Now}] ERROR in {nameof(GetApplicationInfoByID)}\n" +
+                  $"{ex.Message}\n{ex.StackTrace}", EventLogEntryType.Error);
+
+            }
+            finally
                 {
                     connection.Close();
                 }
