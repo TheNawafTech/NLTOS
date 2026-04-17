@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using static NLTOS_DataAccess.clsCountryData;
 using System.Net;
 using System.Security.Policy;
+using System.Diagnostics;
 
 namespace NLTOS_DataAccess
 {
@@ -140,6 +141,8 @@ namespace NLTOS_DataAccess
             catch (Exception ex)
             {
                 //Console.WriteLine("Error: " + ex.Message);
+                EventLog.WriteEntry("NLTOS", $"[{DateTime.Now}] ERROR in {nameof(AddNewApplicationType)}\n" +
+                                  $"{ex.Message}\n{ex.StackTrace}", EventLogEntryType.Error);
 
             }
 
@@ -179,6 +182,9 @@ namespace NLTOS_DataAccess
             catch (Exception ex)
             {
                 //Console.WriteLine("Error: " + ex.Message);
+                EventLog.WriteEntry("NLTOS", $"[{DateTime.Now}] ERROR in {nameof(UpdateApplicationType)}\n" +
+                                  $"{ex.Message}\n{ex.StackTrace}", EventLogEntryType.Error);
+
                 return false;
             }
 
