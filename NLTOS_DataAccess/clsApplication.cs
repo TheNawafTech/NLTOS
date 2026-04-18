@@ -357,8 +357,6 @@ namespace NLTOS_DataAccess
                      $"{ex.Message}\n{ex.StackTrace}", EventLogEntryType.Error);
 
 
-
-
                 return ActiveApplicationID;
             }
             finally
@@ -404,6 +402,9 @@ namespace NLTOS_DataAccess
             {
                 //Console.WriteLine("Error: " + ex.Message);
 
+                EventLog.WriteEntry("NLTOS", $"[{DateTime.Now}] ERROR in {nameof(GetActiveApplicationIDForLicenseClass)}\n" +
+                $"{ex.Message}\n{ex.StackTrace}", EventLogEntryType.Error);
+
                 return ActiveApplicationID;
             }
             finally
@@ -443,6 +444,8 @@ namespace NLTOS_DataAccess
             {
                 //Console.WriteLine("Error: " + ex.Message);
 
+                EventLog.WriteEntry("NLTOS", $"[{DateTime.Now}] ERROR in {nameof(UpdateStatus)}\n" +
+                $"{ex.Message}\n{ex.StackTrace}", EventLogEntryType.Error);
 
 
                 return false;
