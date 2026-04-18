@@ -87,31 +87,36 @@ namespace NLTOS_DataAccess
 
                 SqlCommand command = new SqlCommand(query, connection);
 
-                try
+            try
+            {
+                connection.Open();
+
+                SqlDataReader reader = command.ExecuteReader();
+
+                if (reader.HasRows)
+
                 {
-                    connection.Open();
-
-                    SqlDataReader reader = command.ExecuteReader();
-
-                    if (reader.HasRows)
-
-                    {
-                        dt.Load(reader);
-                    }
-
-                    reader.Close();
-
-
+                    dt.Load(reader);
                 }
 
-                catch (Exception ex)
-                {
-                    // Console.WriteLine("Error: " + ex.Message);
-                }
-                finally
-                {
-                    connection.Close();
-                }
+                reader.Close();
+
+
+            }
+
+            catch (Exception ex)
+            {
+                // Console.WriteLine("Error: " + ex.Message);
+
+                EventLog.WriteEntry("NLTOS", $"[{DateTime.Now}] ERROR in {nameof(GetAllApplications)}\n" +
+              $"{ex.Message}\n{ex.StackTrace}", EventLogEntryType.Error);
+
+            }
+
+            finally
+            {
+                connection.Close();
+            }
 
                 return dt;
 
@@ -165,6 +170,10 @@ namespace NLTOS_DataAccess
             {
                 //Console.WriteLine("Error: " + ex.Message);
 
+                EventLog.WriteEntry("NLTOS", $"[{DateTime.Now}] ERROR in {nameof(AddNewApplication)}\n" +
+                  $"{ex.Message}\n{ex.StackTrace}", EventLogEntryType.Error);
+
+
             }
 
             finally
@@ -216,6 +225,10 @@ namespace NLTOS_DataAccess
             catch (Exception ex)
             {
                 //Console.WriteLine("Error: " + ex.Message);
+
+                EventLog.WriteEntry("NLTOS", $"[{DateTime.Now}] ERROR in {nameof(UpdateApplication)}\n" +
+                  $"{ex.Message}\n{ex.StackTrace}", EventLogEntryType.Error);
+
                 return false;
             }
 
@@ -251,6 +264,10 @@ namespace NLTOS_DataAccess
             catch (Exception ex)
             {
                 // Console.WriteLine("Error: " + ex.Message);
+
+                EventLog.WriteEntry("NLTOS", $"[{DateTime.Now}] ERROR in {nameof(DeleteApplication)}\n" +
+                  $"{ex.Message}\n{ex.StackTrace}", EventLogEntryType.Error);
+
             }
             finally
             {
@@ -287,6 +304,10 @@ namespace NLTOS_DataAccess
             catch (Exception ex)
             {
                 //Console.WriteLine("Error: " + ex.Message);
+
+                    EventLog.WriteEntry("NLTOS", $"[{DateTime.Now}] ERROR in {nameof(IsApplicationExist)}\n" +
+                    $"{ex.Message}\n{ex.StackTrace}", EventLogEntryType.Error);
+
                 isFound = false;
             }
             finally
@@ -331,6 +352,13 @@ namespace NLTOS_DataAccess
             catch (Exception ex)
             {
                 //Console.WriteLine("Error: " + ex.Message);
+
+                EventLog.WriteEntry("NLTOS", $"[{DateTime.Now}] ERROR in {nameof(GetActiveApplicationID)}\n" +
+                     $"{ex.Message}\n{ex.StackTrace}", EventLogEntryType.Error);
+
+
+
+
                 return ActiveApplicationID;
             }
             finally
@@ -375,6 +403,7 @@ namespace NLTOS_DataAccess
             catch (Exception ex)
             {
                 //Console.WriteLine("Error: " + ex.Message);
+
                 return ActiveApplicationID;
             }
             finally
@@ -413,6 +442,9 @@ namespace NLTOS_DataAccess
             catch (Exception ex)
             {
                 //Console.WriteLine("Error: " + ex.Message);
+
+
+
                 return false;
             }
 
