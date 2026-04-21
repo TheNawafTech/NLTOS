@@ -2,11 +2,14 @@
 using NLTOS_DataAccess;
 using System;
 using System.Data;
+using System.Linq;
 using System.Runtime.InteropServices;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace NLTOS_Buisness
 {
-    public  class clsUser
+    public class clsUser
     {
         public enum enMode { AddNew = 0, Update = 1 };
         public enMode Mode = enMode.AddNew;
@@ -17,10 +20,10 @@ namespace NLTOS_Buisness
         public string UserName { set; get; }
         public string Password { set; get; }
         public bool IsActive { set; get; }
-     
+
         public clsUser()
 
-        {     
+        {
             this.UserID = -1;
             this.UserName = "";
             this.Password = "";
@@ -28,11 +31,11 @@ namespace NLTOS_Buisness
             Mode = enMode.AddNew;
         }
 
-        private clsUser(int UserID, int PersonID, string Username,string Password,
+        private clsUser(int UserID, int PersonID, string Username, string Password,
             bool IsActive)
 
         {
-            this.UserID = UserID; 
+            this.UserID = UserID;
             this.PersonID = PersonID;
             this.PersonInfo = clsPerson.Find(PersonID);
             this.UserName = Username;
@@ -46,8 +49,8 @@ namespace NLTOS_Buisness
         {
             //call DataAccess Layer 
 
-            this.UserID = clsUserData.AddNewUser(this.PersonID,this.UserName,
-                this.Password,this.IsActive);
+            this.UserID = clsUserData.AddNewUser(this.PersonID, this.UserName,
+                this.Password, this.IsActive);
 
             return (this.UserID != -1);
         }
@@ -55,8 +58,8 @@ namespace NLTOS_Buisness
         {
             //call DataAccess Layer 
 
-            return clsUserData.UpdateUser(this.UserID,this.PersonID,this.UserName,
-                this.Password,this.IsActive);
+            return clsUserData.UpdateUser(this.UserID, this.PersonID, this.UserName,
+                this.Password, this.IsActive);
         }
         public static clsUser FindByUserID(int UserID)
         {
@@ -65,11 +68,11 @@ namespace NLTOS_Buisness
             bool IsActive = false;
 
             bool IsFound = clsUserData.GetUserInfoByUserID
-                                ( UserID,ref PersonID, ref UserName,ref Password,ref IsActive);
+                                (UserID, ref PersonID, ref UserName, ref Password, ref IsActive);
 
             if (IsFound)
                 //we return new object of that User with the right data
-                return new clsUser(UserID,PersonID,UserName,Password,IsActive);
+                return new clsUser(UserID, PersonID, UserName, Password, IsActive);
             else
                 return null;
         }
@@ -88,15 +91,15 @@ namespace NLTOS_Buisness
             else
                 return null;
         }
-        public static clsUser FindByUsernameAndPassword(string UserName,string Password)
+        public static clsUser FindByUsernameAndPassword(string UserName, string Password)
         {
             int UserID = -1;
-            int PersonID=-1;
+            int PersonID = -1;
 
             bool IsActive = false;
 
             bool IsFound = clsUserData.GetUserInfoByUsernameAndPassword
-                                (UserName , Password,ref UserID,ref PersonID, ref IsActive);
+                                (UserName, Password, ref UserID, ref PersonID, ref IsActive);
 
             if (IsFound)
                 //we return new object of that User with the right data
@@ -137,12 +140,12 @@ namespace NLTOS_Buisness
 
         public static bool DeleteUser(int UserID)
         {
-            return clsUserData.DeleteUser(UserID); 
+            return clsUserData.DeleteUser(UserID);
         }
 
         public static bool isUserExist(int UserID)
         {
-           return clsUserData.IsUserExist(UserID);
+            return clsUserData.IsUserExist(UserID);
         }
 
         public static bool isUserExist(string UserName)
@@ -219,5 +222,28 @@ namespace NLTOS_Buisness
                 return false;
             }
         }
+
+
+        // Hashing function for password security
+        // we will use ComputeHash to take the hash and compare them at the SQL
+        public static void ComputeHash(string input, out string hash, out string salt)
+        {
+            using (var rng = RandomNumberGenerator.Create())
+            {
+                byte[] saltBytes = new byte[16];
+                rng.GetBytes(saltBytes);
+                salt = Convert.ToBase64String(saltBytes);
+
+                using (var sha256 = SHA256.Create())
+                {
+                    byte[] passwordBytes = Encoding.UTF8.GetBytes(input);
+                    byte[] combined = passwordBytes.Concat(saltBytes).ToArray();
+
+                    byte[] hashBytes = sha256.ComputeHash(combined);
+                    hash = Convert.ToBase64String(hashBytes);
+                }
+            }
+        }
+
     }
 }
