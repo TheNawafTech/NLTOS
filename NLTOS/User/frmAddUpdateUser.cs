@@ -121,6 +121,7 @@ namespace NLTOS.User
             _User.Password = txtPassword.Text.Trim();
             _User.IsActive = chkIsActive.Checked;
 
+            _User.Password = clsUser.ComputeHash(_User.Password);
 
             if (_User.Save())
             {
@@ -134,7 +135,6 @@ namespace NLTOS.User
             }
             else
                 MessageBox.Show("Error: Data Is not Saved Successfully.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-
         }
 
         private void txtConfirmPassword_Validating(object sender, CancelEventArgs e)
