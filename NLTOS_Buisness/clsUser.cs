@@ -226,22 +226,13 @@ namespace NLTOS_Buisness
 
         // Hashing function for password security
         // we will use ComputeHash to take the hash and compare them at the SQL
-        public static void ComputeHash(string input, out string hash, out string salt)
+       public static string ComputeHash(string input)
         {
-            using (var rng = RandomNumberGenerator.Create())
+            using (SHA256 sha256 = SHA256.Create())
             {
-                byte[] saltBytes = new byte[16];
-                rng.GetBytes(saltBytes);
-                salt = Convert.ToBase64String(saltBytes);
+                byte[] hashBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(input));
 
-                using (var sha256 = SHA256.Create())
-                {
-                    byte[] passwordBytes = Encoding.UTF8.GetBytes(input);
-                    byte[] combined = passwordBytes.Concat(saltBytes).ToArray();
-
-                    byte[] hashBytes = sha256.ComputeHash(combined);
-                    hash = Convert.ToBase64String(hashBytes);
-                }
+                return BitConverter.ToString(hashBytes).Replace("-", "").ToLower();
             }
         }
 

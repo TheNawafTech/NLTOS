@@ -64,7 +64,9 @@ namespace NLTOS.Login
 
         private void btnLogin_Click(object sender, EventArgs e)
         {
-            clsUser user = clsUser.FindByUsernameAndPassword(txtUserName.Text.Trim(), txtPassword.Text.Trim());
+            string Hash = clsUser.ComputeHash(txtPassword.Text);
+
+            clsUser user = clsUser.FindByUsernameAndPassword(txtUserName.Text.Trim(), Hash);
 
             if (user != null)
             {
