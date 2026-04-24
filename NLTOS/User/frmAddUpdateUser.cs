@@ -37,6 +37,7 @@ namespace NLTOS.User
 
             _Mode = enMode.Update;
             _UserID = UserID;
+
         }
 
         private void _ResetDefualtValues()
@@ -77,6 +78,8 @@ namespace NLTOS.User
 
             _User = clsUser.FindByUserID(_UserID);
             ctrlPersonCardWithFilter1.FilterEnabled = false;
+
+            _User.Password = null;
 
             if (_User == null)
             {
@@ -255,6 +258,11 @@ namespace NLTOS.User
         private void frmAddUpdateUser_Activated(object sender, EventArgs e)
         {
             ctrlPersonCardWithFilter1.FilterFocus();
+        }
+
+        private void lblTitle_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
