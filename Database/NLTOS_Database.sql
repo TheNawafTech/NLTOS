@@ -1,19 +1,32 @@
--- =============================================
--- NLTOS Database Deployment Script
--- This script drops and recreates the database
--- Then builds all tables, views, and procedures
+﻿-- =============================================
+-- NLTOS Database Setup Script
+--
+-- Creates the NLTOS database, builds its tables and views, and seeds it with
+-- sample data.
+--
+-- The script expects the database not to exist yet. If a database named NLTOS is
+-- already present, the script stops and changes nothing: it never drops, replaces
+-- or migrates an existing database.
+--
+-- Data and log files are created in this SQL Server instance's default locations.
 -- =============================================
 
 
 USE [master]
 GO
-/****** Object:  Database [NLTOS]    Script Date: 31/05/2026 12:35:36 ******/
+
+IF DB_ID(N'NLTOS') IS NOT NULL
+BEGIN
+    RAISERROR(N'A database named NLTOS already exists. This setup script only creates a new database and will not modify or replace an existing one. Drop or rename the existing NLTOS database if you want a fresh install, then run this script again.', 16, 1);
+
+    -- Parse the remaining batches without executing them, so nothing below can reach
+    -- the existing database. Turned off again at the end of the script.
+    SET NOEXEC ON;
+END
+GO
+
 CREATE DATABASE [NLTOS]
  CONTAINMENT = NONE
- ON  PRIMARY 
-( NAME = N'DVLD', FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL16.MSSQLSERVER\MSSQL\DATA\DVLD.mdf' , SIZE = 73728KB , MAXSIZE = UNLIMITED, FILEGROWTH = 65536KB )
- LOG ON 
-( NAME = N'DVLD_log', FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL16.MSSQLSERVER\MSSQL\DATA\DVLD_log.ldf' , SIZE = 73728KB , MAXSIZE = 2048GB , FILEGROWTH = 65536KB )
  WITH CATALOG_COLLATION = DATABASE_DEFAULT, LEDGER = OFF
 GO
 ALTER DATABASE [NLTOS] SET COMPATIBILITY_LEVEL = 160
@@ -733,14 +746,14 @@ SET IDENTITY_INSERT [dbo].[LocalDrivingLicenseApplications] OFF
 GO
 SET IDENTITY_INSERT [dbo].[People] ON 
 
-INSERT [dbo].[People] ([PersonID], [NationalNo], [FirstName], [SecondName], [ThirdName], [LastName], [DateOfBirth], [Gendor], [Address], [Phone], [Email], [NationalityCountryID], [ImagePath]) VALUES (1, N'SAMPLE-0003', N'Sample11', N'M', N'J', N'Sample5', CAST(N'1990-01-01T00:00:00.000' AS DateTime), 0, N'Sample Address 6', N'+966500000001', N'person7@example.com', 150, N'sample-image-4.jpg')
-INSERT [dbo].[People] ([PersonID], [NationalNo], [FirstName], [SecondName], [ThirdName], [LastName], [DateOfBirth], [Gendor], [Address], [Phone], [Email], [NationalityCountryID], [ImagePath]) VALUES (1023, N'N2', N'Sample14', N'Sample10', NULL, N'Alotaibi', CAST(N'2005-06-01T20:13:44.000' AS DateTime), 0, N'Jeddah 20091-Street', N'07992992', N'Omar@g.com', 150, NULL)
-INSERT [dbo].[People] ([PersonID], [NationalNo], [FirstName], [SecondName], [ThirdName], [LastName], [DateOfBirth], [Gendor], [Address], [Phone], [Email], [NationalityCountryID], [ImagePath]) VALUES (1024, N'N3', N'Sample15', N'M', N'J', N'Sample1', CAST(N'1990-01-01T00:00:00.000' AS DateTime), 0, N'Sample Address 2', N'+966500000004', N'person4@example.com', 150, NULL)
-INSERT [dbo].[People] ([PersonID], [NationalNo], [FirstName], [SecondName], [ThirdName], [LastName], [DateOfBirth], [Gendor], [Address], [Phone], [Email], [NationalityCountryID], [ImagePath]) VALUES (1025, N'n4', N'Sample7', N'Sample10', N'Q', N'Sample4', CAST(N'1990-01-01T00:00:00.000' AS DateTime), 0, N'Sample Address 5', N'+966500000005', N'person5@example.com', 150, N'sample-image-1.jpg')
-INSERT [dbo].[People] ([PersonID], [NationalNo], [FirstName], [SecondName], [ThirdName], [LastName], [DateOfBirth], [Gendor], [Address], [Phone], [Email], [NationalityCountryID], [ImagePath]) VALUES (1029, N'SAMPLE-0005', N'Sample10', N'Sample12', N'Sample14', N'Sample2', CAST(N'1990-01-01T00:00:00.000' AS DateTime), 0, N'Sample Address 3', N'+966500000003', N'person6@example.com', 150, NULL)
-INSERT [dbo].[People] ([PersonID], [NationalNo], [FirstName], [SecondName], [ThirdName], [LastName], [DateOfBirth], [Gendor], [Address], [Phone], [Email], [NationalityCountryID], [ImagePath]) VALUES (1030, N'N1', N'Sample9', N'Sample14', N'M', N'Sample3', CAST(N'1990-01-01T00:00:00.000' AS DateTime), 0, N'Sample Address 2', N'+966500000001', N'person1@example.com', 150, N'sample-image-2.jpg')
-INSERT [dbo].[People] ([PersonID], [NationalNo], [FirstName], [SecondName], [ThirdName], [LastName], [DateOfBirth], [Gendor], [Address], [Phone], [Email], [NationalityCountryID], [ImagePath]) VALUES (1031, N'SAMPLE-0002', N'Sample11', N'M', N'M', N'Sample5', CAST(N'1990-01-01T00:00:00.000' AS DateTime), 0, N'Sample Address 1', N'+966500000002', N'person2@example.com', 150, NULL)
-INSERT [dbo].[People] ([PersonID], [NationalNo], [FirstName], [SecondName], [ThirdName], [LastName], [DateOfBirth], [Gendor], [Address], [Phone], [Email], [NationalityCountryID], [ImagePath]) VALUES (1032, N'SAMPLE-0001', N'Sample11', N'M', N'G', N'Sample5', CAST(N'1990-01-01T00:00:00.000' AS DateTime), 0, N'Sample Address 1', N'+966500000001', N'person3@example.com', 150, N'sample-image-3.jpg')
+INSERT [dbo].[People] ([PersonID], [NationalNo], [FirstName], [SecondName], [ThirdName], [LastName], [DateOfBirth], [Gendor], [Address], [Phone], [Email], [NationalityCountryID], [ImagePath]) VALUES (1, N'SAMPLE-0001', N'Sample', N'A', N'A', N'PersonOne', CAST(N'1995-01-15T00:00:00.000' AS DateTime), 0, N'Sample Address 1', N'+966500000001', N'person1@example.com', 150, NULL)
+INSERT [dbo].[People] ([PersonID], [NationalNo], [FirstName], [SecondName], [ThirdName], [LastName], [DateOfBirth], [Gendor], [Address], [Phone], [Email], [NationalityCountryID], [ImagePath]) VALUES (1023, N'SAMPLE-0002', N'Sample', N'B', NULL, N'PersonTwo', CAST(N'1996-02-20T00:00:00.000' AS DateTime), 0, N'Sample Address 2', N'+966500000002', N'person2@example.com', 150, NULL)
+INSERT [dbo].[People] ([PersonID], [NationalNo], [FirstName], [SecondName], [ThirdName], [LastName], [DateOfBirth], [Gendor], [Address], [Phone], [Email], [NationalityCountryID], [ImagePath]) VALUES (1024, N'SAMPLE-0003', N'Sample', N'C', N'C', N'PersonThree', CAST(N'1997-03-25T00:00:00.000' AS DateTime), 0, N'Sample Address 3', N'+966500000003', N'person3@example.com', 150, NULL)
+INSERT [dbo].[People] ([PersonID], [NationalNo], [FirstName], [SecondName], [ThirdName], [LastName], [DateOfBirth], [Gendor], [Address], [Phone], [Email], [NationalityCountryID], [ImagePath]) VALUES (1025, N'SAMPLE-0004', N'Sample', N'D', N'D', N'PersonFour', CAST(N'1998-04-10T00:00:00.000' AS DateTime), 0, N'Sample Address 4', N'+966500000004', N'person4@example.com', 150, NULL)
+INSERT [dbo].[People] ([PersonID], [NationalNo], [FirstName], [SecondName], [ThirdName], [LastName], [DateOfBirth], [Gendor], [Address], [Phone], [Email], [NationalityCountryID], [ImagePath]) VALUES (1029, N'SAMPLE-0005', N'Sample', N'E', N'E', N'PersonFive', CAST(N'1999-05-05T00:00:00.000' AS DateTime), 0, N'Sample Address 5', N'+966500000005', N'person5@example.com', 150, NULL)
+INSERT [dbo].[People] ([PersonID], [NationalNo], [FirstName], [SecondName], [ThirdName], [LastName], [DateOfBirth], [Gendor], [Address], [Phone], [Email], [NationalityCountryID], [ImagePath]) VALUES (1030, N'SAMPLE-0006', N'Sample', N'F', N'F', N'PersonSix', CAST(N'2000-06-18T00:00:00.000' AS DateTime), 0, N'Sample Address 6', N'+966500000006', N'person6@example.com', 150, NULL)
+INSERT [dbo].[People] ([PersonID], [NationalNo], [FirstName], [SecondName], [ThirdName], [LastName], [DateOfBirth], [Gendor], [Address], [Phone], [Email], [NationalityCountryID], [ImagePath]) VALUES (1031, N'SAMPLE-0007', N'Sample', N'G', N'G', N'PersonSeven', CAST(N'2001-07-22T00:00:00.000' AS DateTime), 0, N'Sample Address 7', N'+966500000007', N'person7@example.com', 150, NULL)
+INSERT [dbo].[People] ([PersonID], [NationalNo], [FirstName], [SecondName], [ThirdName], [LastName], [DateOfBirth], [Gendor], [Address], [Phone], [Email], [NationalityCountryID], [ImagePath]) VALUES (1032, N'SAMPLE-0008', N'Sample', N'H', N'H', N'PersonEight', CAST(N'2002-08-30T00:00:00.000' AS DateTime), 0, N'Sample Address 8', N'+966500000008', N'person8@example.com', 150, NULL)
 SET IDENTITY_INSERT [dbo].[People] OFF
 GO
 SET IDENTITY_INSERT [dbo].[TestAppointments] ON 
@@ -815,8 +828,13 @@ SET IDENTITY_INSERT [dbo].[TestTypes] OFF
 GO
 SET IDENTITY_INSERT [dbo].[Users] ON 
 
-INSERT [dbo].[Users] ([UserID], [PersonID], [UserName], [Password], [IsActive]) VALUES (1, 1, N'sample.user2', N'[REDACTED]', 1)
-INSERT [dbo].[Users] ([UserID], [PersonID], [UserName], [Password], [IsActive]) VALUES (20, 1032, N'sample.user1', N'[REDACTED]', 1)
+-- Demo account for the sample database. The system has no roles, so one account is
+-- enough to exercise every screen. The password is a PBKDF2 hash with a per-user
+-- salt; it belongs to this throwaway local database and is not used anywhere else.
+--
+--     demo.user / DemoUser@123
+--
+INSERT [dbo].[Users] ([UserID], [PersonID], [UserName], [Password], [IsActive]) VALUES (1, 1, N'demo.user', N'PBKDF2$100000$hjANx0BU7tL6sS2krSY+Wg==$lUrNO+8mjxZm3dr7ttDFs7WF2680hijy2d/VzHbs7HU=', 1)
 SET IDENTITY_INSERT [dbo].[Users] OFF
 GO
 ALTER TABLE [dbo].[Applications] ADD  CONSTRAINT [DF_Applications_ApplicationStatus]  DEFAULT ((1)) FOR [ApplicationStatus]
@@ -1675,5 +1693,10 @@ EXEC sys.sp_addextendedproperty @name=N'MS_DiagramPaneCount', @value=2 , @level0
 GO
 USE [master]
 GO
-ALTER DATABASE [NLTOS] SET  READ_WRITE 
+ALTER DATABASE [NLTOS] SET  READ_WRITE
+GO
+
+-- Restore normal execution for the session, in case the guard at the top of the
+-- script suppressed everything above.
+SET NOEXEC OFF
 GO

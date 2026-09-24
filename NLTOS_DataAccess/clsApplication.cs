@@ -65,8 +65,7 @@ namespace NLTOS_DataAccess
                     //Console.WriteLine("Error: " + ex.Message);
                     isFound = false;
 
-                EventLog.WriteEntry("NLTOS", $"[{DateTime.Now}] ERROR in {nameof(GetApplicationInfoByID)}\n" +
-                  $"{ex.Message}\n{ex.StackTrace}", EventLogEntryType.Error);
+                clsEventLogger.LogError(nameof(GetApplicationInfoByID), ex);
 
             }
             finally
@@ -108,8 +107,7 @@ namespace NLTOS_DataAccess
             {
                 // Console.WriteLine("Error: " + ex.Message);
 
-                EventLog.WriteEntry("NLTOS", $"[{DateTime.Now}] ERROR in {nameof(GetAllApplications)}\n" +
-              $"{ex.Message}\n{ex.StackTrace}", EventLogEntryType.Error);
+                clsEventLogger.LogError(nameof(GetAllApplications), ex);
 
             }
 
@@ -170,8 +168,7 @@ namespace NLTOS_DataAccess
             {
                 //Console.WriteLine("Error: " + ex.Message);
 
-                EventLog.WriteEntry("NLTOS", $"[{DateTime.Now}] ERROR in {nameof(AddNewApplication)}\n" +
-                  $"{ex.Message}\n{ex.StackTrace}", EventLogEntryType.Error);
+                clsEventLogger.LogError(nameof(AddNewApplication), ex);
 
 
             }
@@ -226,8 +223,7 @@ namespace NLTOS_DataAccess
             {
                 //Console.WriteLine("Error: " + ex.Message);
 
-                EventLog.WriteEntry("NLTOS", $"[{DateTime.Now}] ERROR in {nameof(UpdateApplication)}\n" +
-                  $"{ex.Message}\n{ex.StackTrace}", EventLogEntryType.Error);
+                clsEventLogger.LogError(nameof(UpdateApplication), ex);
 
                 return false;
             }
@@ -265,8 +261,7 @@ namespace NLTOS_DataAccess
             {
                 // Console.WriteLine("Error: " + ex.Message);
 
-                EventLog.WriteEntry("NLTOS", $"[{DateTime.Now}] ERROR in {nameof(DeleteApplication)}\n" +
-                  $"{ex.Message}\n{ex.StackTrace}", EventLogEntryType.Error);
+                clsEventLogger.LogError(nameof(DeleteApplication), ex);
 
             }
             finally
@@ -305,8 +300,7 @@ namespace NLTOS_DataAccess
             {
                 //Console.WriteLine("Error: " + ex.Message);
 
-                    EventLog.WriteEntry("NLTOS", $"[{DateTime.Now}] ERROR in {nameof(IsApplicationExist)}\n" +
-                    $"{ex.Message}\n{ex.StackTrace}", EventLogEntryType.Error);
+                    clsEventLogger.LogError(nameof(IsApplicationExist), ex);
 
                 isFound = false;
             }
@@ -353,8 +347,7 @@ namespace NLTOS_DataAccess
             {
                 //Console.WriteLine("Error: " + ex.Message);
 
-                EventLog.WriteEntry("NLTOS", $"[{DateTime.Now}] ERROR in {nameof(GetActiveApplicationID)}\n" +
-                     $"{ex.Message}\n{ex.StackTrace}", EventLogEntryType.Error);
+                clsEventLogger.LogError(nameof(GetActiveApplicationID), ex);
 
 
                 return ActiveApplicationID;
@@ -402,8 +395,7 @@ namespace NLTOS_DataAccess
             {
                 //Console.WriteLine("Error: " + ex.Message);
 
-                EventLog.WriteEntry("NLTOS", $"[{DateTime.Now}] ERROR in {nameof(GetActiveApplicationIDForLicenseClass)}\n" +
-                $"{ex.Message}\n{ex.StackTrace}", EventLogEntryType.Error);
+                clsEventLogger.LogError(nameof(GetActiveApplicationIDForLicenseClass), ex);
 
                 return ActiveApplicationID;
             }
@@ -444,8 +436,7 @@ namespace NLTOS_DataAccess
             {
                 //Console.WriteLine("Error: " + ex.Message);
 
-                EventLog.WriteEntry("NLTOS", $"[{DateTime.Now}] ERROR in {nameof(UpdateStatus)}\n" +
-                $"{ex.Message}\n{ex.StackTrace}", EventLogEntryType.Error);
+                clsEventLogger.LogError(nameof(UpdateStatus), ex);
 
 
                 return false;

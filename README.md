@@ -127,7 +127,10 @@ A walkthrough of the main workflows and features:
 
 1. Clone the repository.
 2. Open `Database/NLTOS_Database.sql` in SQL Server Management Studio and execute it.
-   The script drops the database if it exists, then rebuilds every table and view.
+   The script creates the NLTOS database, builds its tables and views, and seeds it
+   with sample data. It expects the database not to exist yet: if one named NLTOS is
+   already present the script stops with a message and leaves it untouched, rather
+   than overwriting it.
 3. Set the connection string in `NLTOS_DataAccess/clsDataAccessSettings.cs` to match
    your SQL Server instance. The default targets a local instance using Windows
    authentication.

@@ -53,6 +53,7 @@
     <Compile Include="clsApplication.cs" />
     <Compile Include="ApplicationType.cs" />
     <Compile Include="clsDataAccessSettings.cs" />
+    <Compile Include="clsEventLogger.cs" />
     <Compile Include="clsUserData.cs" />
     <Compile Include="clsPersonData.cs" />
     <Compile Include="clsCountryData.cs" />

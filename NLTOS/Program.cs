@@ -8,6 +8,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Diagnostics;
+using System.Security;
 namespace NLTOS
 {
     internal static class Program
@@ -20,19 +21,34 @@ namespace NLTOS
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            // Application.Run(new frmMain());
-            // Application.Run(new frmTest2());
 
-            if (!EventLog.SourceExists(clsGlobal.SourceName))
-            {
-                EventLog.CreateEventSource(clsGlobal.SourceName, "Application");
-                Console.WriteLine($"Event source '{clsGlobal.SourceName}' created successfully.");
-            }
+            EnsureEventLogSource();
 
             Application.Run(new frmLogin());
+        }
 
-
-
+        /// <summary>
+        /// Registers the application's event log source if it is not registered yet.
+        /// Registering a source requires administrator rights and only has to happen
+        /// once per machine, so a standard user is expected to fail here. That is not
+        /// a reason to stop: the application runs, it just cannot write event log
+        /// entries. Any other failure is left to surface.
+        /// </summary>
+        private static void EnsureEventLogSource()
+        {
+            try
+            {
+                if (!EventLog.SourceExists(clsGlobal.SourceName))
+                    EventLog.CreateEventSource(clsGlobal.SourceName, "Application");
+            }
+            catch (SecurityException)
+            {
+                // Not running elevated, so the source cannot be inspected or created.
+            }
+            catch (UnauthorizedAccessException)
+            {
+                // The same condition, reported differently on some Windows versions.
+            }
         }
     }
 }
