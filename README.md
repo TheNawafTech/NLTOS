@@ -137,6 +137,13 @@ A walkthrough of the main workflows and features:
 4. Open `NLTOS/NLTOS.sln` in Visual Studio and build the solution.
 5. Run.
 
+### Demo Account
+
+Username: `demo.user`<br>
+Password: `DemoUser@123`
+
+These credentials belong only to the local sample database created by the setup script.
+
 ## Project Structure
 
 ```text

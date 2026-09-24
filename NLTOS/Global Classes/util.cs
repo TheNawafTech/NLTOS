@@ -55,19 +55,38 @@ namespace NLTOS.Classes
 
         }
        
+        /// <summary>
+        /// Folder the application stores person images in.
+        ///
+        /// It sits under the current user's local application data rather than a fixed
+        /// location such as the drive root or the folder the executable runs from, so
+        /// the application writes somewhere every Windows user already owns and never
+        /// needs elevated rights.
+        /// </summary>
+        public static string PeopleImagesFolder
+        {
+            get
+            {
+                return Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                    "NLTOS",
+                    "PeopleImages");
+            }
+        }
+
         public static  bool CopyImageToProjectImagesFolder(ref string  sourceFile)
         {
             // this funciton will copy the image to the
             // project images foldr after renaming it
             // with GUID with the same extention, then it will update the sourceFileName with the new name.
 
-            string DestinationFolder = @"C:\NLTOS-People-Images\";
+            string DestinationFolder = PeopleImagesFolder;
             if (!CreateFolderIfDoesNotExist(DestinationFolder))
             {
                 return false;
             }
 
-            string destinationFile = DestinationFolder + ReplaceFileNameWithGUID(sourceFile);
+            string destinationFile = Path.Combine(DestinationFolder, ReplaceFileNameWithGUID(sourceFile));
             try
             {
                 File.Copy(sourceFile, destinationFile, true);
