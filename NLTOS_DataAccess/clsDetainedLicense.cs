@@ -296,9 +296,10 @@ namespace NLTOS_DataAccess
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
 
             string query = @"UPDATE dbo.DetainedLicenses
-                              SET IsReleased = 1, 
-                              ReleaseDate = @ReleaseDate, 
-                              ReleaseApplicationID = @ReleaseApplicationID   
+                              SET IsReleased = 1,
+                              ReleaseDate = @ReleaseDate,
+                              ReleasedByUserID = @ReleasedByUserID,
+                              ReleaseApplicationID = @ReleaseApplicationID
                               WHERE DetainID=@DetainID;";
 
             SqlCommand command = new SqlCommand(query, connection);
