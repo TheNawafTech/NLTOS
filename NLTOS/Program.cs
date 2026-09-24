@@ -9,6 +9,8 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Diagnostics;
 using System.Security;
+using System.Threading;
+using NLTOS_Buisness;
 namespace NLTOS
 {
     internal static class Program
@@ -22,9 +24,53 @@ namespace NLTOS
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
+            // Send exceptions that escape a UI event handler to OnUiThreadException
+            // instead of the default WinForms error dialog, which offers to continue
+            // and shows the stack trace.
+            Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
+            Application.ThreadException += OnUiThreadException;
+            AppDomain.CurrentDomain.UnhandledException += OnUnhandledException;
+
             EnsureEventLogSource();
 
             Application.Run(new frmLogin());
+        }
+
+        /// <summary>
+        /// Handles an exception that escaped a UI event handler.
+        ///
+        /// WinForms catches it before it reaches the message loop, so the loop keeps
+        /// running and the window stays open once this returns. The action that failed
+        /// did not complete, so the message tells the user exactly that rather than
+        /// implying the application recovered.
+        ///
+        /// The details go to the event log; the user sees none of them, since an error
+        /// message is not the place to print connection details or a stack trace.
+        /// </summary>
+        private static void OnUiThreadException(object sender, ThreadExceptionEventArgs e)
+        {
+            clsLogger.LogError("Unhandled UI thread exception", e.Exception);
+
+            MessageBox.Show(
+                "An unexpected error occurred and the last action was not completed." +
+                Environment.NewLine + Environment.NewLine +
+                "Please try again. If it keeps happening, restart the application.",
+                "Unexpected Error",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Error);
+        }
+
+        /// <summary>
+        /// Last chance to record an exception nothing else handled.
+        ///
+        /// By the time this runs the runtime is already tearing the process down, so it
+        /// only writes to the log. It cannot keep the application alive and does not
+        /// pretend to, and it shows no dialog: the process may not survive long enough
+        /// for anyone to read one.
+        /// </summary>
+        private static void OnUnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            clsLogger.LogError("Unhandled exception", e.ExceptionObject as Exception);
         }
 
         /// <summary>
