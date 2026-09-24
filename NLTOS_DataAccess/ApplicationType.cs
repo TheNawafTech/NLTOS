@@ -108,8 +108,8 @@ namespace NLTOS_DataAccess
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
 
             string query = @"Insert Into ApplicationTypes (ApplicationTypeTitle,ApplicationFees)
-                            Values (@Title,@Fees)
-                            
+                            Values (@ApplicationTypeTitle,@ApplicationFees)
+
                             SELECT SCOPE_IDENTITY();";
 
             SqlCommand command = new SqlCommand(query, connection);
