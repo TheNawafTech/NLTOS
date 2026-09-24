@@ -162,8 +162,41 @@ namespace NLTOS_DataAccess
 
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
 
+            try
+            {
+                connection.Open();
+
+                InternationalLicenseID = InsertInternationalLicense(connection, null,
+                    ApplicationID, DriverID, IssuedUsingLocalLicenseID,
+                    IssueDate, ExpirationDate, IsActive, CreatedByUserID);
+            }
+
+            finally
+            {
+                connection.Close();
+            }
+
+
+            return InternationalLicenseID;
+
+        }
+
+        /// <summary>
+        /// Retires the driver's current international licences and records the new one,
+        /// on a connection the caller already owns, returning the new identity or -1.
+        ///
+        /// Opens nothing, closes nothing, commits nothing and handles no exception:
+        /// those belong to whoever owns the connection. A null transaction runs it
+        /// outside one. Internal deliberately, since connections and transactions are
+        /// this layer's business and do not leave it.
+        /// </summary>
+        internal static int InsertInternationalLicense(
+            SqlConnection connection, SqlTransaction transaction,
+            int ApplicationID, int DriverID, int IssuedUsingLocalLicenseID,
+            DateTime IssueDate, DateTime ExpirationDate, bool IsActive, int CreatedByUserID)
+        {
             string query = @"
-                               Update InternationalLicenses 
+                               Update InternationalLicenses
                                set IsActive=0
                                where DriverID=@DriverID;
 
@@ -187,38 +220,69 @@ namespace NLTOS_DataAccess
                             SELECT SCOPE_IDENTITY();";
 
             SqlCommand command = new SqlCommand(query, connection);
+            command.Transaction = transaction;
 
             command.Parameters.AddWithValue("@ApplicationID", ApplicationID);
             command.Parameters.AddWithValue("@DriverID", DriverID);
             command.Parameters.AddWithValue("@IssuedUsingLocalLicenseID", IssuedUsingLocalLicenseID);
             command.Parameters.AddWithValue("@IssueDate", IssueDate);
             command.Parameters.AddWithValue("@ExpirationDate", ExpirationDate);
-
             command.Parameters.AddWithValue("@IsActive", IsActive);
             command.Parameters.AddWithValue("@CreatedByUserID", CreatedByUserID);
-           
 
+            object result = command.ExecuteScalar();
 
-            try
+            if (result != null && int.TryParse(result.ToString(), out int insertedID))
+                return insertedID;
+
+            return -1;
+        }
+
+        /// <summary>
+        /// Issues an international licence as one action: the application that
+        /// authorises it, the retirement of the driver's current licences, and the new
+        /// licence itself, inside a single transaction on a single connection.
+        ///
+        /// A licence recorded against an application that does not exist, or a driver
+        /// left with every licence retired and none issued, are states the workflow
+        /// should never be able to reach. Leaving the block without reaching Commit
+        /// disposes the transaction, which rolls the work back, so a failure needs no
+        /// handling here and travels on unchanged.
+        ///
+        /// The identities are handed back only after the commit, so a caller can never
+        /// be given the id of a row that was rolled back.
+        /// </summary>
+        public static void CreateInternationalLicense(
+            int ApplicantPersonID, DateTime ApplicationDate, int ApplicationTypeID,
+            byte ApplicationStatus, DateTime LastStatusDate, float PaidFees,
+            int DriverID, int IssuedUsingLocalLicenseID,
+            DateTime IssueDate, DateTime ExpirationDate, bool IsActive,
+            int CreatedByUserID,
+            out int NewApplicationID, out int NewInternationalLicenseID)
+        {
+            int applicationID;
+            int internationalLicenseID;
+
+            using (SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString))
             {
                 connection.Open();
 
-                object result = command.ExecuteScalar();
-
-                if (result != null && int.TryParse(result.ToString(), out int insertedID))
+                using (SqlTransaction transaction = connection.BeginTransaction())
                 {
-                    InternationalLicenseID = insertedID;
+                    applicationID = clsApplicationData.InsertApplication(connection, transaction,
+                        ApplicantPersonID, ApplicationDate, ApplicationTypeID,
+                        ApplicationStatus, LastStatusDate, PaidFees, CreatedByUserID);
+
+                    internationalLicenseID = InsertInternationalLicense(connection, transaction,
+                        applicationID, DriverID, IssuedUsingLocalLicenseID,
+                        IssueDate, ExpirationDate, IsActive, CreatedByUserID);
+
+                    transaction.Commit();
                 }
             }
 
-            finally
-            {
-                connection.Close();
-            }
-
-
-            return InternationalLicenseID;
-
+            NewApplicationID = applicationID;
+            NewInternationalLicenseID = internationalLicenseID;
         }
 
         public static bool UpdateInternationalLicense(

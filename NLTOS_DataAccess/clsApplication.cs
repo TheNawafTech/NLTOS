@@ -114,38 +114,13 @@ namespace NLTOS_DataAccess
 
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
 
-            string query = @"INSERT INTO Applications ( 
-                            ApplicantPersonID,ApplicationDate,ApplicationTypeID,
-                            ApplicationStatus,LastStatusDate,
-                            PaidFees,CreatedByUserID)
-                             VALUES (@ApplicantPersonID,@ApplicationDate,@ApplicationTypeID,
-                                      @ApplicationStatus,@LastStatusDate,
-                                      @PaidFees,   @CreatedByUserID);
-                             SELECT SCOPE_IDENTITY();";
-
-            SqlCommand command = new SqlCommand(query, connection);
-
-            command.Parameters.AddWithValue("ApplicantPersonID", @ApplicantPersonID);
-            command.Parameters.AddWithValue("ApplicationDate", @ApplicationDate);
-            command.Parameters.AddWithValue("ApplicationTypeID", @ApplicationTypeID);
-            command.Parameters.AddWithValue("ApplicationStatus", @ApplicationStatus);
-            command.Parameters.AddWithValue("LastStatusDate", @LastStatusDate);
-            command.Parameters.AddWithValue("PaidFees", @PaidFees);
-            command.Parameters.AddWithValue("CreatedByUserID", @CreatedByUserID);
-
-
-
-
             try
             {
                 connection.Open();
 
-                object result = command.ExecuteScalar();
-
-                if (result != null && int.TryParse(result.ToString(), out int insertedID))
-                {
-                    ApplicationID = insertedID;
-                }
+                ApplicationID = InsertApplication(connection, null,
+                    ApplicantPersonID, ApplicationDate, ApplicationTypeID,
+                    ApplicationStatus, LastStatusDate, PaidFees, CreatedByUserID);
             }
 
             finally
@@ -155,6 +130,53 @@ namespace NLTOS_DataAccess
 
 
             return ApplicationID;
+        }
+
+        /// <summary>
+        /// Inserts an application on a connection the caller already owns, and returns
+        /// the new identity, or -1 when the server returns nothing usable.
+        ///
+        /// It exists so a workflow that has to create an application together with
+        /// something else can do both inside one transaction, without this SQL being
+        /// written out a second time elsewhere. It opens nothing, closes nothing,
+        /// commits nothing and handles no exception: those belong to whoever owns the
+        /// connection. A null transaction runs the insert outside one.
+        ///
+        /// Internal deliberately. Connections and transactions are this layer's business
+        /// and are not part of what the layers above it can see.
+        /// </summary>
+        internal static int InsertApplication(
+            SqlConnection connection, SqlTransaction transaction,
+            int ApplicantPersonID, DateTime ApplicationDate, int ApplicationTypeID,
+            byte ApplicationStatus, DateTime LastStatusDate,
+            float PaidFees, int CreatedByUserID)
+        {
+            string query = @"INSERT INTO Applications (
+                            ApplicantPersonID,ApplicationDate,ApplicationTypeID,
+                            ApplicationStatus,LastStatusDate,
+                            PaidFees,CreatedByUserID)
+                             VALUES (@ApplicantPersonID,@ApplicationDate,@ApplicationTypeID,
+                                      @ApplicationStatus,@LastStatusDate,
+                                      @PaidFees,   @CreatedByUserID);
+                             SELECT SCOPE_IDENTITY();";
+
+            SqlCommand command = new SqlCommand(query, connection);
+            command.Transaction = transaction;
+
+            command.Parameters.AddWithValue("ApplicantPersonID", @ApplicantPersonID);
+            command.Parameters.AddWithValue("ApplicationDate", @ApplicationDate);
+            command.Parameters.AddWithValue("ApplicationTypeID", @ApplicationTypeID);
+            command.Parameters.AddWithValue("ApplicationStatus", @ApplicationStatus);
+            command.Parameters.AddWithValue("LastStatusDate", @LastStatusDate);
+            command.Parameters.AddWithValue("PaidFees", @PaidFees);
+            command.Parameters.AddWithValue("CreatedByUserID", @CreatedByUserID);
+
+            object result = command.ExecuteScalar();
+
+            if (result != null && int.TryParse(result.ToString(), out int insertedID))
+                return insertedID;
+
+            return -1;
         }
 
 

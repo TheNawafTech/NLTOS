@@ -134,27 +134,42 @@ namespace NLTOS_Buisness
         public bool Save()
         {
 
-            //Because of inheritance first we call the save method in the base class,
-            //it will take care of adding all information to the application table.
-            base.Mode = (clsApplication.enMode)Mode;
-            if (!base.Save())
-                return false;
-
             switch (Mode)
             {
                 case enMode.AddNew:
-                    if (_AddNewInternationalLicense())
-                    {
 
-                        Mode = enMode.Update;
-                        return true;
-                    }
-                    else
-                    {
+                    // Issuing a licence writes to the application table and to the
+                    // licence table, which is one action to anyone using it. It goes to
+                    // the data access layer as a single call so both can happen inside
+                    // one transaction. Nothing here is assigned until that call returns,
+                    // so a failure cannot leave this object holding the id of a row that
+                    // was rolled back, or believing it has already been saved.
+                    clsInternationalLicenseData.CreateInternationalLicense(
+                        this.ApplicantPersonID, this.ApplicationDate, this.ApplicationTypeID,
+                        (byte)this.ApplicationStatus, this.LastStatusDate, this.PaidFees,
+                        this.DriverID, this.IssuedUsingLocalLicenseID,
+                        this.IssueDate, this.ExpirationDate, this.IsActive,
+                        this.CreatedByUserID,
+                        out int newApplicationID, out int newInternationalLicenseID);
+
+                    if (newApplicationID == -1 || newInternationalLicenseID == -1)
                         return false;
-                    }
+
+                    this.ApplicationID = newApplicationID;
+                    this.InternationalLicenseID = newInternationalLicenseID;
+
+                    Mode = enMode.Update;
+                    base.Mode = clsApplication.enMode.Update;
+
+                    return true;
 
                 case enMode.Update:
+
+                    //Because of inheritance first we call the save method in the base
+                    //class, it will take care of the information in the application table.
+                    base.Mode = (clsApplication.enMode)Mode;
+                    if (!base.Save())
+                        return false;
 
                     return _UpdateInternationalLicense();
 
