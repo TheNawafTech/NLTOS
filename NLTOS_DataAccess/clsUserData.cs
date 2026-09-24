@@ -172,6 +172,55 @@ namespace NLTOS_DataAccess
             return isFound;
         }
 
+        // Looks the user up by username only and returns the stored password hash, so the
+        // business layer can verify it. A salted hash cannot be matched inside the query.
+        public static bool GetUserInfoByUserName(string UserName,
+            ref int UserID, ref int PersonID, ref string Password, ref bool IsActive)
+        {
+            bool isFound = false;
+
+            SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
+
+            string query = "SELECT * FROM Users WHERE UserName = @UserName;";
+
+            SqlCommand command = new SqlCommand(query, connection);
+
+            command.Parameters.AddWithValue("@UserName", UserName);
+
+            try
+            {
+                connection.Open();
+                SqlDataReader reader = command.ExecuteReader();
+
+                if (reader.Read())
+                {
+                    // The record was found
+                    isFound = true;
+                    UserID = (int)reader["UserID"];
+                    PersonID = (int)reader["PersonID"];
+                    Password = (string)reader["Password"];
+                    IsActive = (bool)reader["IsActive"];
+                }
+                else
+                {
+                    // The record was not found
+                    isFound = false;
+                }
+
+                reader.Close();
+            }
+            catch (Exception ex)
+            {
+                isFound = false;
+            }
+            finally
+            {
+                connection.Close();
+            }
+
+            return isFound;
+        }
+
         public static int AddNewUser(int PersonID,  string UserName,
              string Password,  bool IsActive)
         {

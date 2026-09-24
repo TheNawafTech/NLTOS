@@ -64,9 +64,12 @@ namespace NLTOS.Login
 
         private void btnLogin_Click(object sender, EventArgs e)
         {
-            string Hash = clsUser.ComputeHash(txtPassword.Text);
+            clsUser user = clsUser.FindByUserName(txtUserName.Text.Trim());
 
-            clsUser user = clsUser.FindByUsernameAndPassword(txtUserName.Text.Trim(), Hash);
+            // The stored hash carries its own salt, so it is verified here rather than
+            // matched inside the query.
+            if (user != null && !clsUser.VerifyPassword(txtPassword.Text, user.Password))
+                user = null;
 
             if (user != null)
             {

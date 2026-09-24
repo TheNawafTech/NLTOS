@@ -108,6 +108,24 @@ namespace NLTOS_Buisness
                 return null;
         }
 
+        // Used by the login screen: the account is fetched by username, then the supplied
+        // password is verified against the stored hash by VerifyPassword.
+        public static clsUser FindByUserName(string UserName)
+        {
+            int UserID = -1;
+            int PersonID = -1;
+            string Password = "";
+            bool IsActive = false;
+
+            bool IsFound = clsUserData.GetUserInfoByUserName
+                                (UserName, ref UserID, ref PersonID, ref Password, ref IsActive);
+
+            if (IsFound)
+                return new clsUser(UserID, PersonID, UserName, Password, IsActive);
+            else
+                return null;
+        }
+
         public bool Save()
         {
             switch (Mode)
@@ -158,14 +176,63 @@ namespace NLTOS_Buisness
             return clsUserData.IsUserExistForPersonID(PersonID);
         }
 
+        // ------------------------------------------------------------------
+        // Credential storage for "Remember Me".
+        //
+        // The password is encrypted with DPAPI before it is written to the registry,
+        // so the stored value is only readable by the Windows account that wrote it.
+        // ------------------------------------------------------------------
+
+        private const string RegistryKeyPath = @"HKEY_CURRENT_USER\Software\NLTOS";
+        private const string RegistrySubKey = @"Software\NLTOS";
+
+        private static readonly byte[] CredentialEntropy =
+            Encoding.UTF8.GetBytes("NLTOS.Credentials.v1");
+
+        private static string Protect(string plainText)
+        {
+            byte[] protectedBytes = ProtectedData.Protect(
+                Encoding.UTF8.GetBytes(plainText ?? ""),
+                CredentialEntropy,
+                DataProtectionScope.CurrentUser);
+
+            return Convert.ToBase64String(protectedBytes);
+        }
+
+        private static string Unprotect(string protectedText)
+        {
+            byte[] plainBytes = ProtectedData.Unprotect(
+                Convert.FromBase64String(protectedText),
+                CredentialEntropy,
+                DataProtectionScope.CurrentUser);
+
+            return Encoding.UTF8.GetString(plainBytes);
+        }
+
+        private static void ClearStoredPassword()
+        {
+            try
+            {
+                using (RegistryKey key = Registry.CurrentUser.OpenSubKey(RegistrySubKey, true))
+                {
+                    if (key != null)
+                        key.DeleteValue("Password", false);
+                }
+            }
+            catch (Exception)
+            {
+                // Nothing further to do; the stale value simply stays unused.
+            }
+        }
+
         public static bool SaveCredentials(string userName, string password, bool isRemembered, ref string errorMessage)
         {
             try
             {
                 if (isRemembered)
                 {
-                    Registry.SetValue(@"HKEY_CURRENT_USER\Software\NLTOS", "Username", userName);
-                    Registry.SetValue(@"HKEY_CURRENT_USER\Software\NLTOS", "Password", password);
+                    Registry.SetValue(RegistryKeyPath, "Username", userName);
+                    Registry.SetValue(RegistryKeyPath, "Password", Protect(password));
                 }
                 else
                 {
@@ -199,14 +266,29 @@ namespace NLTOS_Buisness
 
             try
             {
-                string savedUser = (string)Registry.GetValue(@"HKEY_CURRENT_USER\Software\NLTOS", "Username", null);
-                string savedPass = (string)Registry.GetValue(@"HKEY_CURRENT_USER\Software\NLTOS", "Password", null);
+                string savedUser = (string)Registry.GetValue(RegistryKeyPath, "Username", null);
+                string savedPass = (string)Registry.GetValue(RegistryKeyPath, "Password", null);
 
                 if (!string.IsNullOrEmpty(savedUser))
                 {
                     userName = savedUser;
-                    password = savedPass;
                     isRemembered = true;
+
+                    if (!string.IsNullOrEmpty(savedPass))
+                    {
+                        try
+                        {
+                            password = Unprotect(savedPass);
+                        }
+                        catch (Exception)
+                        {
+                            // Written by an earlier build in clear text, or encrypted under a
+                            // different Windows account. Discard it rather than trust it.
+                            password = "";
+                            ClearStoredPassword();
+                        }
+                    }
+
                     return true;
                 }
                 return false;
@@ -224,9 +306,96 @@ namespace NLTOS_Buisness
         }
 
 
-        // Hashing function for password security
-        // we will use ComputeHash to take the hash and compare them at the SQL
-       public static string ComputeHash(string input)
+        // ------------------------------------------------------------------
+        // Password hashing.
+        //
+        // Passwords are hashed with PBKDF2 using a random per-user salt, so two users
+        // with the same password do not end up with the same stored value.
+        //
+        // Stored format: PBKDF2$<iterations>$<base64 salt>$<base64 hash>
+        //
+        // Accounts created before salted hashing was introduced hold a plain SHA-256
+        // hex digest. VerifyPassword still accepts those, so they keep working.
+        // ------------------------------------------------------------------
+
+        private const string HashPrefix = "PBKDF2";
+        private const int HashIterations = 100000;
+        private const int SaltSize = 16;
+        private const int HashSize = 32;
+
+        public static string HashPassword(string password)
+        {
+            byte[] salt = new byte[SaltSize];
+
+            using (RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider())
+            {
+                rng.GetBytes(salt);
+            }
+
+            using (Rfc2898DeriveBytes pbkdf2 = new Rfc2898DeriveBytes(password ?? "", salt, HashIterations))
+            {
+                string hash = Convert.ToBase64String(pbkdf2.GetBytes(HashSize));
+
+                return string.Join("$", HashPrefix, HashIterations.ToString(),
+                                   Convert.ToBase64String(salt), hash);
+            }
+        }
+
+        public static bool VerifyPassword(string password, string storedHash)
+        {
+            if (string.IsNullOrEmpty(storedHash))
+                return false;
+
+            // Legacy accounts: unsalted SHA-256 hex written by earlier builds.
+            if (!storedHash.StartsWith(HashPrefix + "$"))
+                return AreEqual(Encoding.UTF8.GetBytes(ComputeHash(password ?? "")),
+                                Encoding.UTF8.GetBytes(storedHash));
+
+            string[] parts = storedHash.Split('$');
+
+            if (parts.Length != 4)
+                return false;
+
+            int iterations;
+
+            if (!int.TryParse(parts[1], out iterations) || iterations <= 0)
+                return false;
+
+            try
+            {
+                byte[] salt = Convert.FromBase64String(parts[2]);
+                byte[] expected = Convert.FromBase64String(parts[3]);
+
+                using (Rfc2898DeriveBytes pbkdf2 = new Rfc2898DeriveBytes(password ?? "", salt, iterations))
+                {
+                    return AreEqual(pbkdf2.GetBytes(expected.Length), expected);
+                }
+            }
+            catch (FormatException)
+            {
+                // Stored value is not in the expected format.
+                return false;
+            }
+        }
+
+        // Comparison that does not return early, so the time taken does not reveal
+        // how much of the hash matched.
+        private static bool AreEqual(byte[] a, byte[] b)
+        {
+            if (a == null || b == null || a.Length != b.Length)
+                return false;
+
+            int difference = 0;
+
+            for (int i = 0; i < a.Length; i++)
+                difference |= a[i] ^ b[i];
+
+            return difference == 0;
+        }
+
+        // Kept only so accounts created before salted hashing can still sign in.
+        // Do not use it for new or changed passwords; use HashPassword instead.
+        public static string ComputeHash(string input)
         {
             using (SHA256 sha256 = SHA256.Create())
             {

@@ -92,8 +92,10 @@ namespace NLTOS.User
             //the following code will not be executed if the person was not found
             lblUserID.Text = _User.UserID.ToString();
             txtUserName.Text = _User.UserName;
-            txtPassword.Text = _User.Password;
-            txtConfirmPassword.Text = _User.Password;
+            // The stored value is a hash, not the password, so it is not loaded back into
+            // the form. Updating a user requires entering the password again.
+            txtPassword.Text = "";
+            txtConfirmPassword.Text = "";
             chkIsActive.Checked = _User.IsActive;
             ctrlPersonCardWithFilter1.LoadPersonInfo(_User.PersonID);
         }
@@ -124,7 +126,7 @@ namespace NLTOS.User
             _User.Password = txtPassword.Text.Trim();
             _User.IsActive = chkIsActive.Checked;
 
-            _User.Password = clsUser.ComputeHash(_User.Password);
+            _User.Password = clsUser.HashPassword(_User.Password);
 
             if (_User.Save())
             {
