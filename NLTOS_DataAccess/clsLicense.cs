@@ -53,7 +53,7 @@ namespace NLTOS_DataAccess
                         PaidFees = Convert.ToSingle(reader["PaidFees"]);
                         IsActive = (bool)reader["IsActive"];
                         IssueReason = (byte)reader["IssueReason"];
-                        CreatedByUserID = (int)reader["DriverID"];
+                        CreatedByUserID = (int)reader["CreatedByUserID"];
 
 
                 }
