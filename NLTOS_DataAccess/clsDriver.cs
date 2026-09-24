@@ -54,11 +54,6 @@ namespace NLTOS_DataAccess
 
 
                 }
-                catch (Exception ex)
-                {
-                    //Console.WriteLine("Error: " + ex.Message);
-                    isFound = false;
-                }
                 finally
                 {
                     connection.Close();
@@ -106,11 +101,6 @@ namespace NLTOS_DataAccess
 
 
             }
-            catch (Exception ex)
-            {
-                //Console.WriteLine("Error: " + ex.Message);
-                isFound = false;
-            }
             finally
             {
                 connection.Close();
@@ -146,10 +136,6 @@ namespace NLTOS_DataAccess
 
                 }
 
-                catch (Exception ex)
-                {
-                    // Console.WriteLine("Error: " + ex.Message);
-                }
                 finally
                 {
                     connection.Close();
@@ -187,12 +173,6 @@ namespace NLTOS_DataAccess
                 }
             }
 
-            catch (Exception ex)
-            {
-                //Console.WriteLine("Error: " + ex.Message);
-
-            }
-
             finally
             {
                 connection.Close();
@@ -226,12 +206,6 @@ namespace NLTOS_DataAccess
                 rowsAffected = command.ExecuteNonQuery();
 
             }
-            catch (Exception ex)
-            {
-                //Console.WriteLine("Error: " + ex.Message);
-                return false;
-            }
-
             finally
             {
                 connection.Close();
