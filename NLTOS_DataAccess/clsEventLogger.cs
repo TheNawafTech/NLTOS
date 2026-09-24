@@ -31,9 +31,12 @@ namespace NLTOS_DataAccess
         /// </summary>
         public static void LogError(string operation, Exception ex)
         {
+            // The type is the first thing worth knowing when reading these entries back:
+            // a SqlException and a NullReferenceException call for completely different
+            // investigations, and the message alone does not always make clear which it was.
             string details = ex == null
                 ? "No exception details available."
-                : ex.Message + "\n" + ex.StackTrace;
+                : ex.GetType().FullName + ": " + ex.Message + "\n" + ex.StackTrace;
 
             Write($"[{DateTime.Now}] ERROR in {operation}\n{details}");
         }

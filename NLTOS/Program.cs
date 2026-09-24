@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using System.Diagnostics;
 using System.Security;
 using System.Threading;
+using System.Data.SqlClient;
 using NLTOS_Buisness;
 namespace NLTOS
 {
@@ -51,11 +52,24 @@ namespace NLTOS
         {
             clsLogger.LogError("Unhandled UI thread exception", e.Exception);
 
+            // A failure reported by the database is something the application can expect
+            // to meet, so it is named as such. It covers a wide range of causes - a lost
+            // connection, a timeout, a permission or constraint problem, a deadlock - so
+            // the message says only that the operation failed, and does not claim the
+            // database is unreachable or that nothing was written.
+            bool isDatabaseFailure = e.Exception is SqlException;
+
+            string message = isDatabaseFailure
+                ? "The database operation could not be completed." +
+                  Environment.NewLine + Environment.NewLine +
+                  "Please try again. If the problem continues, restart the application."
+                : "An unexpected error occurred and the last action was not completed." +
+                  Environment.NewLine + Environment.NewLine +
+                  "Please try again. If it keeps happening, restart the application.";
+
             MessageBox.Show(
-                "An unexpected error occurred and the last action was not completed." +
-                Environment.NewLine + Environment.NewLine +
-                "Please try again. If it keeps happening, restart the application.",
-                "Unexpected Error",
+                message,
+                isDatabaseFailure ? "Database Operation Failed" : "Unexpected Error",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Error);
         }
