@@ -103,9 +103,8 @@ namespace NLTOS_DataAccess
 
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
 
-            string query = @"Insert Into TestTypes (TestTypeTitle,TestTypeTitle,TestTypeFees)
-                            Values (@TestTypeTitle,@TestTypeDescription,@ApplicationFees)
-                            where TestTypeID = @TestTypeID;
+            string query = @"Insert Into TestTypes (TestTypeTitle,TestTypeDescription,TestTypeFees)
+                            Values (@TestTypeTitle,@TestTypeDescription,@ApplicationFees);
                             SELECT SCOPE_IDENTITY();";
 
             SqlCommand command = new SqlCommand(query, connection);
