@@ -182,15 +182,20 @@ namespace NLTOS_DataAccess
 
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
 
+            // The identity is captured immediately after the insert that produces it,
+            // rather than read at the end of the batch, so that adding a statement
+            // later cannot quietly change which value comes back.
             string query = @"Insert Into Tests (TestAppointmentID,TestResult,
                                                 Notes,   CreatedByUserID)
                             Values (@TestAppointmentID,@TestResult,
                                                 @Notes,   @CreatedByUserID);
-                            
-                                UPDATE TestAppointments 
+
+                                DECLARE @NewTestID INT = CONVERT(INT, SCOPE_IDENTITY());
+
+                                UPDATE TestAppointments
                                 SET IsLocked=1 where TestAppointmentID = @TestAppointmentID;
 
-                                SELECT SCOPE_IDENTITY();";
+                                SELECT @NewTestID;";
 
             SqlCommand command = new SqlCommand(query, connection);
 
@@ -210,11 +215,23 @@ namespace NLTOS_DataAccess
             {
                 connection.Open();
 
-                object result = command.ExecuteScalar();
-
-                if (result != null && int.TryParse(result.ToString(), out int insertedID))
+                // Recording the test and locking its appointment are one action: a test
+                // that exists against an appointment still open to be taken again is not
+                // a state the workflow should ever see. Leaving the block without
+                // reaching Commit disposes the transaction, which rolls it back, so a
+                // failure needs no handling here and travels on untouched.
+                using (SqlTransaction transaction = connection.BeginTransaction())
                 {
-                    TestID = insertedID;
+                    command.Transaction = transaction;
+
+                    object result = command.ExecuteScalar();
+
+                    if (result != null && int.TryParse(result.ToString(), out int insertedID))
+                    {
+                        TestID = insertedID;
+                    }
+
+                    transaction.Commit();
                 }
             }
 
