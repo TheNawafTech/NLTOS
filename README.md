@@ -1,398 +1,156 @@
 # National Licensing & Traffic Operations System (NLTOS)
 
-Enterprise-Level Desktop Application
-Built with C#, Windows Forms, and Structured 3-Tier Architecture
-
----
+A C#/.NET desktop licensing and traffic operations system built with Windows Forms,
+SQL Server, ADO.NET and a layered 3-tier architecture.
 
 ## Overview
 
-## System Demo
+NLTOS models the operations of a driving-license authority. It covers the full path an
+applicant takes — registration, application intake, a sequence of driving tests, and
+license issuance — along with the services that follow it: renewal, replacement of lost
+or damaged licenses, international licenses, and the detention and release of licenses.
 
-A full walkthrough of the system showcasing the main workflow and core features.
+The system is a simulation built to model these procedures. It is not connected to any
+authority, live service or real data.
 
-▶ Watch the demo:  
-https://youtu.be/0dtG_A0FHwM
+## Key Workflows
 
-**NLTOS (National Licensing & Traffic Operations System)** is a full desktop-based licensing management system that simulates real-world traffic authority operations.
-
-This project was designed and developed **end-to-end (from A to Z)** — starting from database modeling and system architecture design, all the way to business rule implementation, workflow control, and UI development.
-
-NLTOS is not a basic CRUD system.
-It is a structured, workflow-driven application that focuses on:
-
-* Controlled state transitions
-* Strict business rule enforcement
-* Layered architecture separation
-* Backend-oriented logic design
-* Real-world operational constraints
-
-The system reflects how enterprise-level governmental systems manage licensing processes with structured validation and domain-driven rules.
-
----
+- **People and users** — registration, updates, image handling, user activation control
+- **Local driving-license applications** — intake and lifecycle tracking across new,
+  completed and cancelled states
+- **Testing** — vision, written and street tests, with appointment scheduling and retakes
+- **License issuance** — issuing a license once the application and tests are complete
+- **Renewal and replacement** — renewal of expired licenses, replacement of lost or
+  damaged ones
+- **International licenses** — issued against an existing valid local license
+- **Detained licenses** — detention, and release through a dedicated application
 
 ## Architecture
 
-The system follows a structured **3-Tier Architecture**:
+The solution is split into three projects, each communicating only with the one
+directly beneath it.
 
-### 1. Presentation Layer (UI)
+| Layer | Project | Responsibility |
+| --- | --- | --- |
+| Presentation | `NLTOS` | Windows Forms interface, navigation, input validation |
+| Business Logic | `NLTOS_Buisness` | Business rules, eligibility checks, workflow state transitions |
+| Data Access | `NLTOS_DataAccess` | SQL Server access via ADO.NET using parameterized queries |
 
-* Windows Forms interface
-* Controlled screen navigation
-* Context-aware actions
-* Validation before submission
-* No direct database interaction
+The presentation layer holds no SQL and opens no connections; every database call passes
+through the data access layer. Workflow rules live in the business layer, so the same
+constraints apply regardless of which screen triggers an operation.
 
-### 2. Business Logic Layer (BLL)
+## Business Rules & Workflow Constraints
 
-* Centralized business rule enforcement
-* Eligibility validation
-* Sequential test logic (Vision → Written → Street)
-* Controlled workflow transitions
-* State validation before processing
-* Edge-case handling and constraint enforcement
-* Prevention of invalid operations at the logic level
+The workflow rules below are enforced in the business layer rather than relying on the
+interface alone.
 
-### 3. Data Access Layer (DAL)
+**Tests run in a fixed sequence.** `clsLocalDrivingLicenseApplication.DoesPassPreviousTest`
+resolves the prerequisite for each test type — the written test requires a passed vision
+test, the street test requires a passed written test — and blocks the attempt if the
+prerequisite is unmet.
 
-* ADO.NET implementation
-* Parameterized SQL queries
-* Secure CRUD operations
-* Centralized connection management
-* Full isolation from UI layer
+**A license is not issued until every test is passed.** Issuance is gated on
+`clsTest.PassedAllTests`, which checks the application's full test set rather than a
+status flag.
 
-This structure ensures maintainability, scalability, and clean separation of concerns similar to enterprise-grade systems.
+**One active application per type per person.**
+`clsApplication.DoesPersonHaveActiveApplication` is checked before a new application is
+created, preventing duplicate concurrent applications of the same type.
 
----
+**Certain licensing operations are blocked while a license is detained.**
+`clsDetainedLicense.IsLicenseDetained` is used to check the detention state, while
+release is handled through its own dedicated application workflow rather than by
+clearing a flag.
 
-## Key Features
+**Application operations are validated against the current workflow state.**
+Business-layer checks prevent an operation when the application's current state or its
+prerequisites do not allow it. Enums (`enApplicationType`, `enIssueReason`) define the
+permitted application types and issue reasons, while workflow validity itself is
+enforced through explicit business rules.
 
-* Secure Authentication System (Login, Remember Me, Change Password)
-* Full People Management (Create, Update, Delete, Image Handling)
-* User Management with activation control and filtering
-* Driving License Services:
+## Tech Stack
 
-  * New Local License
-  * International License
-  * License Renewal
-  * Replacement (Lost / Damaged)
-* Detained License Management (Detain / Release with validation rules)
-* Application Lifecycle Tracking (New, Completed, Cancelled)
-* Integrated Test Management:
+```text
+C#
+.NET Framework 4.8
+Windows Forms
+SQL Server
+ADO.NET
+3-Tier Architecture
+```
 
-  * Vision Test
-  * Written Test
-  * Street Test
-  * Sequential validation enforcement
-  * Retake logic handling
-  * Appointment scheduling with locking mechanism
+No ORM, micro-ORM or scaffolding is used — the data access layer is hand-written ADO.NET.
 
----
+## Database
+
+A relational SQL Server database of **14 tables and 5 views**, tied together by
+**27 foreign key constraints**.
+
+The main entity groups are people, users, applications, licenses (local, international
+and detained), and tests with their appointments. Licenses reference a license class that
+carries its own validity length, fees and minimum age.
+
+The complete schema is in [`Database/NLTOS_Database.sql`](Database/NLTOS_Database.sql).
+
+## Demo
+
+A walkthrough of the main workflows and features:
+
+[Watch the system demo](https://youtu.be/0dtG_A0FHwM)
+
+## Screenshots
+
+**Login**
+
+![Login screen](assets/Login%20%282%29.png)
+
+**Driving licenses**
+
+![Driving licenses](assets/Driving_Licenses.png)
+
+**Applications management**
+
+![Applications management](assets/Manage_applications.png)
+
+**New local license application**
+
+![New local license application](assets/New_Local_License.png)
+
+**Taking a test**
+
+![Taking a test](assets/Take_Test.png)
+
+## Getting Started
+
+**Requirements:** Visual Studio with .NET Framework 4.8, and SQL Server.
+
+1. Clone the repository.
+2. Open `Database/NLTOS_Database.sql` in SQL Server Management Studio and execute it.
+   The script drops the database if it exists, then rebuilds every table and view.
+3. Set the connection string in `NLTOS_DataAccess/clsDataAccessSettings.cs` to match
+   your SQL Server instance. The default targets a local instance using Windows
+   authentication.
+4. Open `NLTOS/NLTOS.sln` in Visual Studio and build the solution.
+5. Run.
 
 ## Project Structure
 
-The project is organized into clear functional modules that reflect the real-world licensing workflow.
-Each module represents a domain area of the system while the Business and Data layers handle logic and persistence separately.
-
-```
-NLTOS
+```text
+NLTOS/
+├── Database/                 SQL Server schema script
 │
-├── Database
-│   └── NLTOS_Database.sql
+├── NLTOS/                    Presentation Layer — Windows Forms
+│   ├── Applications/         Local, international, renewal, replacement, release
+│   ├── Licenses/             Issuing, detaining, license history
+│   ├── People/
+│   ├── Drivers/
+│   ├── Tests/                Scheduling and test execution
+│   ├── User/
+│   ├── Login/
+│   └── Global Classes/       Formatting, validation, shared helpers
 │
-├── NLTOS (Presentation Layer)
+├── NLTOS_Buisness/           Business Logic Layer
 │
-│   ├── Applications
-│   │
-│   │   ├── Application Types
-│   │   │   ├── frmListApplicationTypes
-│   │   │   └── frmEditApplicationType
-│   │   │
-│   │   ├── Local Driving License
-│   │   │   ├── frmAddUpdateLocalDrivingLicenseApplication
-│   │   │   ├── frmListLocalDrivingLicenseApplications
-│   │   │   └── ctrlDrivingLicenseApplicationInfo
-│   │   │
-│   │   ├── International License
-│   │   │   ├── frmNewInternationalLicenseApplication
-│   │   │   └── frmListInternationalLicenseApplications
-│   │   │
-│   │   ├── Renew Local License
-│   │   │   └── frmRenewLocalDrivingLicenseApplication
-│   │   │
-│   │   ├── Replace Lost or Damaged License
-│   │   │   └── frmReplaceLostOrDamagedLicenseApplication
-│   │   │
-│   │   └── Release Detained License
-│   │       ├── frmListDetainedLicenses
-│   │       └── frmReleaseDetainedLicenseApplication
-│   │
-│   ├── Drivers
-│   │   └── frmListDrivers
-│   │
-│   ├── Licenses
-│   │   ├── Detain License
-│   │   │   └── frmDetainLicenseApplication
-│   │   │
-│   │   ├── International Licenses
-│   │   │   └── frmShowInternationalLicenseInfo
-│   │   │
-│   │   └── Local Licenses
-│   │       └── frmShowPersonLicenseHistory
-│   │
-│   ├── People
-│   │   ├── frmAddUpdatePerson
-│   │   ├── frmFindPerson
-│   │   ├── frmListPeople
-│   │   └── frmShowPersonInfo
-│   │
-│   ├── Login
-│   │   └── frmLogin
-│   │
-│   ├── Tests
-│   │   ├── Test Types
-│   │   │   ├── frmScheduleTest
-│   │   │   ├── frmTakeTest
-│   │   │   └── frmListTestAppointments
-│   │   │
-│   │   └── Controls
-│   │       ├── ctrlScheduleTest
-│   │       └── ctrlScheduledTest
-│   │
-│   └── Global Classes
-│       ├── clsFormat
-│       ├── clsGlobal
-│       ├── clsValidation
-│       └── util
-│
-├── NLTOS_Business (Business Logic Layer)
-│
-│   ├── clsApplication
-│   ├── clsApplicationType
-│   ├── clsCountry
-│   ├── clsDriver
-│   ├── clsPerson
-│   ├── clsLicense
-│   ├── clsLicenseClass
-│   ├── clsLocalDrivingLicenseApplication
-│   ├── clsInternationalLicense
-│   ├── clsDetainedLicense
-│   ├── clsTest
-│   ├── clsTestAppointment
-│   ├── clsTestType
-│   └── clsUser
-│
-└── NLTOS_DataAccess (Data Access Layer)
-    │
-    ├── clsApplication
-    ├── clsCountryData
-    ├── clsDriver
-    ├── clsLicense
-    ├── clsLocalDrivingLicenseApplicationData
-    ├── clsPersonData
-    ├── clsDetainedLicense
-    ├── clsTest
-    ├── clsTestAppointment
-    ├── clsTestType
-    └── clsUserData
+└── NLTOS_DataAccess/         Data Access Layer — ADO.NET
 ```
-
----
-
-### Structure Philosophy
-
-The project structure follows a **domain-oriented organization** where each functional module represents a real operational component of a licensing authority system.
-
-This design provides:
-
-* Clear separation of responsibilities
-* Easier navigation for developers
-* Modular expansion of new licensing services
-* Strict architectural boundaries between UI, Business Logic, and Data Access
-
-Each layer communicates only with the layer directly beneath it, maintaining a clean and maintainable architecture.
-
----
-
-
-The system enforces strict operational constraints such as:
-
-* An applicant cannot proceed to the next test without passing the previous stage.
-* A license cannot be issued unless all required tests are successfully completed.
-* Duplicate active licenses are prevented.
-* Detained licenses cannot be processed until properly released.
-* Application states transition only through valid business paths.
-* Age and eligibility rules are validated before processing.
-* Invalid state transitions are blocked at the Business Logic Layer.
-
-All constraints are enforced in the backend logic — not the UI — ensuring structural integrity and predictable system behavior.
-
----
-
-## Database Architecture
-
-The system is powered by a relational SQL Server database fully designed from scratch.
-
-The database includes:
-
-* Normalized relational schema
-* Identity-based primary keys
-* Foreign key constraints enforcing referential integrity
-* Entity separation (People, Users, Applications, Licenses, Tests)
-* Business-driven relationships supporting workflow validation
-
-All database objects can be recreated using:
-
-```
-Database/NLTOS_Database.sql
-```
-
----
-
-## How to Run the Project
-
-### 1. Setup the Database
-
-1. Open SQL Server Management Studio (SSMS)
-2. Execute:
-
-```
-Database/NLTOS_Database.sql
-```
-
-The script will:
-
-* Drop the database if it exists
-* Recreate it safely
-* Build all tables, views, and procedures
-
----
-
-### 2. Configure Connection String
-
-Update the connection string inside:
-
-```
-NLTOS_DataAccess/clsDataAccessSettings.cs
-```
-
-Ensure it matches your SQL Server configuration.
-
----
-
-### 3. Run the Application
-
-1. Open `NLTOS.sln`
-2. Build the solution
-3. Run the application
-
----
-
-## Some of screenshots
-
-### Login Screen
-
-![Login](assets/Login%20\(2\).png)
-
-### Main Dashboard
-
-![Main](assets/Driving_Licenses.png)
-
-### Manage People
-
-![People](assets/Manage_LocalApp.png)
-
-### Manage Applications
-
-![Applications](assets/Manage_applications.png)
-
-### New Local License
-
-![New Local License](assets/New_Local_License.png)
-
-### Take Test
-
-![Take Test](assets/Take_Test.png)
-
-### User Information
-
-![User Info](assets/User_Info.png)
-
----
-
-## End-to-End Development Scope
-
-This system was fully designed and implemented by me from concept to final execution.
-
-The development process included:
-
-* Requirements analysis
-* Domain modeling
-* Database schema design
-* System architecture planning
-* Multi-layer implementation
-* Business workflow modeling
-* Validation rule enforcement
-* Data integrity management
-* UI development
-* Cross-layer debugging and refinement
-
-No scaffolding generators or auto-generated frameworks were used.
-All logic, structure, and architecture were manually designed and implemented.
-
----
-
-## Problem-Solving & Backend Growth
-
-Developing NLTOS significantly strengthened my structured problem-solving ability and backend engineering mindset.
-
-Throughout the project, I worked on:
-
-* Translating real-world licensing regulations into enforceable system logic
-* Designing controlled workflow transitions
-* Preventing invalid states before they occur
-* Handling edge cases in sequential processes
-* Debugging cross-layer interactions (UI ↔ BLL ↔ DAL)
-* Structuring database relationships to support business validation
-* Designing logic that enforces rules regardless of UI behavior
-* Breaking complex requirements into manageable logical components
-
-This project improved my ability to think architecturally, not just functionally.
-
-It strengthened my capability to:
-
-* Build scalable, layered systems
-* Design backend-driven applications
-* Model complex domain logic
-* Enforce data integrity through structure
-* Build large structured systems confidently
-
----
-
-## What This Project Demonstrates
-
-* Clean 3-Tier Architecture implementation
-* Strong separation of concerns
-* Backend-oriented system design
-* Structured business rule enforcement
-* Controlled workflow state management
-* Relational database modeling
-* End-to-end system development capability
-* Strong logical thinking and problem decomposition skills
-
----
-
-## Developed By
-
-Developed end-to-end by **Nawaf Altowairqi**
-
-GitHub: [https://github.com/TheNawafTech](https://github.com/TheNawafTech)
-
----
-
-## Feedback
-
-Suggestions, architectural discussions, or improvement ideas are welcome.
-Feel free to open an issue or start a discussion on GitHub.
-
----
