@@ -60,14 +60,6 @@ namespace NLTOS_DataAccess
 
 
                 }
-                catch (Exception ex)
-                {
-                    //Console.WriteLine("Error: " + ex.Message);
-                    isFound = false;
-
-                clsEventLogger.LogError(nameof(GetApplicationInfoByID), ex);
-
-            }
             finally
                 {
                     connection.Close();
@@ -100,14 +92,6 @@ namespace NLTOS_DataAccess
 
                 reader.Close();
 
-
-            }
-
-            catch (Exception ex)
-            {
-                // Console.WriteLine("Error: " + ex.Message);
-
-                clsEventLogger.LogError(nameof(GetAllApplications), ex);
 
             }
 
@@ -164,15 +148,6 @@ namespace NLTOS_DataAccess
                 }
             }
 
-            catch (Exception ex)
-            {
-                //Console.WriteLine("Error: " + ex.Message);
-
-                clsEventLogger.LogError(nameof(AddNewApplication), ex);
-
-
-            }
-
             finally
             {
                 connection.Close();
@@ -219,15 +194,6 @@ namespace NLTOS_DataAccess
                 rowsAffected = command.ExecuteNonQuery();
 
             }
-            catch (Exception ex)
-            {
-                //Console.WriteLine("Error: " + ex.Message);
-
-                clsEventLogger.LogError(nameof(UpdateApplication), ex);
-
-                return false;
-            }
-
             finally
             {
                 connection.Close();
@@ -255,13 +221,6 @@ namespace NLTOS_DataAccess
                 connection.Open();
 
                 rowsAffected = command.ExecuteNonQuery();
-
-            }
-            catch (Exception ex)
-            {
-                // Console.WriteLine("Error: " + ex.Message);
-
-                clsEventLogger.LogError(nameof(DeleteApplication), ex);
 
             }
             finally
@@ -295,14 +254,6 @@ namespace NLTOS_DataAccess
                 isFound = reader.HasRows;
 
                 reader.Close();
-            }
-            catch (Exception ex)
-            {
-                //Console.WriteLine("Error: " + ex.Message);
-
-                    clsEventLogger.LogError(nameof(IsApplicationExist), ex);
-
-                isFound = false;
             }
             finally
             {
@@ -343,15 +294,6 @@ namespace NLTOS_DataAccess
                     ActiveApplicationID = AppID;
                 }
             }
-            catch (Exception ex)
-            {
-                //Console.WriteLine("Error: " + ex.Message);
-
-                clsEventLogger.LogError(nameof(GetActiveApplicationID), ex);
-
-
-                return ActiveApplicationID;
-            }
             finally
             {
                 connection.Close();
@@ -391,14 +333,6 @@ namespace NLTOS_DataAccess
                     ActiveApplicationID = AppID;
                 }
             }
-            catch (Exception ex)
-            {
-                //Console.WriteLine("Error: " + ex.Message);
-
-                clsEventLogger.LogError(nameof(GetActiveApplicationIDForLicenseClass), ex);
-
-                return ActiveApplicationID;
-            }
             finally
             {
                 connection.Close();
@@ -432,16 +366,6 @@ namespace NLTOS_DataAccess
                 rowsAffected = command.ExecuteNonQuery();
 
             }
-            catch (Exception ex)
-            {
-                //Console.WriteLine("Error: " + ex.Message);
-
-                clsEventLogger.LogError(nameof(UpdateStatus), ex);
-
-
-                return false;
-            }
-
             finally
             {
                 connection.Close();
