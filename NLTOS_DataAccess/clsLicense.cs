@@ -305,6 +305,87 @@ namespace NLTOS_DataAccess
             NewLicenseID = licenseID;
         }
 
+        /// <summary>
+        /// Marks a licence inactive on a connection the caller already owns, and returns
+        /// how many rows that changed, so a caller inside a transaction can tell a
+        /// licence that was retired from one that was not there to retire.
+        ///
+        /// Opens nothing, closes nothing, commits nothing and handles no exception.
+        /// Internal deliberately.
+        /// </summary>
+        internal static int DeactivateLicense(
+            SqlConnection connection, SqlTransaction transaction, int LicenseID)
+        {
+            string query = @"UPDATE Licenses
+                           SET
+                              IsActive = 0
+                         WHERE LicenseID=@LicenseID";
+
+            SqlCommand command = new SqlCommand(query, connection);
+            command.Transaction = transaction;
+
+            command.Parameters.AddWithValue("@LicenseID", LicenseID);
+
+            return command.ExecuteNonQuery();
+        }
+
+        /// <summary>
+        /// Replaces a licence with a new one: the application that authorises it, the
+        /// new licence, and the retirement of the one it supersedes, inside a single
+        /// transaction on a single connection.
+        ///
+        /// Both renewing and replacing a licence follow this shape, and differ only in
+        /// the application type, the fee and the dates the caller passes. Leaving two
+        /// licences active for the same driver, or taking a fee for one that was never
+        /// issued, are states the workflow should never reach. Leaving the block without
+        /// reaching Commit disposes the transaction, which rolls the work back, so a
+        /// failure needs no handling here and travels on unchanged.
+        ///
+        /// Retiring the old licence matches no row if it is not there, which raises no
+        /// error of its own, so the row count is checked rather than assumed.
+        ///
+        /// The identities are handed back only after the commit.
+        /// </summary>
+        public static void ReissueLicense(
+            int OldLicenseID,
+            int ApplicantPersonID, DateTime ApplicationDate, int ApplicationTypeID,
+            byte ApplicationStatus, DateTime LastStatusDate, float ApplicationFees,
+            int DriverID, int LicenseClass,
+            DateTime IssueDate, DateTime ExpirationDate, string Notes,
+            float LicenseFees, byte IssueReason, int CreatedByUserID,
+            out int NewApplicationID, out int NewLicenseID)
+        {
+            int applicationID;
+            int licenseID;
+
+            using (SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString))
+            {
+                connection.Open();
+
+                using (SqlTransaction transaction = connection.BeginTransaction())
+                {
+                    applicationID = clsApplicationData.InsertApplication(connection, transaction,
+                        ApplicantPersonID, ApplicationDate, ApplicationTypeID,
+                        ApplicationStatus, LastStatusDate, ApplicationFees, CreatedByUserID);
+
+                    licenseID = InsertLicense(connection, transaction,
+                        applicationID, DriverID, LicenseClass, IssueDate, ExpirationDate,
+                        Notes, LicenseFees, true, IssueReason, CreatedByUserID);
+
+                    int rowsRetired = DeactivateLicense(connection, transaction, OldLicenseID);
+
+                    if (rowsRetired != 1)
+                        throw new InvalidOperationException(
+                            "The licence being replaced could not be retired, so the new one was not issued.");
+
+                    transaction.Commit();
+                }
+            }
+
+            NewApplicationID = applicationID;
+            NewLicenseID = licenseID;
+        }
+
         public static bool UpdateLicense(int LicenseID ,int ApplicationID, int DriverID, int LicenseClass,
              DateTime IssueDate, DateTime ExpirationDate, string Notes,
              float PaidFees, bool IsActive,byte IssueReason, int CreatedByUserID)
@@ -404,22 +485,11 @@ namespace NLTOS_DataAccess
             int rowsAffected = 0;
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
 
-            string query = @"UPDATE Licenses
-                           SET 
-                              IsActive = 0
-                             
-                         WHERE LicenseID=@LicenseID";
-
-            SqlCommand command = new SqlCommand(query, connection);
-
-            command.Parameters.AddWithValue("@LicenseID", LicenseID);
-         
-
             try
             {
                 connection.Open();
-                rowsAffected = command.ExecuteNonQuery();
 
+                rowsAffected = DeactivateLicense(connection, null, LicenseID);
             }
             finally
             {

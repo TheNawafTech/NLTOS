@@ -249,98 +249,63 @@ namespace NLTOS_Buisness
         public clsLicense RenewLicense(string Notes, int CreatedByUserID)
         {
 
-            //First Create Applicaiton 
-            clsApplication Application = new clsApplication();
-
-            Application.ApplicantPersonID = this.DriverInfo.PersonID;
-            Application.ApplicationDate = DateTime.Now;
-            Application.ApplicationTypeID = (int)clsApplication.enApplicationType.RenewDrivingLicense;
-            Application.ApplicationStatus = clsApplication.enApplicationStatus.Completed;
-            Application.LastStatusDate = DateTime.Now;
-            Application.PaidFees = clsApplicationType.Find((int)clsApplication.enApplicationType.RenewDrivingLicense).Fees;
-            Application.CreatedByUserID = CreatedByUserID;
-
-            if (!Application.Save())
-            {
-                return null;
-            }
-
-            clsLicense NewLicense = new clsLicense();
-
-            NewLicense.ApplicationID = Application.ApplicationID;
-            NewLicense.DriverID = this.DriverID;
-            NewLicense.LicenseClass = this.LicenseClass;
-            NewLicense.IssueDate = DateTime.Now;
-
+            //raising the application, issuing the renewed licence and retiring this one
+            //are a single action: this driver must not be left holding two active
+            //licences, nor charged for one that was never issued. The data access layer
+            //does all three in one transaction and returns the ids only once it commits.
             int DefaultValidityLength = this.LicenseClassIfo.DefaultValidityLength;
 
-            NewLicense.ExpirationDate = DateTime.Now.AddYears(DefaultValidityLength);
-            NewLicense.Notes = Notes;
-            NewLicense.PaidFees = this.LicenseClassIfo.ClassFees;
-            NewLicense.IsActive = true;
-            NewLicense.IssueReason = clsLicense.enIssueReason.Renew;
-            NewLicense.CreatedByUserID = CreatedByUserID;
+            clsLicenseData.ReissueLicense(
+                this.LicenseID,
+                this.DriverInfo.PersonID, DateTime.Now,
+                (int)clsApplication.enApplicationType.RenewDrivingLicense,
+                (byte)clsApplication.enApplicationStatus.Completed, DateTime.Now,
+                clsApplicationType.Find((int)clsApplication.enApplicationType.RenewDrivingLicense).Fees,
+                this.DriverID, this.LicenseClass,
+                DateTime.Now, DateTime.Now.AddYears(DefaultValidityLength), Notes,
+                this.LicenseClassIfo.ClassFees, (byte)clsLicense.enIssueReason.Renew,
+                CreatedByUserID,
+                out int NewApplicationID, out int NewLicenseID);
 
-
-            if (!NewLicense.Save())
-            {
+            if (NewApplicationID == -1 || NewLicenseID == -1)
                 return null;
-            }
 
-            //we need to deactivate the old License.
-            DeactivateCurrentLicense();
+            //this licence is the one that was just retired.
+            this.IsActive = false;
 
-            return NewLicense;    
+            return clsLicense.Find(NewLicenseID);
         }
 
         public clsLicense Replace(enIssueReason IssueReason, int CreatedByUserID)
         {
 
 
-            //First Create Applicaiton 
-            clsApplication Application = new clsApplication();
+            int ApplicationTypeID = (IssueReason == enIssueReason.DamagedReplacement) ?
+                (int)clsApplication.enApplicationType.ReplaceDamagedDrivingLicense :
+                (int)clsApplication.enApplicationType.ReplaceLostDrivingLicense;
 
-            Application.ApplicantPersonID = this.DriverInfo.PersonID;
-            Application.ApplicationDate = DateTime.Now;
+            //a replacement follows the same shape as a renewal: raise the application,
+            //issue the licence, retire the one it replaces, as one action. It differs
+            //only in what is passed - the replacement carries no licence fee and keeps
+            //the expiry date of the licence it stands in for.
+            clsLicenseData.ReissueLicense(
+                this.LicenseID,
+                this.DriverInfo.PersonID, DateTime.Now, ApplicationTypeID,
+                (byte)clsApplication.enApplicationStatus.Completed, DateTime.Now,
+                clsApplicationType.Find(ApplicationTypeID).Fees,
+                this.DriverID, this.LicenseClass,
+                DateTime.Now, this.ExpirationDate, this.Notes,
+                0, (byte)IssueReason,
+                CreatedByUserID,
+                out int NewApplicationID, out int NewLicenseID);
 
-            Application.ApplicationTypeID = (IssueReason == enIssueReason.DamagedReplacement) ? 
-                (int)clsApplication.enApplicationType.ReplaceDamagedDrivingLicense : 
-                (int)clsApplication.enApplicationType.ReplaceLostDrivingLicense; 
-
-            Application.ApplicationStatus = clsApplication.enApplicationStatus.Completed;
-            Application.LastStatusDate = DateTime.Now;
-            Application.PaidFees = clsApplicationType.Find(Application.ApplicationTypeID).Fees;
-            Application.CreatedByUserID = CreatedByUserID;
-
-            if (!Application.Save())
-            {
+            if (NewApplicationID == -1 || NewLicenseID == -1)
                 return null;
-            }
 
-            clsLicense NewLicense = new clsLicense();
+            //this licence is the one that was just retired.
+            this.IsActive = false;
 
-            NewLicense.ApplicationID = Application.ApplicationID;
-            NewLicense.DriverID = this.DriverID;
-            NewLicense.LicenseClass = this.LicenseClass;
-            NewLicense.IssueDate = DateTime.Now;
-            NewLicense.ExpirationDate = this.ExpirationDate;
-            NewLicense.Notes = this.Notes;
-            NewLicense.PaidFees = 0;// no fees for the license because it's a replacement.
-            NewLicense.IsActive = true;
-            NewLicense.IssueReason = IssueReason;
-            NewLicense.CreatedByUserID = CreatedByUserID;
-
-
-
-            if (!NewLicense.Save())
-            {
-                return null;
-            }
-
-            //we need to deactivate the old License.
-            DeactivateCurrentLicense();
-
-            return NewLicense;
+            return clsLicense.Find(NewLicenseID);
         }
 
     }
