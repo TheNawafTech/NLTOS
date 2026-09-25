@@ -138,29 +138,39 @@ namespace NLTOS_Buisness
         public bool  Save()
         {
           
-           //Because of inheritance first we call the save method in the base class,
-           //it will take care of adding all information to the application table.
-            base.Mode = (clsApplication.enMode) Mode;
-          if (!base.Save()) 
-                return false ;
-
-
-          //After we save the main application now we save the sub application.
             switch (Mode)
             {
                 case enMode.AddNew:
-                    if (_AddNewLocalDrivingLicenseApplication())
-                    {
 
-                        Mode = enMode.Update;
-                        return true;
-                    }
-                    else
-                    {
+                    //the application and the record naming its licence class are created
+                    //together, so they go to the data access layer as one call and share a
+                    //transaction there. Nothing here is assigned until it returns, so a
+                    //failure cannot leave this object holding the id of a row that was
+                    //rolled back, or believing it has already been saved.
+                    clsLocalDrivingLicenseApplicationData.CreateLocalDrivingLicenseApplication(
+                        this.ApplicantPersonID, this.ApplicationDate, this.ApplicationTypeID,
+                        (byte)this.ApplicationStatus, this.LastStatusDate, this.PaidFees,
+                        this.CreatedByUserID, this.LicenseClassID,
+                        out int newApplicationID, out int newLocalApplicationID);
+
+                    if (newApplicationID == -1 || newLocalApplicationID == -1)
                         return false;
-                    }
+
+                    this.ApplicationID = newApplicationID;
+                    this.LocalDrivingLicenseApplicationID = newLocalApplicationID;
+
+                    Mode = enMode.Update;
+                    base.Mode = clsApplication.enMode.Update;
+
+                    return true;
 
                 case enMode.Update:
+
+                    //Because of inheritance first we call the save method in the base
+                    //class, it will take care of the information in the application table.
+                    base.Mode = (clsApplication.enMode) Mode;
+                    if (!base.Save())
+                        return false;
 
                     return _UpdateLocalDrivingLicenseApplication();
 

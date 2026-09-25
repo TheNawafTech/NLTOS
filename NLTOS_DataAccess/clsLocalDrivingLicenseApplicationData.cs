@@ -160,26 +160,12 @@ namespace NLTOS_DataAccess
 
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
 
-            string query = @"INSERT INTO LocalDrivingLicenseApplications ( 
-                            ApplicationID,LicenseClassID)
-                             VALUES (@ApplicationID,@LicenseClassID);
-                             SELECT SCOPE_IDENTITY();";
-
-            SqlCommand command = new SqlCommand(query, connection);
-
-            command.Parameters.AddWithValue("ApplicationID", ApplicationID);
-            command.Parameters.AddWithValue("LicenseClassID", LicenseClassID);
-            
             try
             {
                 connection.Open();
 
-                object result = command.ExecuteScalar();
-
-                if (result != null && int.TryParse(result.ToString(), out int insertedID))
-                {
-                    LocalDrivingLicenseApplicationID = insertedID;
-                }
+                LocalDrivingLicenseApplicationID = InsertLocalDrivingLicenseApplication(
+                    connection, null, ApplicationID, LicenseClassID);
             }
 
             finally
@@ -191,6 +177,80 @@ namespace NLTOS_DataAccess
             return LocalDrivingLicenseApplicationID;
         }
 
+
+        /// <summary>
+        /// Inserts a local driving licence application on a connection the caller
+        /// already owns, returning the new identity or -1.
+        ///
+        /// Opens nothing, closes nothing, commits nothing and handles no exception.
+        /// A null transaction runs it outside one. Internal deliberately, since
+        /// connections and transactions do not leave this layer.
+        /// </summary>
+        internal static int InsertLocalDrivingLicenseApplication(
+            SqlConnection connection, SqlTransaction transaction,
+            int ApplicationID, int LicenseClassID)
+        {
+            string query = @"INSERT INTO LocalDrivingLicenseApplications (
+                            ApplicationID,LicenseClassID)
+                             VALUES (@ApplicationID,@LicenseClassID);
+                             SELECT SCOPE_IDENTITY();";
+
+            SqlCommand command = new SqlCommand(query, connection);
+            command.Transaction = transaction;
+
+            command.Parameters.AddWithValue("ApplicationID", ApplicationID);
+            command.Parameters.AddWithValue("LicenseClassID", LicenseClassID);
+
+            object result = command.ExecuteScalar();
+
+            if (result != null && int.TryParse(result.ToString(), out int insertedID))
+                return insertedID;
+
+            return -1;
+        }
+
+        /// <summary>
+        /// Creates a local driving licence application: the application itself and the
+        /// record that says which licence class it is for, inside a single transaction
+        /// on a single connection.
+        ///
+        /// An application with no class attached to it is not something the rest of the
+        /// system can work with. Leaving the block without reaching Commit disposes the
+        /// transaction, which rolls the work back, so a failure needs no handling here
+        /// and travels on unchanged.
+        ///
+        /// The identities are handed back only after the commit, so a caller can never
+        /// hold the id of a row that was rolled back.
+        /// </summary>
+        public static void CreateLocalDrivingLicenseApplication(
+            int ApplicantPersonID, DateTime ApplicationDate, int ApplicationTypeID,
+            byte ApplicationStatus, DateTime LastStatusDate, float PaidFees,
+            int CreatedByUserID, int LicenseClassID,
+            out int NewApplicationID, out int NewLocalDrivingLicenseApplicationID)
+        {
+            int applicationID;
+            int localApplicationID;
+
+            using (SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString))
+            {
+                connection.Open();
+
+                using (SqlTransaction transaction = connection.BeginTransaction())
+                {
+                    applicationID = clsApplicationData.InsertApplication(connection, transaction,
+                        ApplicantPersonID, ApplicationDate, ApplicationTypeID,
+                        ApplicationStatus, LastStatusDate, PaidFees, CreatedByUserID);
+
+                    localApplicationID = InsertLocalDrivingLicenseApplication(
+                        connection, transaction, applicationID, LicenseClassID);
+
+                    transaction.Commit();
+                }
+            }
+
+            NewApplicationID = applicationID;
+            NewLocalDrivingLicenseApplicationID = localApplicationID;
+        }
 
         public static bool UpdateLocalDrivingLicenseApplication(
             int LocalDrivingLicenseApplicationID, int ApplicationID, int LicenseClassID)
