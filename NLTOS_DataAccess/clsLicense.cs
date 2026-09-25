@@ -164,6 +164,36 @@ namespace NLTOS_DataAccess
 
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
 
+            try
+            {
+                connection.Open();
+
+                LicenseID = InsertLicense(connection, null,
+                    ApplicationID, DriverID, LicenseClass, IssueDate, ExpirationDate,
+                    Notes, PaidFees, IsActive, IssueReason, CreatedByUserID);
+            }
+
+            finally
+            {
+                connection.Close();
+            }
+
+
+            return LicenseID;
+
+        }
+
+        /// <summary>
+        /// Inserts a licence on a connection the caller already owns, returning the new
+        /// identity or -1. Opens nothing, closes nothing, commits nothing and handles no
+        /// exception. A null transaction runs it outside one. Internal deliberately.
+        /// </summary>
+        internal static int InsertLicense(
+            SqlConnection connection, SqlTransaction transaction,
+            int ApplicationID, int DriverID, int LicenseClass,
+            DateTime IssueDate, DateTime ExpirationDate, string Notes,
+            float PaidFees, bool IsActive, byte IssueReason, int CreatedByUserID)
+        {
             string query = @"
                               INSERT INTO Licenses
                                (ApplicationID,
@@ -184,16 +214,17 @@ namespace NLTOS_DataAccess
                                @ExpirationDate,
                                @Notes,
                                @PaidFees,
-                               @IsActive,@IssueReason, 
+                               @IsActive,@IssueReason,
                                @CreatedByUserID);
                             SELECT SCOPE_IDENTITY();";
 
             SqlCommand command = new SqlCommand(query, connection);
+            command.Transaction = transaction;
+
             command.Parameters.AddWithValue("@ApplicationID", ApplicationID);
             command.Parameters.AddWithValue("@DriverID", DriverID);
             command.Parameters.AddWithValue("@LicenseClass", LicenseClass);
             command.Parameters.AddWithValue("@IssueDate", IssueDate);
-
             command.Parameters.AddWithValue("@ExpirationDate", ExpirationDate);
 
             if (Notes == "")
@@ -204,31 +235,74 @@ namespace NLTOS_DataAccess
             command.Parameters.AddWithValue("@PaidFees", PaidFees);
             command.Parameters.AddWithValue("@IsActive", IsActive);
             command.Parameters.AddWithValue("@IssueReason", IssueReason);
-     
             command.Parameters.AddWithValue("@CreatedByUserID", CreatedByUserID);
-           
 
+            object result = command.ExecuteScalar();
 
-            try
+            if (result != null && int.TryParse(result.ToString(), out int insertedID))
+                return insertedID;
+
+            return -1;
+        }
+
+        /// <summary>
+        /// Issues a driver's first licence as one action: the driver record if they do
+        /// not have one yet, the licence itself, and the completion of the application
+        /// it was issued against, inside a single transaction on a single connection.
+        ///
+        /// A licence issued against an application still marked incomplete is a licence
+        /// the system does not know it granted. Leaving the block without reaching
+        /// Commit disposes the transaction, which rolls the work back, so a failure
+        /// needs no handling here and travels on unchanged.
+        ///
+        /// Pass -1 for <paramref name="ExistingDriverID"/> when the person has no driver
+        /// record yet and one should be created for them; otherwise the licence is
+        /// issued to the driver given.
+        ///
+        /// The identities are handed back only after the commit, so a caller can never
+        /// hold the id of a row that was rolled back.
+        /// </summary>
+        public static void IssueFirstLicense(
+            int ExistingDriverID, int PersonID,
+            int ApplicationID, int LicenseClass,
+            DateTime IssueDate, DateTime ExpirationDate, string Notes,
+            float PaidFees, bool IsActive, byte IssueReason, int CreatedByUserID,
+            out int DriverID, out int NewLicenseID)
+        {
+            int driverID;
+            int licenseID;
+
+            using (SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString))
             {
                 connection.Open();
 
-                object result = command.ExecuteScalar();
-
-                if (result != null && int.TryParse(result.ToString(), out int insertedID))
+                using (SqlTransaction transaction = connection.BeginTransaction())
                 {
-                    LicenseID = insertedID;
+                    driverID = ExistingDriverID != -1
+                        ? ExistingDriverID
+                        : clsDriverData.InsertDriver(connection, transaction, PersonID, CreatedByUserID);
+
+                    licenseID = InsertLicense(connection, transaction,
+                        ApplicationID, driverID, LicenseClass, IssueDate, ExpirationDate,
+                        Notes, PaidFees, IsActive, IssueReason, CreatedByUserID);
+
+                    // Completing the application is part of issuing the licence, and an
+                    // update that changes nothing is a silent way of not doing it. The
+                    // row is expected to be there, so if it is not, the licence is not
+                    // granted either.
+                    int rowsCompleted = clsApplicationData.UpdateApplicationStatus(
+                        connection, transaction, ApplicationID, 3);
+
+                    if (rowsCompleted != 1)
+                        throw new InvalidOperationException(
+                            "The application the licence was issued against could not be completed.");
+
+                    transaction.Commit();
                 }
             }
 
-            finally
-            {
-                connection.Close();
-            }
-
-
-            return LicenseID;
-
+            DriverID = driverID;
+            NewLicenseID = licenseID;
         }
 
         public static bool UpdateLicense(int LicenseID ,int ApplicationID, int DriverID, int LicenseClass,

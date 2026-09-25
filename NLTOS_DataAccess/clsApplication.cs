@@ -224,6 +224,35 @@ namespace NLTOS_DataAccess
             return (rowsAffected > 0);
         }
 
+        /// <summary>
+        /// Moves an application to a new status on a connection the caller already owns,
+        /// and returns how many rows that changed, so a caller inside a transaction can
+        /// tell the difference between a status that was set and an application that was
+        /// not there to set it on.
+        ///
+        /// Opens nothing, closes nothing, commits nothing and handles no exception.
+        /// Internal deliberately.
+        /// </summary>
+        internal static int UpdateApplicationStatus(
+            SqlConnection connection, SqlTransaction transaction,
+            int ApplicationID, short NewStatus)
+        {
+            string query = @"Update  Applications
+                            set
+                                ApplicationStatus = @NewStatus,
+                                LastStatusDate = @LastStatusDate
+                            where ApplicationID=@ApplicationID;";
+
+            SqlCommand command = new SqlCommand(query, connection);
+            command.Transaction = transaction;
+
+            command.Parameters.AddWithValue("@ApplicationID", ApplicationID);
+            command.Parameters.AddWithValue("@NewStatus", NewStatus);
+            command.Parameters.AddWithValue("LastStatusDate", DateTime.Now);
+
+            return command.ExecuteNonQuery();
+        }
+
         public static bool DeleteApplication(int ApplicationID)
         {
 
@@ -369,24 +398,11 @@ namespace NLTOS_DataAccess
             int rowsAffected = 0;
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
 
-            string query = @"Update  Applications  
-                            set 
-                                ApplicationStatus = @NewStatus, 
-                                LastStatusDate = @LastStatusDate
-                            where ApplicationID=@ApplicationID;";
-
-            SqlCommand command = new SqlCommand(query, connection);
-
-            command.Parameters.AddWithValue("@ApplicationID", ApplicationID);
-            command.Parameters.AddWithValue("@NewStatus", NewStatus);
-            command.Parameters.AddWithValue("LastStatusDate", DateTime.Now);
-            
-
             try
             {
                 connection.Open();
-                rowsAffected = command.ExecuteNonQuery();
 
+                rowsAffected = UpdateApplicationStatus(connection, null, ApplicationID, NewStatus);
             }
             finally
             {

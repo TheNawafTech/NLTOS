@@ -151,26 +151,11 @@ namespace NLTOS_DataAccess
 
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
 
-            string query = @"Insert Into Drivers (PersonID,CreatedByUserID,CreatedDate)
-                            Values (@PersonID,@CreatedByUserID,@CreatedDate);
-                          
-                            SELECT SCOPE_IDENTITY();";
-         
-
-            SqlCommand command = new SqlCommand(query, connection);
-            command.Parameters.AddWithValue("@PersonID", PersonID);
-            command.Parameters.AddWithValue("@CreatedByUserID", CreatedByUserID);
-            command.Parameters.AddWithValue("@CreatedDate", DateTime.Now);
             try
             {
                 connection.Open();
 
-                object result = command.ExecuteScalar();
-
-                if (result != null && int.TryParse(result.ToString(), out int insertedID))
-                {
-                    DriverID = insertedID;
-                }
+                DriverID = InsertDriver(connection, null, PersonID, CreatedByUserID);
             }
 
             finally
@@ -181,6 +166,34 @@ namespace NLTOS_DataAccess
 
             return DriverID;
 
+        }
+
+        /// <summary>
+        /// Inserts a driver on a connection the caller already owns, returning the new
+        /// identity or -1. Opens nothing, closes nothing, commits nothing and handles no
+        /// exception. A null transaction runs it outside one. Internal deliberately.
+        /// </summary>
+        internal static int InsertDriver(
+            SqlConnection connection, SqlTransaction transaction,
+            int PersonID, int CreatedByUserID)
+        {
+            string query = @"Insert Into Drivers (PersonID,CreatedByUserID,CreatedDate)
+                            Values (@PersonID,@CreatedByUserID,@CreatedDate);
+                            SELECT SCOPE_IDENTITY();";
+
+            SqlCommand command = new SqlCommand(query, connection);
+            command.Transaction = transaction;
+
+            command.Parameters.AddWithValue("@PersonID", PersonID);
+            command.Parameters.AddWithValue("@CreatedByUserID", CreatedByUserID);
+            command.Parameters.AddWithValue("@CreatedDate", DateTime.Now);
+
+            object result = command.ExecuteScalar();
+
+            if (result != null && int.TryParse(result.ToString(), out int insertedID))
+                return insertedID;
+
+            return -1;
         }
 
         public static bool UpdateDriver(int DriverID, int PersonID, int CreatedByUserID)

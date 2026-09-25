@@ -299,54 +299,30 @@ namespace NLTOS_Buisness
         
         public int IssueLicenseForTheFirtTime(string Notes, int CreatedByUserID)
         {
-            int DriverID = -1;
+            //a person has one driver record however many licences they go on to hold,
+            //so an existing one is reused and a new one only created when there is none.
+            clsDriver Driver = clsDriver.FindByPersonID(this.ApplicantPersonID);
+            int ExistingDriverID = (Driver == null) ? -1 : Driver.DriverID;
 
-            clsDriver Driver =clsDriver.FindByPersonID(this.ApplicantPersonID);
+            //creating the driver, issuing the licence and completing the application are
+            //one action, so they go to the data access layer as a single call and share a
+            //transaction there. Nothing here is assigned until it returns, so a failure
+            //cannot leave this object describing a licence that was rolled back.
+            clsLicenseData.IssueFirstLicense(
+                ExistingDriverID, this.ApplicantPersonID,
+                this.ApplicationID, this.LicenseClassID,
+                DateTime.Now, DateTime.Now.AddYears(this.LicenseClassInfo.DefaultValidityLength),
+                Notes, this.LicenseClassInfo.ClassFees, true,
+                (byte)clsLicense.enIssueReason.FirstTime, CreatedByUserID,
+                out int NewDriverID, out int NewLicenseID);
 
-            if (Driver == null)
-            {
-                //we check if the driver already there for this person.
-                Driver = new clsDriver();
-               
-                Driver.PersonID= this.ApplicantPersonID;
-                Driver.CreatedByUserID= CreatedByUserID;
-                if (Driver.Save())
-                {
-                    DriverID= Driver.DriverID;
-                }
-                else
-                {
-                    return -1;
-                }
-            }
-            else
-            {
-                DriverID= Driver.DriverID;
-            }
-            //now we diver is there, so we add new licesnse
-            
-            clsLicense License= new clsLicense();
-            License.ApplicationID = this.ApplicationID;
-            License.DriverID= DriverID;
-            License.LicenseClass = this.LicenseClassID;
-            License.IssueDate=DateTime.Now;
-            License.ExpirationDate = DateTime.Now.AddYears(this.LicenseClassInfo.DefaultValidityLength);
-            License.Notes = Notes;
-            License.PaidFees = this.LicenseClassInfo.ClassFees;
-            License.IsActive= true;
-            License.IssueReason = clsLicense.enIssueReason.FirstTime;
-            License.CreatedByUserID= CreatedByUserID;
-
-            if (License.Save())
-            {
-                //now we should set the application status to complete.
-                this.SetComplete();
-
-                return License.LicenseID;
-            }
-               
-            else
+            if (NewDriverID == -1 || NewLicenseID == -1)
                 return -1;
+
+            this.ApplicationStatus = enApplicationStatus.Completed;
+            this.LastStatusDate = DateTime.Now;
+
+            return NewLicenseID;
         }
 
         public bool IsLicenseIssued()
