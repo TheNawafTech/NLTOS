@@ -127,6 +127,44 @@ namespace NLTOS_Buisness
 
         }
 
+        /// <summary>
+        /// Schedules this appointment as a retake, together with the application that
+        /// charges for it.
+        ///
+        /// A retake is two records that only make sense as a pair, so they are created
+        /// by one call to the data access layer and share a transaction there. Nothing
+        /// on this object is set until that call returns, so a failure cannot leave it
+        /// pointing at an application that was rolled back.
+        ///
+        /// <paramref name="ApplicantPersonID"/> is the person the retake application is
+        /// raised for, and <paramref name="ApplicationFees"/> the fee it carries, which
+        /// is charged separately from the fee for the appointment itself.
+        /// </summary>
+        public bool SaveAsRetake(int ApplicantPersonID, float ApplicationFees)
+        {
+            if (Mode != enMode.AddNew)
+                return false;
+
+            clsTestAppointmentData.CreateRetakeAppointment(
+                ApplicantPersonID, DateTime.Now,
+                (int)clsApplication.enApplicationType.RetakeTest,
+                (byte)clsApplication.enApplicationStatus.Completed, DateTime.Now,
+                ApplicationFees,
+                (int)this.TestTypeID, this.LocalDrivingLicenseApplicationID,
+                this.AppointmentDate, this.PaidFees, this.CreatedByUserID,
+                out int newRetakeApplicationID, out int newTestAppointmentID);
+
+            if (newRetakeApplicationID == -1 || newTestAppointmentID == -1)
+                return false;
+
+            this.RetakeTestApplicationID = newRetakeApplicationID;
+            this.TestAppointmentID = newTestAppointmentID;
+
+            Mode = enMode.Update;
+
+            return true;
+        }
+
         public bool Save()
         {
             switch (Mode)

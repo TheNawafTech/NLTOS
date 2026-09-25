@@ -226,40 +226,13 @@ namespace NLTOS_DataAccess
 
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
 
-            string query = @"Insert Into TestAppointments (TestTypeID,LocalDrivingLicenseApplicationID,AppointmentDate,PaidFees,CreatedByUserID,IsLocked,RetakeTestApplicationID)
-                            Values (@TestTypeID,@LocalDrivingLicenseApplicationID,@AppointmentDate,@PaidFees,@CreatedByUserID,0,@RetakeTestApplicationID);
-                
-                            SELECT SCOPE_IDENTITY();";
-
-            SqlCommand command = new SqlCommand(query, connection);
-
-           
-            command.Parameters.AddWithValue("@TestTypeID", TestTypeID);
-            command.Parameters.AddWithValue("@LocalDrivingLicenseApplicationID", LocalDrivingLicenseApplicationID);
-            command.Parameters.AddWithValue("@AppointmentDate", AppointmentDate);
-            command.Parameters.AddWithValue("@PaidFees", PaidFees);
-            command.Parameters.AddWithValue("@CreatedByUserID", CreatedByUserID);
-
-            if (RetakeTestApplicationID == -1)
-
-                command.Parameters.AddWithValue("@RetakeTestApplicationID", DBNull.Value);
-            else
-                command.Parameters.AddWithValue("@RetakeTestApplicationID", RetakeTestApplicationID);
-
-
-
-
-
             try
             {
                 connection.Open();
 
-                object result = command.ExecuteScalar();
-
-                if (result != null && int.TryParse(result.ToString(), out int insertedID))
-                {
-                    TestAppointmentID = insertedID;
-                }
+                TestAppointmentID = InsertTestAppointment(connection, null,
+                    TestTypeID, LocalDrivingLicenseApplicationID,
+                    AppointmentDate, PaidFees, CreatedByUserID, RetakeTestApplicationID);
             }
 
             finally
@@ -270,6 +243,93 @@ namespace NLTOS_DataAccess
 
             return TestAppointmentID;
 
+        }
+
+        /// <summary>
+        /// Inserts a test appointment on a connection the caller already owns, and
+        /// returns the new identity or -1.
+        ///
+        /// Opens nothing, closes nothing, commits nothing and handles no exception:
+        /// those belong to whoever owns the connection. A null transaction runs it
+        /// outside one. Internal deliberately, since connections and transactions are
+        /// this layer's business and do not leave it.
+        /// </summary>
+        internal static int InsertTestAppointment(
+            SqlConnection connection, SqlTransaction transaction,
+            int TestTypeID, int LocalDrivingLicenseApplicationID,
+            DateTime AppointmentDate, float PaidFees, int CreatedByUserID,
+            int RetakeTestApplicationID)
+        {
+            string query = @"Insert Into TestAppointments (TestTypeID,LocalDrivingLicenseApplicationID,AppointmentDate,PaidFees,CreatedByUserID,IsLocked,RetakeTestApplicationID)
+                            Values (@TestTypeID,@LocalDrivingLicenseApplicationID,@AppointmentDate,@PaidFees,@CreatedByUserID,0,@RetakeTestApplicationID);
+
+                            SELECT SCOPE_IDENTITY();";
+
+            SqlCommand command = new SqlCommand(query, connection);
+            command.Transaction = transaction;
+
+            command.Parameters.AddWithValue("@TestTypeID", TestTypeID);
+            command.Parameters.AddWithValue("@LocalDrivingLicenseApplicationID", LocalDrivingLicenseApplicationID);
+            command.Parameters.AddWithValue("@AppointmentDate", AppointmentDate);
+            command.Parameters.AddWithValue("@PaidFees", PaidFees);
+            command.Parameters.AddWithValue("@CreatedByUserID", CreatedByUserID);
+
+            if (RetakeTestApplicationID == -1)
+                command.Parameters.AddWithValue("@RetakeTestApplicationID", DBNull.Value);
+            else
+                command.Parameters.AddWithValue("@RetakeTestApplicationID", RetakeTestApplicationID);
+
+            object result = command.ExecuteScalar();
+
+            if (result != null && int.TryParse(result.ToString(), out int insertedID))
+                return insertedID;
+
+            return -1;
+        }
+
+        /// <summary>
+        /// Schedules a retake as one action: the application that charges for the
+        /// retake, and the appointment that refers back to it, inside a single
+        /// transaction on a single connection.
+        ///
+        /// An application charged for a retake that no appointment points at is a fee
+        /// taken with nothing to show for it. Leaving the block without reaching Commit
+        /// disposes the transaction, which rolls the work back, so a failure needs no
+        /// handling here and travels on unchanged.
+        ///
+        /// The identities are handed back only after the commit, so a caller can never
+        /// hold the id of a row that was rolled back.
+        /// </summary>
+        public static void CreateRetakeAppointment(
+            int ApplicantPersonID, DateTime ApplicationDate, int ApplicationTypeID,
+            byte ApplicationStatus, DateTime LastStatusDate, float ApplicationFees,
+            int TestTypeID, int LocalDrivingLicenseApplicationID,
+            DateTime AppointmentDate, float AppointmentFees, int CreatedByUserID,
+            out int NewRetakeApplicationID, out int NewTestAppointmentID)
+        {
+            int retakeApplicationID;
+            int testAppointmentID;
+
+            using (SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString))
+            {
+                connection.Open();
+
+                using (SqlTransaction transaction = connection.BeginTransaction())
+                {
+                    retakeApplicationID = clsApplicationData.InsertApplication(connection, transaction,
+                        ApplicantPersonID, ApplicationDate, ApplicationTypeID,
+                        ApplicationStatus, LastStatusDate, ApplicationFees, CreatedByUserID);
+
+                    testAppointmentID = InsertTestAppointment(connection, transaction,
+                        TestTypeID, LocalDrivingLicenseApplicationID,
+                        AppointmentDate, AppointmentFees, CreatedByUserID, retakeApplicationID);
+
+                    transaction.Commit();
+                }
+            }
+
+            NewRetakeApplicationID = retakeApplicationID;
+            NewTestAppointmentID = testAppointmentID;
         }
 
         public static bool UpdateTestAppointment(int TestAppointmentID,  int TestTypeID,  int LocalDrivingLicenseApplicationID,

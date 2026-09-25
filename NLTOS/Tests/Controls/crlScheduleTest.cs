@@ -282,37 +282,11 @@ namespace NLTOS.Tests
             return true;
 
         }
-        private bool _HandleRetakeApplication()
+        //a retake is scheduled with its own application, which is charged separately
+        //from the appointment. Anything else is an ordinary appointment.
+        private bool _IsRetakeSchedule()
         {
-            //this will decide to create a seperate application for retake test or not.
-            // and will create it if needed , then it will linkit to the appoinment.
-            if (_Mode == enMode.AddNew && _CreationMode == enCreationMode.RetakeTestSchedule)
-            {
-                //incase the mode is add new and creation mode is retake test we should create a seperate application for it.
-                //then we linke it with the appointment.
-
-                //First Create Applicaiton 
-                clsApplication Application = new clsApplication();
-
-                Application.ApplicantPersonID = _LocalDrivingLicenseApplication.ApplicantPersonID;
-                Application.ApplicationDate = DateTime.Now;
-                Application.ApplicationTypeID = (int)clsApplication.enApplicationType.RetakeTest;
-                Application.ApplicationStatus = clsApplication.enApplicationStatus.Completed;
-                Application.LastStatusDate = DateTime.Now;
-                Application.PaidFees = clsApplicationType.Find((int)clsApplication.enApplicationType.RetakeTest).Fees;
-                Application.CreatedByUserID = clsGlobal.CurrentUser.UserID;
-
-                if (!Application.Save())
-                {
-                    _TestAppointment.RetakeTestApplicationID = -1;
-                    MessageBox.Show("Faild to Create application", "Faild", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return false;
-                }
-
-                _TestAppointment.RetakeTestApplicationID = Application.ApplicationID;
-                   
-            }
-            return true;
+            return _Mode == enMode.AddNew && _CreationMode == enCreationMode.RetakeTestSchedule;
         }
 
         public ctrlScheduleTest()
@@ -322,21 +296,25 @@ namespace NLTOS.Tests
 
         private void btnSave_Click(object sender, EventArgs e)
         {
-
-            if (!_HandleRetakeApplication())
-                return;
-
             _TestAppointment.TestTypeID = _TestTypeID;
             _TestAppointment.LocalDrivingLicenseApplicationID = _LocalDrivingLicenseApplication.LocalDrivingLicenseApplicationID;
             _TestAppointment.AppointmentDate = dtpTestDate.Value;
             _TestAppointment.PaidFees = Convert.ToSingle(lblFees.Text);
             _TestAppointment.CreatedByUserID=clsGlobal.CurrentUser.UserID;
-            
-            if (_TestAppointment.Save())
+
+            //scheduling a retake creates its application too, so it is saved as one
+            //action rather than an application here and an appointment after it.
+            bool Saved = _IsRetakeSchedule()
+                ? _TestAppointment.SaveAsRetake(
+                      _LocalDrivingLicenseApplication.ApplicantPersonID,
+                      clsApplicationType.Find((int)clsApplication.enApplicationType.RetakeTest).Fees)
+                : _TestAppointment.Save();
+
+            if (Saved)
             {
                 _Mode = enMode.Update;
               MessageBox.Show("Data Saved Successfully.", "Saved", MessageBoxButtons.OK, MessageBoxIcon.Information);
-               
+
             }
             else
                 MessageBox.Show("Error: Data Is not Saved Successfully.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
