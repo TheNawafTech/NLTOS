@@ -48,7 +48,7 @@ namespace NLTOS_DataAccess
 
                        
                         IsActive = (bool)reader["IsActive"];
-                        CreatedByUserID = (int)reader["DriverID"];
+                        CreatedByUserID = (int)reader["CreatedByUserID"];
 
 
                 }

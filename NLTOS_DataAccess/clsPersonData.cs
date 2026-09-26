@@ -172,11 +172,6 @@ namespace NLTOS_DataAccess
 
 
             }
-            catch
-            {
-                //Console.WriteLine("Error: " + ex.Message);
-                isFound = false;
-            }
             finally
             {
                 connection.Close();
@@ -242,12 +237,6 @@ namespace NLTOS_DataAccess
                 {
                     PersonID = insertedID;
                 }
-            }
-
-            catch
-            {
-                //Console.WriteLine("Error: " + ex.Message);
-
             }
 
             finally
