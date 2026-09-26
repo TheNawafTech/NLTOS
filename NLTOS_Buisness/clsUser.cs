@@ -225,6 +225,15 @@ namespace NLTOS_Buisness
             }
         }
 
+        /// <summary>
+        /// Discards the password kept for this machine, leaving the remembered username
+        /// in place. Called when the password it refers to is no longer the right one.
+        /// </summary>
+        public static void ForgetRememberedPassword()
+        {
+            ClearStoredPassword();
+        }
+
         public static bool SaveCredentials(string userName, string password, bool isRemembered, ref string errorMessage)
         {
             try

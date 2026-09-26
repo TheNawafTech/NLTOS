@@ -58,7 +58,7 @@ namespace NLTOS.User
             if (string.IsNullOrEmpty(txtCurrentPassword.Text.Trim()))
             {
                 e.Cancel = true;
-                errorProvider1.SetError(txtCurrentPassword, "Username cannot be blank");
+                errorProvider1.SetError(txtCurrentPassword, "Current password cannot be blank");
                 return;
             }
             else
@@ -66,7 +66,11 @@ namespace NLTOS.User
                 errorProvider1.SetError(txtCurrentPassword, null);
             };
 
-            if (_User.Password != txtCurrentPassword.Text.Trim())
+            // What is stored is a hash, not the password, so the two cannot be compared
+            // directly. VerifyPassword hashes what was typed the same way the stored
+            // value was made and compares the results, which also lets accounts created
+            // before salted hashing sign in with what they have always used.
+            if (!clsUser.VerifyPassword(txtCurrentPassword.Text.Trim(), _User.Password))
             {
                 e.Cancel = true;
                 errorProvider1.SetError(txtCurrentPassword, "Current password is wrong!");
@@ -117,16 +121,31 @@ namespace NLTOS.User
                 return;
             }
 
-            _User.Password = txtNewPassword.Text;
+            // Only the hash is ever stored, the same way a new user's password is
+            // stored, so an account whose password was changed here is indistinguishable
+            // from one created today.
+            string PreviousPassword = _User.Password;
+
+            _User.Password = clsUser.HashPassword(txtNewPassword.Text.Trim());
 
             if (_User.Save())
             {
+                // A remembered password belongs to the account that just changed, so the
+                // copy kept for this machine is now the old one and is discarded. The
+                // username is left alone, so the login form still knows who to expect.
+                if (_UserID == clsGlobal.CurrentUser.UserID)
+                    clsUser.ForgetRememberedPassword();
+
                 MessageBox.Show("Password Changed Successfully.",
                    "Saved.", MessageBoxButtons.OK, MessageBoxIcon.Information );
                 _ResetDefualtValues();
             }
             else
             {
+                // The stored password did not change, so this object must not go on
+                // holding the new one: the current-password check above reads it.
+                _User.Password = PreviousPassword;
+
                 MessageBox.Show("An Erro Occured, Password did not change.",
                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
