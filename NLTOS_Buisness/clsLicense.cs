@@ -178,11 +178,6 @@ namespace NLTOS_Buisness
 
         }
 
-        public bool DeactivateCurrentLicense()
-        {
-            return (clsLicenseData.DeactivateLicense(this.LicenseID));
-        }
-
         public static string GetIssueReasonText(enIssueReason IssueReason)
         {
 

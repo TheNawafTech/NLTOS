@@ -151,33 +151,6 @@ namespace NLTOS_DataAccess
 
             }
 
-        public static int AddNewLocalDrivingLicenseApplication(
-            int ApplicationID, int LicenseClassID )
-        {
-
-            //this function will return the new person id if succeeded and -1 if not.
-            int LocalDrivingLicenseApplicationID = -1;
-
-            SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
-
-            try
-            {
-                connection.Open();
-
-                LocalDrivingLicenseApplicationID = InsertLocalDrivingLicenseApplication(
-                    connection, null, ApplicationID, LicenseClassID);
-            }
-
-            finally
-            {
-                connection.Close();
-            }
-
-
-            return LocalDrivingLicenseApplicationID;
-        }
-
-
         /// <summary>
         /// Inserts a local driving licence application on a connection the caller
         /// already owns, returning the new identity or -1.
@@ -250,28 +223,6 @@ namespace NLTOS_DataAccess
 
             NewApplicationID = applicationID;
             NewLocalDrivingLicenseApplicationID = localApplicationID;
-        }
-
-        public static bool UpdateLocalDrivingLicenseApplication(
-            int LocalDrivingLicenseApplicationID, int ApplicationID, int LicenseClassID)
-        {
-            int rowsAffected = 0;
-
-            SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
-
-            try
-            {
-                connection.Open();
-
-                rowsAffected = UpdateLocalDrivingLicenseApplication(connection, null,
-                    LocalDrivingLicenseApplicationID, ApplicationID, LicenseClassID);
-            }
-            finally
-            {
-                connection.Close();
-            }
-
-            return (rowsAffected > 0);
         }
 
         /// <summary>
@@ -347,29 +298,6 @@ namespace NLTOS_DataAccess
             }
         }
 
-
-        public static bool DeleteLocalDrivingLicenseApplication(int LocalDrivingLicenseApplicationID)
-        {
-
-            int rowsAffected = 0;
-
-            SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
-
-            try
-            {
-                connection.Open();
-
-                rowsAffected = DeleteLocalDrivingLicenseApplication(
-                    connection, null, LocalDrivingLicenseApplicationID);
-            }
-            finally
-            {
-                connection.Close();
-            }
-
-            return (rowsAffected > 0);
-
-        }
 
         /// <summary>
         /// Deletes a local driving licence application row on a connection the caller

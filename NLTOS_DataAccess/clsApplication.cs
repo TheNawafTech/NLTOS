@@ -68,42 +68,6 @@ namespace NLTOS_DataAccess
                 return isFound;
             }
 
-        public static DataTable GetAllApplications()
-            {
-
-                DataTable dt = new DataTable();
-                SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
-
-                string query = "select * from ApplicationsList_View order by ApplicationDate desc";
-
-                SqlCommand command = new SqlCommand(query, connection);
-
-            try
-            {
-                connection.Open();
-
-                SqlDataReader reader = command.ExecuteReader();
-
-                if (reader.HasRows)
-
-                {
-                    dt.Load(reader);
-                }
-
-                reader.Close();
-
-
-            }
-
-            finally
-            {
-                connection.Close();
-            }
-
-                return dt;
-
-            }
-
         public static int AddNewApplication( int ApplicantPersonID,  DateTime ApplicationDate,  int ApplicationTypeID,
              byte ApplicationStatus,  DateTime LastStatusDate,
              float PaidFees,  int CreatedByUserID)

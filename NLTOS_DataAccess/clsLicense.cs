@@ -479,25 +479,5 @@ namespace NLTOS_DataAccess
             return LicenseID;
         }
 
-        public static bool DeactivateLicense(int LicenseID)
-        {
-
-            int rowsAffected = 0;
-            SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
-
-            try
-            {
-                connection.Open();
-
-                rowsAffected = DeactivateLicense(connection, null, LicenseID);
-            }
-            finally
-            {
-                connection.Close();
-            }
-
-            return (rowsAffected > 0);
-        }
-
     }
 }

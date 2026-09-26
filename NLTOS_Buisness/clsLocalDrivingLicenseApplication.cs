@@ -58,27 +58,6 @@ namespace NLTOS_Buisness
             Mode = enMode.Update;
         }
 
-        private bool _AddNewLocalDrivingLicenseApplication()
-        {
-            //call DataAccess Layer 
-            
-            this.LocalDrivingLicenseApplicationID = clsLocalDrivingLicenseApplicationData.AddNewLocalDrivingLicenseApplication
-                (
-                this.ApplicationID, this.LicenseClassID);
-
-            return (this.LocalDrivingLicenseApplicationID != -1);
-        }
-
-        private bool _UpdateLocalDrivingLicenseApplication()
-        {
-            //call DataAccess Layer 
-
-            return clsLocalDrivingLicenseApplicationData.UpdateLocalDrivingLicenseApplication
-                (
-                this.LocalDrivingLicenseApplicationID ,this.ApplicationID, this.LicenseClassID);
-           
-        }
-
         public static clsLocalDrivingLicenseApplication  FindByLocalDrivingAppLicenseID(int LocalDrivingLicenseApplicationID)
         {
             // 

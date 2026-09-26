@@ -154,33 +154,6 @@ namespace NLTOS_DataAccess
         }
 
 
-        public static int AddNewInternationalLicense( int ApplicationID,
-             int DriverID,  int IssuedUsingLocalLicenseID,
-             DateTime IssueDate,  DateTime ExpirationDate, bool IsActive,  int CreatedByUserID)
-        {
-            int InternationalLicenseID = -1;
-
-            SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
-
-            try
-            {
-                connection.Open();
-
-                InternationalLicenseID = InsertInternationalLicense(connection, null,
-                    ApplicationID, DriverID, IssuedUsingLocalLicenseID,
-                    IssueDate, ExpirationDate, IsActive, CreatedByUserID);
-            }
-
-            finally
-            {
-                connection.Close();
-            }
-
-
-            return InternationalLicenseID;
-
-        }
-
         /// <summary>
         /// Retires the driver's current international licences and records the new one,
         /// on a connection the caller already owns, returning the new identity or -1.
@@ -283,31 +256,6 @@ namespace NLTOS_DataAccess
 
             NewApplicationID = applicationID;
             NewInternationalLicenseID = internationalLicenseID;
-        }
-
-        public static bool UpdateInternationalLicense(
-              int InternationalLicenseID , int ApplicationID,
-             int DriverID, int IssuedUsingLocalLicenseID,
-             DateTime IssueDate, DateTime ExpirationDate, bool IsActive, int CreatedByUserID)
-        {
-            int rowsAffected = 0;
-
-            SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
-
-            try
-            {
-                connection.Open();
-
-                rowsAffected = UpdateInternationalLicense(connection, null,
-                    InternationalLicenseID, ApplicationID, DriverID, IssuedUsingLocalLicenseID,
-                    IssueDate, ExpirationDate, IsActive, CreatedByUserID);
-            }
-            finally
-            {
-                connection.Close();
-            }
-
-            return (rowsAffected > 0);
         }
 
         /// <summary>

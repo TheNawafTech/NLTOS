@@ -72,29 +72,6 @@ namespace NLTOS_Buisness
             Mode = enMode.Update;
         }
 
-        private bool _AddNewInternationalLicense()
-        {
-            //call DataAccess Layer 
-
-            this.InternationalLicenseID = 
-                clsInternationalLicenseData.AddNewInternationalLicense(this.ApplicationID, this.DriverID, this.IssuedUsingLocalLicenseID,
-               this.IssueDate, this.ExpirationDate, 
-               this.IsActive, this.CreatedByUserID);
-
-
-            return (this.InternationalLicenseID != -1);
-        }
-
-        private bool _UpdateInternationalLicense()
-        {
-            //call DataAccess Layer 
-
-            return clsInternationalLicenseData.UpdateInternationalLicense(
-                this.InternationalLicenseID,this.ApplicationID, this.DriverID, this.IssuedUsingLocalLicenseID,
-               this.IssueDate, this.ExpirationDate, 
-               this.IsActive, this.CreatedByUserID);
-        }
-
         public static clsInternationalLicense Find(int InternationalLicenseID)
         {
             int ApplicationID = -1;
