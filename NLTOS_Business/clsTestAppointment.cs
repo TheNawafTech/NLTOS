@@ -5,7 +5,7 @@ using System.Diagnostics.Eventing.Reader;
 using System.Xml.Linq;
 using NLTOS_DataAccess;
 
-namespace NLTOS_Buisness
+namespace NLTOS_Business
 {
     public class clsTestAppointment
     {

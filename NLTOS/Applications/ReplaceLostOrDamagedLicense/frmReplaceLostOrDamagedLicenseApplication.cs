@@ -1,7 +1,7 @@
 ﻿using NLTOS.Classes;
 using NLTOS.DriverLicense;
 using NLTOS.Licenses.International_License;
-using NLTOS_Buisness;
+using NLTOS_Business;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -11,7 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using static NLTOS_Buisness.clsLicense;
+using static NLTOS_Business.clsLicense;
 
 namespace NLTOS.Applications.ReplaceLostOrDamagedLicense
 {

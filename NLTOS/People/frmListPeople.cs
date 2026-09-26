@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Linq;
 using NLTOS.Classes;
-using NLTOS_Buisness;
+using NLTOS_Business;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.ListView;
 
 namespace NLTOS.People

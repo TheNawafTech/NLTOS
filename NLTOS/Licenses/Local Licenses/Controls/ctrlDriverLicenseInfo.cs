@@ -1,6 +1,6 @@
 ﻿using NLTOS.Classes;
 using NLTOS.Properties;
-using NLTOS_Buisness;
+using NLTOS_Business;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;

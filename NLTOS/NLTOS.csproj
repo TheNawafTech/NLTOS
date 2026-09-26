@@ -793,9 +793,9 @@
     <None Include="Resources\Release Detained License 512.png" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\NLTOS_Buisness\NLTOS_Buisness.csproj">
+    <ProjectReference Include="..\NLTOS_Business\NLTOS_Business.csproj">
       <Project>{46a8427b-dcfc-4daf-a14c-e3f4789a993d}</Project>
-      <Name>NLTOS_Buisness</Name>
+      <Name>NLTOS_Business</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

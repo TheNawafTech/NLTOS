@@ -7,8 +7,8 @@
     <ProjectGuid>{46A8427B-DCFC-4DAF-A14C-E3F4789A993D}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>NLTOS_Buisness</RootNamespace>
-    <AssemblyName>NLTOS_Buisness</AssemblyName>
+    <RootNamespace>NLTOS_Business</RootNamespace>
+    <AssemblyName>NLTOS_Business</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>

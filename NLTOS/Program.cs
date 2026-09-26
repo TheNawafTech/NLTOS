@@ -11,7 +11,7 @@ using System.Diagnostics;
 using System.Security;
 using System.Threading;
 using System.Data.SqlClient;
-using NLTOS_Buisness;
+using NLTOS_Business;
 namespace NLTOS
 {
     internal static class Program

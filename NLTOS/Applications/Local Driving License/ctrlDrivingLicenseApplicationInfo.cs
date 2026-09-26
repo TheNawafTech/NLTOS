@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using NLTOS_Buisness;
+using NLTOS_Business;
 using NLTOS.Classes;
 using static System.Net.Mime.MediaTypeNames;
 using NLTOS.Tests;

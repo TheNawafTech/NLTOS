@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using NLTOS.Classes;
 using NLTOS.Properties;
-using NLTOS_Buisness;
+using NLTOS_Business;
 using System.IO;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Button;
 using System.Runtime.ConstrainedExecution;

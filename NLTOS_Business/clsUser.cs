@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace NLTOS_Buisness
+namespace NLTOS_Business
 {
     public class clsUser
     {

@@ -5,7 +5,7 @@ using System.Xml.Linq;
 using NLTOS_DataAccess;
 using static System.Net.Mime.MediaTypeNames;
 
-namespace NLTOS_Buisness
+namespace NLTOS_Business
 {
     public class clsLicense
     {

@@ -1,4 +1,4 @@
-﻿using NLTOS_Buisness;
+﻿using NLTOS_Business;
 
 namespace NLTOS.Tests
 {
@@ -172,7 +172,7 @@ namespace NLTOS.Tests
             this.ctrlSecheduledTest1.Name = "ctrlSecheduledTest1";
             this.ctrlSecheduledTest1.Size = new System.Drawing.Size(588, 582);
             this.ctrlSecheduledTest1.TabIndex = 0;
-            this.ctrlSecheduledTest1.TestTypeID = NLTOS_Buisness.clsTestType.enTestType.VisionTest;
+            this.ctrlSecheduledTest1.TestTypeID = NLTOS_Business.clsTestType.enTestType.VisionTest;
             // 
             // frmTakeTest
             // 

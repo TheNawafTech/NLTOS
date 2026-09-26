@@ -33,7 +33,7 @@ directly beneath it.
 | Layer | Project | Responsibility |
 | --- | --- | --- |
 | Presentation | `NLTOS` | Windows Forms interface, navigation, input validation |
-| Business Logic | `NLTOS_Buisness` | Business rules, eligibility checks, workflow state transitions |
+| Business Logic | `NLTOS_Business` | Business rules, eligibility checks, workflow state transitions |
 | Data Access | `NLTOS_DataAccess` | SQL Server access via ADO.NET using parameterized queries |
 
 The presentation layer holds no SQL and opens no connections; every database call passes
@@ -160,7 +160,7 @@ NLTOS/
 │   ├── Login/
 │   └── Global Classes/       Formatting, validation, shared helpers
 │
-├── NLTOS_Buisness/           Business Logic Layer
+├── NLTOS_Business/           Business Logic Layer
 │
 └── NLTOS_DataAccess/         Data Access Layer — ADO.NET
 ```

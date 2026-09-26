@@ -4,7 +4,7 @@ using NLTOS_DataAccess;
 
 
 
-namespace NLTOS_Buisness
+namespace NLTOS_Business
 {
     public   class clsApplication
     {

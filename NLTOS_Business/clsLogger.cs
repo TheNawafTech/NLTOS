@@ -1,7 +1,7 @@
 using System;
 using NLTOS_DataAccess;
 
-namespace NLTOS_Buisness
+namespace NLTOS_Business
 {
     /// <summary>
     /// Lets the presentation layer record diagnostics without referencing the data

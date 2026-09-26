@@ -1,5 +1,5 @@
 ﻿using NLTOS.Controls;
-using NLTOS_Buisness;
+using NLTOS_Business;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;

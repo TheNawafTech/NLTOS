@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using NLTOS.Properties;
-using NLTOS_Buisness;
+using NLTOS_Business;
 using NLTOS.Classes;
 
 namespace NLTOS.Tests

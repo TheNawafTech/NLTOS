@@ -40,7 +40,7 @@
             this.ctrlScheduleTest1.Name = "ctrlScheduleTest1";
             this.ctrlScheduleTest1.Size = new System.Drawing.Size(533, 722);
             this.ctrlScheduleTest1.TabIndex = 0;
-            this.ctrlScheduleTest1.TestTypeID = NLTOS_Buisness.clsTestType.enTestType.VisionTest;
+            this.ctrlScheduleTest1.TestTypeID = NLTOS_Business.clsTestType.enTestType.VisionTest;
             // 
             // btnClose
             // 

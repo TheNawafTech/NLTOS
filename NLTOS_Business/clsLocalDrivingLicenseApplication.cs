@@ -5,10 +5,10 @@ using System.Security.Cryptography;
 using System.Xml.Linq;
 using NLTOS_DataAccess;
 using static System.Net.Mime.MediaTypeNames;
-using static NLTOS_Buisness.clsTestType;
+using static NLTOS_Business.clsTestType;
 
 
-namespace NLTOS_Buisness
+namespace NLTOS_Business
 {
     public   class clsLocalDrivingLicenseApplication : clsApplication
 

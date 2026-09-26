@@ -2,7 +2,7 @@
 using NLTOS.DriverLicense;
 using NLTOS.Licenses.International_License;
 using NLTOS.Licenses.International_Licenses;
-using NLTOS_Buisness;
+using NLTOS_Business;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -13,7 +13,7 @@ using System.Runtime.ExceptionServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using static NLTOS_Buisness.clsApplication;
+using static NLTOS_Business.clsApplication;
 
 namespace NLTOS.Applications.International_License
 {
