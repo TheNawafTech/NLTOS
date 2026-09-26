@@ -10,7 +10,7 @@ namespace NLTOS_Business
     {
         public enum enMode { AddNew = 0, Update = 1 };
         public enum enApplicationType { NewDrivingLicense = 1, RenewDrivingLicense = 2, ReplaceLostDrivingLicense=3,
-            ReplaceDamagedDrivingLicense=4, ReleaseDetainedDrivingLicsense=5, NewInternationalLicense=6,RetakeTest=7
+            ReplaceDamagedDrivingLicense=4, ReleaseDetainedDrivingLicense=5, NewInternationalLicense=6,RetakeTest=7
         };
 
         public enMode Mode = enMode.AddNew;

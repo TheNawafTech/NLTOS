@@ -62,7 +62,7 @@ namespace NLTOS.Applications.Rlease_Detained_License
                 return;
             }
 
-            lblApplicationFees.Text = clsApplicationType.Find((int)clsApplication.enApplicationType.ReleaseDetainedDrivingLicsense).Fees.ToString();
+            lblApplicationFees.Text = clsApplicationType.Find((int)clsApplication.enApplicationType.ReleaseDetainedDrivingLicense).Fees.ToString();
             lblCreatedByUser.Text = clsGlobal.CurrentUser.UserName;
 
             lblDetainID.Text = ctrlDriverLicenseInfoWithFilter1.SelectedLicenseInfo.DetainedInfo.DetainID.ToString();

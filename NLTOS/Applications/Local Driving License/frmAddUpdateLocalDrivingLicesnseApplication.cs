@@ -51,7 +51,7 @@ namespace NLTOS.Applications
             }
         }
 
-        private void _ResetDefualtValues()
+        private void _ResetDefaultValues()
         {
             //this will initialize the reset the defaule values
             _FillLicenseClassesInComoboBox();
@@ -118,7 +118,7 @@ namespace NLTOS.Applications
 
         private void frmAddUpdateLocalDrivingLicesnseApplication_Load(object sender, EventArgs e)
         {
-            _ResetDefualtValues();
+            _ResetDefaultValues();
 
             if (_Mode==enMode.Update)
             {

@@ -223,7 +223,7 @@ clsLocalDrivingLicenseApplicationData.UpdateLocalDrivingLicenseApplicationAndApp
             return clsTest.PassedAllTests (LocalDrivingLicenseApplicationID) ;
         }
         
-        public int IssueLicenseForTheFirtTime(string Notes, int CreatedByUserID)
+        public int IssueLicenseForTheFirstTime(string Notes, int CreatedByUserID)
         {
             //a person has one driver record however many licences they go on to hold,
             //so an existing one is reused and a new one only created when there is none.

@@ -148,7 +148,7 @@ namespace NLTOS.Tests
             if (!_HandleAppointmentLockedConstraint())
                 return;
 
-            if (!_HandlePrviousTestConstraint())
+            if (!_HandlePreviousTestConstraint())
                 return;
             
 
@@ -221,7 +221,7 @@ namespace NLTOS.Tests
 
             return true;
         }
-        private bool _HandlePrviousTestConstraint()
+        private bool _HandlePreviousTestConstraint()
         {
             //we need to make sure that this person passed the prvious required test before apply to the new test.
             //person cannno apply for written test unless s/he passes the vision test.

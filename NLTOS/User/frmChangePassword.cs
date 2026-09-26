@@ -24,7 +24,7 @@ namespace NLTOS.User
             _UserID=UserID;
         }
 
-        private void _ResetDefualtValues()
+        private void _ResetDefaultValues()
         {
             txtCurrentPassword.Text = "";
             txtNewPassword.Text = "";
@@ -34,7 +34,7 @@ namespace NLTOS.User
 
         private void frmChangePassword_Load(object sender, EventArgs e)
         {
-             _ResetDefualtValues();
+             _ResetDefaultValues();
 
               _User = clsUser.FindByUserID(_UserID);
 
@@ -138,7 +138,7 @@ namespace NLTOS.User
 
                 MessageBox.Show("Password Changed Successfully.",
                    "Saved.", MessageBoxButtons.OK, MessageBoxIcon.Information );
-                _ResetDefualtValues();
+                _ResetDefaultValues();
             }
             else
             {

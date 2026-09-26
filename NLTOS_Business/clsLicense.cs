@@ -224,9 +224,9 @@ namespace NLTOS_Business
             clsDetainedLicenseData.CreateReleaseForDetainedLicense(
                 this.DetainedInfo.DetainID,
                 this.DriverInfo.PersonID, DateTime.Now,
-                (int)clsApplication.enApplicationType.ReleaseDetainedDrivingLicsense,
+                (int)clsApplication.enApplicationType.ReleaseDetainedDrivingLicense,
                 (byte)clsApplication.enApplicationStatus.Completed, DateTime.Now,
-                clsApplicationType.Find((int)clsApplication.enApplicationType.ReleaseDetainedDrivingLicsense).Fees,
+                clsApplicationType.Find((int)clsApplication.enApplicationType.ReleaseDetainedDrivingLicense).Fees,
                 ReleasedByUserID,
                 out int NewApplicationID);
 

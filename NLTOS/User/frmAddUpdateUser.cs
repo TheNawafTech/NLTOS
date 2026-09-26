@@ -40,7 +40,7 @@ namespace NLTOS.User
 
         }
 
-        private void _ResetDefualtValues()
+        private void _ResetDefaultValues()
         {
             //this will initialize the reset the defaule values
 
@@ -102,7 +102,7 @@ namespace NLTOS.User
 
         private void frmAddUpdateUser_Load(object sender, EventArgs e)
         {
-            _ResetDefualtValues();
+            _ResetDefaultValues();
 
             if (_Mode == enMode.Update)
                 _LoadData();

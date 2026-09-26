@@ -70,7 +70,7 @@ namespace NLTOS.DriverLicense
 
         private void btnIssueLicense_Click(object sender, EventArgs e)
         {
-            int LicenseID=  _LocalDrivingLicenseApplication.IssueLicenseForTheFirtTime(txtNotes.Text.Trim(),clsGlobal.CurrentUser.UserID);
+            int LicenseID=  _LocalDrivingLicenseApplication.IssueLicenseForTheFirstTime(txtNotes.Text.Trim(),clsGlobal.CurrentUser.UserID);
 
             if (LicenseID != -1)
             {
