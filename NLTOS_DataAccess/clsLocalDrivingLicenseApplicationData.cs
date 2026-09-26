@@ -293,29 +293,84 @@ namespace NLTOS_DataAccess
 
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
 
-            string query = @"Delete LocalDrivingLicenseApplications 
-                                where LocalDrivingLicenseApplicationID = @LocalDrivingLicenseApplicationID";
-
-            SqlCommand command = new SqlCommand(query, connection);
-
-            command.Parameters.AddWithValue("@LocalDrivingLicenseApplicationID", LocalDrivingLicenseApplicationID);
-
             try
             {
                 connection.Open();
 
-                rowsAffected = command.ExecuteNonQuery();
-
+                rowsAffected = DeleteLocalDrivingLicenseApplication(
+                    connection, null, LocalDrivingLicenseApplicationID);
             }
             finally
             {
-
                 connection.Close();
-
             }
 
             return (rowsAffected > 0);
 
+        }
+
+        /// <summary>
+        /// Deletes a local driving licence application row on a connection the caller
+        /// already owns, and returns how many rows that removed.
+        ///
+        /// Opens nothing, closes nothing, commits nothing and handles no exception.
+        /// Internal deliberately.
+        /// </summary>
+        internal static int DeleteLocalDrivingLicenseApplication(
+            SqlConnection connection, SqlTransaction transaction,
+            int LocalDrivingLicenseApplicationID)
+        {
+            string query = @"Delete LocalDrivingLicenseApplications
+                                where LocalDrivingLicenseApplicationID = @LocalDrivingLicenseApplicationID";
+
+            SqlCommand command = new SqlCommand(query, connection);
+            command.Transaction = transaction;
+
+            command.Parameters.AddWithValue("@LocalDrivingLicenseApplicationID", LocalDrivingLicenseApplicationID);
+
+            return command.ExecuteNonQuery();
+        }
+
+        /// <summary>
+        /// Deletes a local driving licence application together with the application it
+        /// belongs to, inside a single transaction on a single connection.
+        ///
+        /// The two rows describe one thing between them, so removing one without the
+        /// other leaves a record the rest of the system cannot make sense of. The child
+        /// row goes first because it refers to the application. Leaving the block
+        /// without reaching Commit disposes the transaction, which rolls both deletes
+        /// back, so a failure needs no handling here and travels on unchanged.
+        ///
+        /// A delete that matches no row removes nothing and raises nothing, so each
+        /// step is checked by the number of rows it removed: if either row is not
+        /// there, neither is deleted.
+        /// </summary>
+        public static void DeleteLocalDrivingLicenseApplicationAndApplication(
+            int LocalDrivingLicenseApplicationID, int ApplicationID)
+        {
+            using (SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString))
+            {
+                connection.Open();
+
+                using (SqlTransaction transaction = connection.BeginTransaction())
+                {
+                    int localRowsDeleted = DeleteLocalDrivingLicenseApplication(
+                        connection, transaction, LocalDrivingLicenseApplicationID);
+
+                    if (localRowsDeleted != 1)
+                        throw new InvalidOperationException(
+                            "The local driving licence application could not be deleted.");
+
+                    int applicationRowsDeleted = clsApplicationData.DeleteApplication(
+                        connection, transaction, ApplicationID);
+
+                    if (applicationRowsDeleted != 1)
+                        throw new InvalidOperationException(
+                            "The application behind the local driving licence application could not be deleted.");
+
+                    transaction.Commit();
+                }
+            }
         }
 
         public static bool DoesPassTestType( int LocalDrivingLicenseApplicationID, int TestTypeID)

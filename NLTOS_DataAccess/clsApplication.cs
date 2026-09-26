@@ -260,29 +260,41 @@ namespace NLTOS_DataAccess
 
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
 
-            string query = @"Delete Applications 
-                                where ApplicationID = @ApplicationID";
-
-            SqlCommand command = new SqlCommand(query, connection);
-
-            command.Parameters.AddWithValue("@ApplicationID", ApplicationID);
-
             try
             {
                 connection.Open();
 
-                rowsAffected = command.ExecuteNonQuery();
-
+                rowsAffected = DeleteApplication(connection, null, ApplicationID);
             }
             finally
             {
-
                 connection.Close();
-
             }
 
             return (rowsAffected > 0);
 
+        }
+
+        /// <summary>
+        /// Deletes an application on a connection the caller already owns, and returns
+        /// how many rows that removed, so a caller inside a transaction can tell a
+        /// deletion that happened from one that found nothing to delete.
+        ///
+        /// Opens nothing, closes nothing, commits nothing and handles no exception.
+        /// Internal deliberately.
+        /// </summary>
+        internal static int DeleteApplication(
+            SqlConnection connection, SqlTransaction transaction, int ApplicationID)
+        {
+            string query = @"Delete Applications
+                                where ApplicationID = @ApplicationID";
+
+            SqlCommand command = new SqlCommand(query, connection);
+            command.Transaction = transaction;
+
+            command.Parameters.AddWithValue("@ApplicationID", ApplicationID);
+
+            return command.ExecuteNonQuery();
         }
 
         public static bool IsApplicationExist(int ApplicationID)

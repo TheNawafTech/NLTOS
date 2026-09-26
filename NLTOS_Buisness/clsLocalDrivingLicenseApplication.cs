@@ -186,16 +186,13 @@ namespace NLTOS_Buisness
 
         public  bool Delete()
         {
-            bool IsLocalDrivingApplicationDeleted = false;
-            bool IsBaseApplicationDeleted = false;
-            //First we delete the Local Driving License Application
-            IsLocalDrivingApplicationDeleted = clsLocalDrivingLicenseApplicationData.DeleteLocalDrivingLicenseApplication(this.LocalDrivingLicenseApplicationID);
-           
-            if (!IsLocalDrivingApplicationDeleted)
-                return false;
-            //Then we delete the base Application
-            IsBaseApplicationDeleted = base.Delete();
-            return IsBaseApplicationDeleted;
+            //the two rows describe one application between them, so they are removed
+            //together inside one transaction rather than one after the other. Deleting
+            //the child row alone would leave an application nothing refers to.
+            clsLocalDrivingLicenseApplicationData.DeleteLocalDrivingLicenseApplicationAndApplication(
+                this.LocalDrivingLicenseApplicationID, this.ApplicationID);
+
+            return true;
 
         }
 
