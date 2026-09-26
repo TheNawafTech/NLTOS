@@ -222,27 +222,28 @@ namespace NLTOS_Buisness
         public bool ReleaseDetainedLicense(int ReleasedByUserID,ref int ApplicationID)
         {
 
-            //First Create Applicaiton 
-            clsApplication Application = new clsApplication();
+            //charging the fine and lifting the detention are one action: a fine paid
+            //against a licence still recorded as detained is money taken for nothing.
+            //Both writes go to the data access layer as a single call and share a
+            //transaction there, and nothing here is assigned until it returns.
+            clsDetainedLicenseData.CreateReleaseForDetainedLicense(
+                this.DetainedInfo.DetainID,
+                this.DriverInfo.PersonID, DateTime.Now,
+                (int)clsApplication.enApplicationType.ReleaseDetainedDrivingLicsense,
+                (byte)clsApplication.enApplicationStatus.Completed, DateTime.Now,
+                clsApplicationType.Find((int)clsApplication.enApplicationType.ReleaseDetainedDrivingLicsense).Fees,
+                ReleasedByUserID,
+                out int NewApplicationID);
 
-            Application.ApplicantPersonID = this.DriverInfo.PersonID;
-            Application.ApplicationDate = DateTime.Now;
-            Application.ApplicationTypeID = (int)clsApplication.enApplicationType.ReleaseDetainedDrivingLicsense;
-            Application.ApplicationStatus = clsApplication.enApplicationStatus.Completed;
-            Application.LastStatusDate = DateTime.Now;
-            Application.PaidFees = clsApplicationType.Find((int)clsApplication.enApplicationType.ReleaseDetainedDrivingLicsense).Fees;
-            Application.CreatedByUserID = ReleasedByUserID;
-
-            if (!Application.Save())
+            if (NewApplicationID == -1)
             {
                 ApplicationID = -1;
                 return false;
             }
 
-            ApplicationID = Application.ApplicationID;
+            ApplicationID = NewApplicationID;
 
-
-            return this.DetainedInfo.ReleaseDetainedLicense(ReleasedByUserID, Application.ApplicationID);
+            return true;
 
         }
 

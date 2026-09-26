@@ -295,6 +295,33 @@ namespace NLTOS_DataAccess
             int rowsAffected = 0;
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
 
+            try
+            {
+                connection.Open();
+
+                rowsAffected = ReleaseDetainedLicense(connection, null,
+                    DetainID, ReleasedByUserID, ReleaseApplicationID);
+            }
+            finally
+            {
+                connection.Close();
+            }
+
+            return (rowsAffected > 0);
+        }
+
+        /// <summary>
+        /// Marks a detained licence released on a connection the caller already owns,
+        /// and returns how many rows that changed, so a caller inside a transaction can
+        /// tell a licence that was released from one that was not there to release.
+        ///
+        /// Opens nothing, closes nothing, commits nothing and handles no exception.
+        /// Internal deliberately.
+        /// </summary>
+        internal static int ReleaseDetainedLicense(
+            SqlConnection connection, SqlTransaction transaction,
+            int DetainID, int ReleasedByUserID, int ReleaseApplicationID)
+        {
             string query = @"UPDATE dbo.DetainedLicenses
                               SET IsReleased = 1,
                               ReleaseDate = @ReleaseDate,
@@ -303,23 +330,61 @@ namespace NLTOS_DataAccess
                               WHERE DetainID=@DetainID;";
 
             SqlCommand command = new SqlCommand(query, connection);
+            command.Transaction = transaction;
 
             command.Parameters.AddWithValue("@DetainID", DetainID);
             command.Parameters.AddWithValue("@ReleasedByUserID", ReleasedByUserID);
             command.Parameters.AddWithValue("@ReleaseApplicationID", ReleaseApplicationID);
             command.Parameters.AddWithValue("@ReleaseDate", DateTime.Now);
-            try
+
+            return command.ExecuteNonQuery();
+        }
+
+        /// <summary>
+        /// Releases a detained licence as one action: the application that pays the fine
+        /// and the release itself, inside a single transaction on a single connection.
+        ///
+        /// A fine charged against a licence still recorded as detained is money taken
+        /// for nothing. Leaving the block without reaching Commit disposes the
+        /// transaction, which rolls the work back, so a failure needs no handling here
+        /// and travels on unchanged.
+        ///
+        /// A release that matches no detained record changes no row and raises nothing,
+        /// so the row count is checked rather than assumed.
+        ///
+        /// The application id is handed back only after the commit.
+        /// </summary>
+        public static void CreateReleaseForDetainedLicense(
+            int DetainID,
+            int ApplicantPersonID, DateTime ApplicationDate, int ApplicationTypeID,
+            byte ApplicationStatus, DateTime LastStatusDate, float PaidFees,
+            int ReleasedByUserID,
+            out int NewApplicationID)
+        {
+            int applicationID;
+
+            using (SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString))
             {
                 connection.Open();
-                rowsAffected = command.ExecuteNonQuery();
 
-            }
-            finally
-            {
-                connection.Close();
+                using (SqlTransaction transaction = connection.BeginTransaction())
+                {
+                    applicationID = clsApplicationData.InsertApplication(connection, transaction,
+                        ApplicantPersonID, ApplicationDate, ApplicationTypeID,
+                        ApplicationStatus, LastStatusDate, PaidFees, ReleasedByUserID);
+
+                    int rowsReleased = ReleaseDetainedLicense(connection, transaction,
+                        DetainID, ReleasedByUserID, applicationID);
+
+                    if (rowsReleased != 1)
+                        throw new InvalidOperationException(
+                            "The detained licence could not be released, so the release was not recorded.");
+
+                    transaction.Commit();
+                }
             }
 
-            return (rowsAffected > 0);
+            NewApplicationID = applicationID;
         }
 
         public static bool IsLicenseDetained(int LicenseID)
