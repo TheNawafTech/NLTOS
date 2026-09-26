@@ -261,12 +261,12 @@ namespace NLTOS_DataAccess
                               SET LicenseID = @LicenseID, 
                               DetainDate = @DetainDate, 
                               FineFees = @FineFees,
-                              CreatedByUserID = @CreatedByUserID,   
+                              CreatedByUserID = @CreatedByUserID
                               WHERE DetainID=@DetainID;";
 
             SqlCommand command = new SqlCommand(query, connection);
 
-            command.Parameters.AddWithValue("@DetainedLicenseID", DetainID);
+            command.Parameters.AddWithValue("@DetainID", DetainID);
             command.Parameters.AddWithValue("@LicenseID", LicenseID);
             command.Parameters.AddWithValue("@DetainDate", DetainDate);
             command.Parameters.AddWithValue("@FineFees", FineFees);
