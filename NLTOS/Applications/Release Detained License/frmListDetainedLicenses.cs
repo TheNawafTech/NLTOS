@@ -65,7 +65,7 @@ namespace NLTOS.Applications.Release_Detained_License
                 dgvDetainedLicenses.Columns[7].HeaderText = "Full Name";
                 dgvDetainedLicenses.Columns[7].Width = 330;
 
-                dgvDetainedLicenses.Columns[8].HeaderText = "Rlease App.ID";
+                dgvDetainedLicenses.Columns[8].HeaderText = "Release App.ID";
                 dgvDetainedLicenses.Columns[8].Width = 150;
 
             }

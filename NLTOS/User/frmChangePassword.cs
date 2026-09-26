@@ -146,7 +146,7 @@ namespace NLTOS.User
                 // holding the new one: the current-password check above reads it.
                 _User.Password = PreviousPassword;
 
-                MessageBox.Show("An Erro Occured, Password did not change.",
+                MessageBox.Show("An error occurred, the password did not change.",
                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }

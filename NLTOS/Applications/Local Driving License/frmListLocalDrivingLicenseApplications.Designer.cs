@@ -204,7 +204,7 @@
             this.ScheduleTestsMenue.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.ScheduleTestsMenue.Name = "ScheduleTestsMenue";
             this.ScheduleTestsMenue.Size = new System.Drawing.Size(261, 38);
-            this.ScheduleTestsMenue.Text = "Sechdule &Tests";
+            this.ScheduleTestsMenue.Text = "Schedule &Tests";
              // 
             // scheduleVisionTestToolStripMenuItem
             // 
