@@ -42,32 +42,32 @@ constraints apply regardless of which screen triggers an operation.
 
 ## Business Rules & Workflow Constraints
 
-The workflow rules below are enforced in the business layer rather than relying on the
-interface alone.
+The business layer answers the questions a rule depends on, and the screens act on the
+answers. Each rule below names the check that decides it.
 
-**Tests run in a fixed sequence.** `clsLocalDrivingLicenseApplication.DoesPassPreviousTest`
-resolves the prerequisite for each test type — the written test requires a passed vision
-test, the street test requires a passed written test — and blocks the attempt if the
-prerequisite is unmet.
+**Tests run in a fixed sequence.** A written test cannot be scheduled until the vision
+test has been passed, and a street test not until the written one has. The scheduling
+control asks `clsLocalDrivingLicenseApplication.DoesPassTestType` for the prerequisite
+and disables the appointment rather than letting it be booked.
 
 **A license is not issued until every test is passed.** Issuance is gated on
-`clsTest.PassedAllTests`, which checks the application's full test set rather than a
-status flag.
+`clsTest.PassedAllTests`, reached through
+`clsLocalDrivingLicenseApplication.PassedAllTests`, which counts the application's passed
+tests rather than reading a status flag.
 
-**One active application per type per person.**
-`clsApplication.DoesPersonHaveActiveApplication` is checked before a new application is
-created, preventing duplicate concurrent applications of the same type.
+**No second open application for the same license class.** Before a new local application
+is created, `clsApplication.GetActiveApplicationIDForLicenseClass` is asked whether the
+applicant already has an open one for that class.
 
-**Certain licensing operations are blocked while a license is detained.**
-`clsDetainedLicense.IsLicenseDetained` is used to check the detention state, while
-release is handled through its own dedicated application workflow rather than by
-clearing a flag.
+**A license cannot be detained twice, or released while it is not detained.**
+`clsLicense.IsDetained`, which asks `clsDetainedLicense.IsLicenseDetained`, guards both
+the detention and the release screens. Release is recorded through its own application
+rather than by clearing a flag.
 
-**Application operations are validated against the current workflow state.**
-Business-layer checks prevent an operation when the application's current state or its
-prerequisites do not allow it. Enums (`enApplicationType`, `enIssueReason`) define the
-permitted application types and issue reasons, while workflow validity itself is
-enforced through explicit business rules.
+**Multi-table operations are all-or-nothing.** Issuing, renewing, replacing and releasing
+each write to more than one table. Every one of them runs as a single data-access
+operation inside one transaction, so a failure part-way through leaves no half-finished
+record behind.
 
 ## Tech Stack
 
@@ -81,6 +81,10 @@ ADO.NET
 ```
 
 No ORM, micro-ORM or scaffolding is used — the data access layer is hand-written ADO.NET.
+
+Passwords are stored as PBKDF2 hashes with a per-user salt. Operations that write to more
+than one table run inside a single transaction. Unhandled exceptions are caught centrally
+and written to the Windows event log rather than being swallowed where they occur.
 
 ## Database
 
@@ -117,9 +121,12 @@ A walkthrough of the main workflows and features:
 
 ![New local license application](assets/New_Local_License.png)
 
-**Taking a test**
+**Scheduling a test**
 
-![Taking a test](assets/Take_Test.png)
+![Scheduling a test](assets/Take_Test.png)
+
+The written and street test entries are greyed out here: this applicant has not yet
+passed the test each one requires.
 
 ## Getting Started
 
