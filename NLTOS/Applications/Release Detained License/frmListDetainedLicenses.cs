@@ -13,7 +13,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace NLTOS.Applications.Rlease_Detained_License
+namespace NLTOS.Applications.Release_Detained_License
 {
     public partial class frmListDetainedLicenses : Form
     {

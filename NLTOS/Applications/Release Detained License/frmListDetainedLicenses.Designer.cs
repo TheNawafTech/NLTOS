@@ -1,4 +1,4 @@
-﻿namespace NLTOS.Applications.Rlease_Detained_License
+﻿namespace NLTOS.Applications.Release_Detained_License
 {
     partial class frmListDetainedLicenses
     {

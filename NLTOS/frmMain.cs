@@ -2,7 +2,7 @@
 using NLTOS.Applications.Detain_License;
 using NLTOS.Applications.International_License;
 using NLTOS.Applications.ReplaceLostOrDamagedLicense;
-using NLTOS.Applications.Rlease_Detained_License;
+using NLTOS.Applications.Release_Detained_License;
 using NLTOS.Classes;
 using NLTOS.Drivers;
 using NLTOS.Licenses;

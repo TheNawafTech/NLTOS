@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using static System.Net.Mime.MediaTypeNames;
 
-namespace NLTOS.Applications.Rlease_Detained_License
+namespace NLTOS.Applications.Release_Detained_License
 {
     public partial class frmReleaseDetainedLicenseApplication : Form
     {
