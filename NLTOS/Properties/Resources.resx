@@ -232,9 +232,6 @@
   <data name="Application Types 64" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Application Types 64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="BAC" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\BAC.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="call 32" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\call 32.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -285,9 +282,6 @@
   </data>
   <data name="ApplicationType" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\ApplicationType.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="DVLD Logo" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\DVLD Logo.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Add New User 32" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Add New User 32.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -367,9 +361,6 @@
   <data name="Users 2 400" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Users 2 400.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="backGound DVLD" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\backGound DVLD.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="Local 32" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Local 32.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -439,9 +430,6 @@
   <data name="Delete 32" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Delete 32.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="شعار NLTOS" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\شعار NLTOS.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="Release Detained License 32" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Release Detained License 32.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -474,9 +462,6 @@
   </data>
   <data name="CloseBlack" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\CloseBlack.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="شعار NLTOS1" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\شعار NLTOS1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="SearchPerson" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\SearchPerson.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>

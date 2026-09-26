@@ -203,26 +203,6 @@ namespace NLTOS.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap BAC {
-            get {
-                object obj = ResourceManager.GetObject("BAC", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap backGound_DVLD {
-            get {
-                object obj = ResourceManager.GetObject("backGound DVLD", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
         internal static System.Drawing.Bitmap Bacp {
             get {
                 object obj = ResourceManager.GetObject("Bacp", resourceCulture);
@@ -456,16 +436,6 @@ namespace NLTOS.Properties {
         internal static System.Drawing.Bitmap driving_test_512 {
             get {
                 object obj = ResourceManager.GetObject("driving-test 512", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap DVLD_Logo {
-            get {
-                object obj = ResourceManager.GetObject("DVLD Logo", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -1246,26 +1216,6 @@ namespace NLTOS.Properties {
         internal static System.Drawing.Bitmap Written_Test_512 {
             get {
                 object obj = ResourceManager.GetObject("Written Test 512", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap شعار_NLTOS {
-            get {
-                object obj = ResourceManager.GetObject("شعار NLTOS", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap شعار_NLTOS1 {
-            get {
-                object obj = ResourceManager.GetObject("شعار NLTOS1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
