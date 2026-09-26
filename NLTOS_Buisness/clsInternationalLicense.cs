@@ -9,8 +9,6 @@ namespace NLTOS_Buisness
     public class clsInternationalLicense:clsApplication
     {
 
-        public enum enMode { AddNew = 0, Update = 1 };
-        public enMode Mode = enMode.AddNew;
 
         public clsDriver DriverInfo;
         public int InternationalLicenseID { set; get; }  
@@ -136,7 +134,6 @@ namespace NLTOS_Buisness
                     this.InternationalLicenseID = newInternationalLicenseID;
 
                     Mode = enMode.Update;
-                    base.Mode = clsApplication.enMode.Update;
 
                     return true;
 
@@ -148,9 +145,7 @@ namespace NLTOS_Buisness
                     //application first and the licence after it. Updating only the base
                     //application would leave its fees, status or applicant no longer
                     //agreeing with the licence it paid for.
-                    base.Mode = (clsApplication.enMode)Mode;
-
-                    clsInternationalLicenseData.UpdateInternationalLicenseAndApplication(
+clsInternationalLicenseData.UpdateInternationalLicenseAndApplication(
                         this.InternationalLicenseID, this.DriverID, this.IssuedUsingLocalLicenseID,
                         this.IssueDate, this.ExpirationDate, this.IsActive,
                         this.ApplicationID, this.ApplicantPersonID, this.ApplicationDate,

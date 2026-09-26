@@ -13,8 +13,6 @@ namespace NLTOS_Buisness
     public   class clsLocalDrivingLicenseApplication : clsApplication
 
     {
-        public enum enMode { AddNew = 0, Update = 1 };
-        public enMode Mode = enMode.AddNew;
 
         public int LocalDrivingLicenseApplicationID { set; get; }
         public int LicenseClassID { set; get; }
@@ -112,7 +110,6 @@ namespace NLTOS_Buisness
                     this.LocalDrivingLicenseApplicationID = newLocalApplicationID;
 
                     Mode = enMode.Update;
-                    base.Mode = clsApplication.enMode.Update;
 
                     return true;
 
@@ -124,9 +121,7 @@ namespace NLTOS_Buisness
                     //application first and the licence class after it. Updating only the
                     //base application would leave its fees, status or applicant no longer
                     //agreeing with the licence class being applied for.
-                    base.Mode = (clsApplication.enMode) Mode;
-
-                    clsLocalDrivingLicenseApplicationData.UpdateLocalDrivingLicenseApplicationAndApplication(
+clsLocalDrivingLicenseApplicationData.UpdateLocalDrivingLicenseApplicationAndApplication(
                         this.LocalDrivingLicenseApplicationID, this.LicenseClassID,
                         this.ApplicationID, this.ApplicantPersonID, this.ApplicationDate,
                         this.ApplicationTypeID, (byte)this.ApplicationStatus,

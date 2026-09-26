@@ -87,27 +87,7 @@ namespace NLTOS_Buisness
             Mode = enMode.Update;
         }
 
-        private bool _AddNewApplication()
-        {
-            //call DataAccess Layer 
 
-            this.ApplicationID = clsApplicationData.AddNewApplication(
-                this.ApplicantPersonID, this.ApplicationDate,
-                this.ApplicationTypeID, (byte) this.ApplicationStatus,
-                this.LastStatusDate, this.PaidFees, this.CreatedByUserID);
-
-            return (this.ApplicationID != -1);
-        }
-
-        private bool _UpdateApplication()
-        {
-            //call DataAccess Layer 
-
-            return clsApplicationData.UpdateApplication(this.ApplicationID, this.ApplicantPersonID, this.ApplicationDate,
-                this.ApplicationTypeID, (byte) this.ApplicationStatus,
-                this.LastStatusDate, this.PaidFees, this.CreatedByUserID);
-           
-        }
 
         public  static clsApplication FindBaseApplication(int ApplicationID)
         {
@@ -141,35 +121,7 @@ namespace NLTOS_Buisness
         }
 
 
-        public bool Save()
-        {
-            switch (Mode)
-            {
-                case enMode.AddNew:
-                    if (_AddNewApplication())
-                    {
 
-                        Mode = enMode.Update;
-                        return true;
-                    }
-                    else
-                    {
-                        return false;
-                    }
-
-                case enMode.Update:
-
-                    return _UpdateApplication();
-
-            }
-
-            return false;
-        }
-
-        public  bool Delete()
-        {
-            return clsApplicationData.DeleteApplication(this.ApplicationID); 
-        }
 
         public static bool IsApplicationExist(int ApplicationID)
         {

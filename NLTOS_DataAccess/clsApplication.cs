@@ -68,33 +68,6 @@ namespace NLTOS_DataAccess
                 return isFound;
             }
 
-        public static int AddNewApplication( int ApplicantPersonID,  DateTime ApplicationDate,  int ApplicationTypeID,
-             byte ApplicationStatus,  DateTime LastStatusDate,
-             float PaidFees,  int CreatedByUserID)
-        {
-
-            //this function will return the new person id if succeeded and -1 if not.
-            int ApplicationID = -1;
-
-            SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
-
-            try
-            {
-                connection.Open();
-
-                ApplicationID = InsertApplication(connection, null,
-                    ApplicantPersonID, ApplicationDate, ApplicationTypeID,
-                    ApplicationStatus, LastStatusDate, PaidFees, CreatedByUserID);
-            }
-
-            finally
-            {
-                connection.Close();
-            }
-
-
-            return ApplicationID;
-        }
 
         /// <summary>
         /// Inserts an application on a connection the caller already owns, and returns
@@ -144,29 +117,6 @@ namespace NLTOS_DataAccess
         }
 
 
-        public static bool UpdateApplication(int ApplicationID, int ApplicantPersonID, DateTime ApplicationDate, int ApplicationTypeID,
-             byte ApplicationStatus, DateTime LastStatusDate,
-             float PaidFees, int CreatedByUserID)
-        {
-            int rowsAffected = 0;
-
-            SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
-
-            try
-            {
-                connection.Open();
-
-                rowsAffected = UpdateApplication(connection, null,
-                    ApplicationID, ApplicantPersonID, ApplicationDate, ApplicationTypeID,
-                    ApplicationStatus, LastStatusDate, PaidFees, CreatedByUserID);
-            }
-            finally
-            {
-                connection.Close();
-            }
-
-            return (rowsAffected > 0);
-        }
 
         /// <summary>
         /// Updates an application on a connection the caller already owns, and returns
@@ -237,27 +187,6 @@ namespace NLTOS_DataAccess
             return command.ExecuteNonQuery();
         }
 
-        public static bool DeleteApplication(int ApplicationID)
-        {
-
-            int rowsAffected = 0;
-
-            SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
-
-            try
-            {
-                connection.Open();
-
-                rowsAffected = DeleteApplication(connection, null, ApplicationID);
-            }
-            finally
-            {
-                connection.Close();
-            }
-
-            return (rowsAffected > 0);
-
-        }
 
         /// <summary>
         /// Deletes an application on a connection the caller already owns, and returns
