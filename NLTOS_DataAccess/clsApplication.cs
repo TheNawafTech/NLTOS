@@ -184,9 +184,40 @@ namespace NLTOS_DataAccess
              byte ApplicationStatus, DateTime LastStatusDate,
              float PaidFees, int CreatedByUserID)
         {
-
             int rowsAffected = 0;
+
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
+
+            try
+            {
+                connection.Open();
+
+                rowsAffected = UpdateApplication(connection, null,
+                    ApplicationID, ApplicantPersonID, ApplicationDate, ApplicationTypeID,
+                    ApplicationStatus, LastStatusDate, PaidFees, CreatedByUserID);
+            }
+            finally
+            {
+                connection.Close();
+            }
+
+            return (rowsAffected > 0);
+        }
+
+        /// <summary>
+        /// Updates an application on a connection the caller already owns, and returns
+        /// how many rows that changed, so a caller inside a transaction can tell an
+        /// application that was updated from one that was not there to update.
+        ///
+        /// Opens nothing, closes nothing, commits nothing and handles no exception.
+        /// A null transaction runs it outside one. Internal deliberately.
+        /// </summary>
+        internal static int UpdateApplication(
+            SqlConnection connection, SqlTransaction transaction,
+            int ApplicationID, int ApplicantPersonID, DateTime ApplicationDate, int ApplicationTypeID,
+            byte ApplicationStatus, DateTime LastStatusDate,
+            float PaidFees, int CreatedByUserID)
+        {
 
             string query = @"Update  Applications  
                             set ApplicantPersonID = @ApplicantPersonID,
@@ -199,6 +230,7 @@ namespace NLTOS_DataAccess
                             where ApplicationID=@ApplicationID";
 
             SqlCommand command = new SqlCommand(query, connection);
+            command.Transaction = transaction;
 
             command.Parameters.AddWithValue("@ApplicationID", ApplicationID);
             command.Parameters.AddWithValue("ApplicantPersonID", @ApplicantPersonID);
@@ -209,19 +241,7 @@ namespace NLTOS_DataAccess
             command.Parameters.AddWithValue("PaidFees", @PaidFees);
             command.Parameters.AddWithValue("CreatedByUserID", @CreatedByUserID);
 
-
-            try
-            {
-                connection.Open();
-                rowsAffected = command.ExecuteNonQuery();
-
-            }
-            finally
-            {
-                connection.Close();
-            }
-
-            return (rowsAffected > 0);
+            return command.ExecuteNonQuery();
         }
 
         /// <summary>

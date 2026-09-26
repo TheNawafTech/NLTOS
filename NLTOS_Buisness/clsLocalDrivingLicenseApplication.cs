@@ -166,13 +166,21 @@ namespace NLTOS_Buisness
 
                 case enMode.Update:
 
-                    //Because of inheritance first we call the save method in the base
-                    //class, it will take care of the information in the application table.
+                    //the application row and the row naming its licence class describe one
+                    //application between them, so they are updated in one call that shares
+                    //a transaction in the data access layer, rather than saving the base
+                    //application first and the licence class after it. Updating only the
+                    //base application would leave its fees, status or applicant no longer
+                    //agreeing with the licence class being applied for.
                     base.Mode = (clsApplication.enMode) Mode;
-                    if (!base.Save())
-                        return false;
 
-                    return _UpdateLocalDrivingLicenseApplication();
+                    clsLocalDrivingLicenseApplicationData.UpdateLocalDrivingLicenseApplicationAndApplication(
+                        this.LocalDrivingLicenseApplicationID, this.LicenseClassID,
+                        this.ApplicationID, this.ApplicantPersonID, this.ApplicationDate,
+                        this.ApplicationTypeID, (byte)this.ApplicationStatus,
+                        this.LastStatusDate, this.PaidFees, this.CreatedByUserID);
+
+                    return true;
 
             }
 

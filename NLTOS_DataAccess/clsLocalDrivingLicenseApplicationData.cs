@@ -255,27 +255,16 @@ namespace NLTOS_DataAccess
         public static bool UpdateLocalDrivingLicenseApplication(
             int LocalDrivingLicenseApplicationID, int ApplicationID, int LicenseClassID)
         {
-
             int rowsAffected = 0;
+
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
-
-            string query = @"Update  LocalDrivingLicenseApplications  
-                            set ApplicationID = @ApplicationID,
-                                LicenseClassID = @LicenseClassID
-                            where LocalDrivingLicenseApplicationID=@LocalDrivingLicenseApplicationID";
-
-            SqlCommand command = new SqlCommand(query, connection);
-
-            command.Parameters.AddWithValue("@LocalDrivingLicenseApplicationID", LocalDrivingLicenseApplicationID);
-            command.Parameters.AddWithValue("ApplicationID", ApplicationID);
-            command.Parameters.AddWithValue("LicenseClassID", LicenseClassID);
-          
 
             try
             {
                 connection.Open();
-                rowsAffected = command.ExecuteNonQuery();
 
+                rowsAffected = UpdateLocalDrivingLicenseApplication(connection, null,
+                    LocalDrivingLicenseApplicationID, ApplicationID, LicenseClassID);
             }
             finally
             {
@@ -283,6 +272,79 @@ namespace NLTOS_DataAccess
             }
 
             return (rowsAffected > 0);
+        }
+
+        /// <summary>
+        /// Updates a local driving licence application row on a connection the caller
+        /// already owns, and returns how many rows that changed, so a caller inside a
+        /// transaction can tell a row that was updated from one that was not there to
+        /// update.
+        ///
+        /// Opens nothing, closes nothing, commits nothing and handles no exception.
+        /// A null transaction runs it outside one. Internal deliberately.
+        /// </summary>
+        internal static int UpdateLocalDrivingLicenseApplication(
+            SqlConnection connection, SqlTransaction transaction,
+            int LocalDrivingLicenseApplicationID, int ApplicationID, int LicenseClassID)
+        {
+            string query = @"Update  LocalDrivingLicenseApplications  
+                            set ApplicationID = @ApplicationID,
+                                LicenseClassID = @LicenseClassID
+                            where LocalDrivingLicenseApplicationID=@LocalDrivingLicenseApplicationID";
+
+            SqlCommand command = new SqlCommand(query, connection);
+            command.Transaction = transaction;
+
+            command.Parameters.AddWithValue("@LocalDrivingLicenseApplicationID", LocalDrivingLicenseApplicationID);
+            command.Parameters.AddWithValue("@ApplicationID", ApplicationID);
+            command.Parameters.AddWithValue("@LicenseClassID", LicenseClassID);
+
+            return command.ExecuteNonQuery();
+        }
+
+        /// <summary>
+        /// Updates a local driving licence application together with the application it
+        /// belongs to, inside a single transaction on a single connection.
+        ///
+        /// The two rows describe one application between them, so changing one without
+        /// the other leaves an application whose fees, status or applicant no longer
+        /// agree with the licence class being applied for. Leaving the block without
+        /// reaching Commit disposes the transaction, which rolls both updates back, so a
+        /// failure needs no handling here and travels on unchanged.
+        ///
+        /// An update that matches no row changes nothing and raises nothing, so each
+        /// step is checked by the number of rows it changed: if either row is not there,
+        /// neither is updated.
+        /// </summary>
+        public static void UpdateLocalDrivingLicenseApplicationAndApplication(
+            int LocalDrivingLicenseApplicationID, int LicenseClassID,
+            int ApplicationID, int ApplicantPersonID, DateTime ApplicationDate, int ApplicationTypeID,
+            byte ApplicationStatus, DateTime LastStatusDate, float PaidFees, int CreatedByUserID)
+        {
+            using (SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString))
+            {
+                connection.Open();
+
+                using (SqlTransaction transaction = connection.BeginTransaction())
+                {
+                    int applicationRowsUpdated = clsApplicationData.UpdateApplication(connection, transaction,
+                        ApplicationID, ApplicantPersonID, ApplicationDate, ApplicationTypeID,
+                        ApplicationStatus, LastStatusDate, PaidFees, CreatedByUserID);
+
+                    if (applicationRowsUpdated != 1)
+                        throw new InvalidOperationException(
+                            "The application behind the local driving licence application could not be updated.");
+
+                    int localRowsUpdated = UpdateLocalDrivingLicenseApplication(connection, transaction,
+                        LocalDrivingLicenseApplicationID, ApplicationID, LicenseClassID);
+
+                    if (localRowsUpdated != 1)
+                        throw new InvalidOperationException(
+                            "The local driving licence application could not be updated.");
+
+                    transaction.Commit();
+                }
+            }
         }
 
 
