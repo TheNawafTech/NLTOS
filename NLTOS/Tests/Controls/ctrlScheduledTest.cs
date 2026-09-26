@@ -13,7 +13,7 @@ using NLTOS.Classes;
 
 namespace NLTOS.Tests
 {
-    public partial class ctrlSecheduledTest: UserControl
+    public partial class ctrlScheduledTest: UserControl
     {
 
         private clsTestType.enTestType _TestTypeID;
@@ -126,7 +126,7 @@ namespace NLTOS.Tests
 
         }
 
-        public ctrlSecheduledTest()
+        public ctrlScheduledTest()
         {
             InitializeComponent();
         }

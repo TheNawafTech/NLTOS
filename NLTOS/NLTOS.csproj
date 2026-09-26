@@ -64,11 +64,11 @@
     <Compile Include="Licenses\Detain License\frmDetainLicenseApplication.Designer.cs">
       <DependentUpon>frmDetainLicenseApplication.cs</DependentUpon>
     </Compile>
-    <Compile Include="Applications\International License\frmListInternationalLicesnseApplications.cs">
+    <Compile Include="Applications\International License\frmListInternationalLicenseApplications.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Applications\International License\frmListInternationalLicesnseApplications.Designer.cs">
-      <DependentUpon>frmListInternationalLicesnseApplications.cs</DependentUpon>
+    <Compile Include="Applications\International License\frmListInternationalLicenseApplications.Designer.cs">
+      <DependentUpon>frmListInternationalLicenseApplications.cs</DependentUpon>
     </Compile>
     <Compile Include="Applications\International License\frmNewInternationalLicenseApplication.cs">
       <SubType>Form</SubType>
@@ -76,11 +76,11 @@
     <Compile Include="Applications\International License\frmNewInternationalLicenseApplication.Designer.cs">
       <DependentUpon>frmNewInternationalLicenseApplication.cs</DependentUpon>
     </Compile>
-    <Compile Include="Applications\Local Driving License\frmAddUpdateLocalDrivingLicesnseApplication.cs">
+    <Compile Include="Applications\Local Driving License\frmAddUpdateLocalDrivingLicenseApplication.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Applications\Local Driving License\frmAddUpdateLocalDrivingLicesnseApplication.Designer.cs">
-      <DependentUpon>frmAddUpdateLocalDrivingLicesnseApplication.cs</DependentUpon>
+    <Compile Include="Applications\Local Driving License\frmAddUpdateLocalDrivingLicenseApplication.Designer.cs">
+      <DependentUpon>frmAddUpdateLocalDrivingLicenseApplication.cs</DependentUpon>
     </Compile>
     <Compile Include="Applications\Application Types\frmEditApplicationType.cs">
       <SubType>Form</SubType>
@@ -249,11 +249,11 @@
     <Compile Include="Tests\Controls\crlScheduleTest.Designer.cs">
       <DependentUpon>crlScheduleTest.cs</DependentUpon>
     </Compile>
-    <Compile Include="Tests\Controls\ctrlSecheduledTest.cs">
+    <Compile Include="Tests\Controls\ctrlScheduledTest.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Tests\Controls\ctrlSecheduledTest.Designer.cs">
-      <DependentUpon>ctrlSecheduledTest.cs</DependentUpon>
+    <Compile Include="Tests\Controls\ctrlScheduledTest.Designer.cs">
+      <DependentUpon>ctrlScheduledTest.cs</DependentUpon>
     </Compile>
     <Compile Include="Tests\Test Types\frmEditTestType.cs">
       <SubType>Form</SubType>
@@ -267,11 +267,11 @@
     <Compile Include="Tests\frmListTestAppointments.Designer.cs">
       <DependentUpon>frmListTestAppointments.cs</DependentUpon>
     </Compile>
-    <Compile Include="Applications\Local Driving License\frmListLocalDrivingLicesnseApplications.cs">
+    <Compile Include="Applications\Local Driving License\frmListLocalDrivingLicenseApplications.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Applications\Local Driving License\frmListLocalDrivingLicesnseApplications.Designer.cs">
-      <DependentUpon>frmListLocalDrivingLicesnseApplications.cs</DependentUpon>
+    <Compile Include="Applications\Local Driving License\frmListLocalDrivingLicenseApplications.Designer.cs">
+      <DependentUpon>frmListLocalDrivingLicenseApplications.cs</DependentUpon>
     </Compile>
     <Compile Include="Tests\Test Types\frmListTestTypes.cs">
       <SubType>Form</SubType>
@@ -324,14 +324,14 @@
     <EmbeddedResource Include="Licenses\Detain License\frmDetainLicenseApplication.resx">
       <DependentUpon>frmDetainLicenseApplication.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Applications\International License\frmListInternationalLicesnseApplications.resx">
-      <DependentUpon>frmListInternationalLicesnseApplications.cs</DependentUpon>
+    <EmbeddedResource Include="Applications\International License\frmListInternationalLicenseApplications.resx">
+      <DependentUpon>frmListInternationalLicenseApplications.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Applications\International License\frmNewInternationalLicenseApplication.resx">
       <DependentUpon>frmNewInternationalLicenseApplication.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Applications\Local Driving License\frmAddUpdateLocalDrivingLicesnseApplication.resx">
-      <DependentUpon>frmAddUpdateLocalDrivingLicesnseApplication.cs</DependentUpon>
+    <EmbeddedResource Include="Applications\Local Driving License\frmAddUpdateLocalDrivingLicenseApplication.resx">
+      <DependentUpon>frmAddUpdateLocalDrivingLicenseApplication.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Applications\Application Types\frmEditApplicationType.resx">
       <DependentUpon>frmEditApplicationType.cs</DependentUpon>
@@ -416,8 +416,8 @@
     <EmbeddedResource Include="Tests\Controls\crlScheduleTest.resx">
       <DependentUpon>crlScheduleTest.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Tests\Controls\ctrlSecheduledTest.resx">
-      <DependentUpon>ctrlSecheduledTest.cs</DependentUpon>
+    <EmbeddedResource Include="Tests\Controls\ctrlScheduledTest.resx">
+      <DependentUpon>ctrlScheduledTest.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Tests\Test Types\frmEditTestType.resx">
       <DependentUpon>frmEditTestType.cs</DependentUpon>
@@ -425,8 +425,8 @@
     <EmbeddedResource Include="Tests\frmListTestAppointments.resx">
       <DependentUpon>frmListTestAppointments.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Applications\Local Driving License\frmListLocalDrivingLicesnseApplications.resx">
-      <DependentUpon>frmListLocalDrivingLicesnseApplications.cs</DependentUpon>
+    <EmbeddedResource Include="Applications\Local Driving License\frmListLocalDrivingLicenseApplications.resx">
+      <DependentUpon>frmListLocalDrivingLicenseApplications.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Tests\Test Types\frmListTestTypes.resx">
       <DependentUpon>frmListTestTypes.cs</DependentUpon>

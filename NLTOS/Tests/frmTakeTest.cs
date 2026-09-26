@@ -31,17 +31,17 @@ namespace NLTOS.Tests
 
         private void frmTakeTest_Load(object sender, EventArgs e)
         {
-            ctrlSecheduledTest1.TestTypeID = _TestType;
+            ctrlScheduledTest1.TestTypeID = _TestType;
 
-            ctrlSecheduledTest1.LoadInfo(_AppointmentID);
+            ctrlScheduledTest1.LoadInfo(_AppointmentID);
             
-            if (ctrlSecheduledTest1.TestAppointmentID==-1)
+            if (ctrlScheduledTest1.TestAppointmentID==-1)
                 btnSave.Enabled = false;
             else
                 btnSave.Enabled = true;
 
 
-            int _TestID = ctrlSecheduledTest1.TestID;
+            int _TestID = ctrlScheduledTest1.TestID;
             if (_TestID != -1)
             {
                 _Test = clsTest.Find(_TestID);

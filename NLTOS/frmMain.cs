@@ -32,7 +32,7 @@ namespace NLTOS
 
         private void localLicenseToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            frmAddUpdateLocalDrivingLicesnseApplication frm = new frmAddUpdateLocalDrivingLicesnseApplication();
+            frmAddUpdateLocalDrivingLicenseApplication frm = new frmAddUpdateLocalDrivingLicenseApplication();
             frm.ShowDialog();
         }
 
@@ -115,7 +115,7 @@ namespace NLTOS
 
         private void retakeTestToolStripMenuItem1_Click(object sender, EventArgs e)
         {
-            frmListLocalDrivingLicesnseApplications frm = new frmListLocalDrivingLicesnseApplications();
+            frmListLocalDrivingLicenseApplications frm = new frmListLocalDrivingLicenseApplications();
             frm.ShowDialog();
         }
 
@@ -123,7 +123,7 @@ namespace NLTOS
 
         private void manageLocalDrivingLicenseApplicationsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            frmListLocalDrivingLicesnseApplications frm = new frmListLocalDrivingLicesnseApplications();
+            frmListLocalDrivingLicenseApplications frm = new frmListLocalDrivingLicenseApplications();
             frm.ShowDialog();
 
         }
@@ -139,7 +139,7 @@ namespace NLTOS
 
         private void ManageInternationaDrivingLicenseToolStripMenuItem1_Click(object sender, EventArgs e)
         {
-            frmListInternationalLicesnseApplications frm = new frmListInternationalLicesnseApplications();
+            frmListInternationalLicenseApplications frm = new frmListInternationalLicenseApplications();
             frm.ShowDialog();
 
         }

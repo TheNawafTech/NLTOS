@@ -17,15 +17,15 @@ using NLTOS.Licenses.International_License;
 
 namespace NLTOS.Tests
 {
-    public partial class frmListLocalDrivingLicesnseApplications : Form
+    public partial class frmListLocalDrivingLicenseApplications : Form
     {
         private DataTable _dtAllLocalDrivingLicenseApplications;
-        public frmListLocalDrivingLicesnseApplications()
+        public frmListLocalDrivingLicenseApplications()
         {
             InitializeComponent();
         }
 
-        private void frmListLocalDrivingLicesnseApplications_Load(object sender, EventArgs e)
+        private void frmListLocalDrivingLicenseApplications_Load(object sender, EventArgs e)
         {
             _dtAllLocalDrivingLicenseApplications = clsLocalDrivingLicenseApplication.GetAllLocalDrivingLicenseApplications();
             dgvLocalDrivingLicenseApplications.DataSource = _dtAllLocalDrivingLicenseApplications;
@@ -64,7 +64,7 @@ namespace NLTOS.Tests
                         new frmLocalDrivingLicenseApplicationInfo((int)dgvLocalDrivingLicenseApplications.CurrentRow.Cells[0].Value);
             frm.ShowDialog();
             //refresh
-            frmListLocalDrivingLicesnseApplications_Load(null, null);
+            frmListLocalDrivingLicenseApplications_Load(null, null);
 
         }
 
@@ -137,11 +137,11 @@ namespace NLTOS.Tests
 
             int LocalDrivingLicenseApplicationID = (int)dgvLocalDrivingLicenseApplications.CurrentRow.Cells[0].Value;
 
-            frmAddUpdateLocalDrivingLicesnseApplication frm =
-                         new frmAddUpdateLocalDrivingLicesnseApplication(LocalDrivingLicenseApplicationID);
+            frmAddUpdateLocalDrivingLicenseApplication frm =
+                         new frmAddUpdateLocalDrivingLicenseApplication(LocalDrivingLicenseApplicationID);
             frm.ShowDialog();
 
-            frmListLocalDrivingLicesnseApplications_Load(null, null);
+            frmListLocalDrivingLicenseApplications_Load(null, null);
         }
 
         private void txtFilterValue_KeyPress(object sender, KeyPressEventArgs e)
@@ -161,7 +161,7 @@ namespace NLTOS.Tests
             frmListTestAppointments frm = new frmListTestAppointments(LocalDrivingLicenseApplicationID, TestType);
             frm.ShowDialog();
             //refresh
-            frmListLocalDrivingLicesnseApplications_Load(null, null);
+            frmListLocalDrivingLicenseApplications_Load(null, null);
 
         }
       
@@ -184,10 +184,10 @@ namespace NLTOS.Tests
 
         private void btnAddNewApplication_Click(object sender, EventArgs e)
         {
-            frmAddUpdateLocalDrivingLicesnseApplication frm = new frmAddUpdateLocalDrivingLicesnseApplication();
+            frmAddUpdateLocalDrivingLicenseApplication frm = new frmAddUpdateLocalDrivingLicenseApplication();
             frm.ShowDialog();
             //refresh
-            frmListLocalDrivingLicesnseApplications_Load(null, null);
+            frmListLocalDrivingLicenseApplications_Load(null, null);
         }
 
         private void issueDrivingLicenseFirstTimeToolStripMenuItem_Click(object sender, EventArgs e)
@@ -197,7 +197,7 @@ namespace NLTOS.Tests
             frmIssueDriverLicenseFirstTime frm = new frmIssueDriverLicenseFirstTime(LocalDrivingLicenseApplicationID);
             frm.ShowDialog();
             //refresh
-            frmListLocalDrivingLicesnseApplications_Load(null, null);
+            frmListLocalDrivingLicenseApplications_Load(null, null);
         }
 
         private void cmsApplications_Opening(object sender, CancelEventArgs e)
@@ -291,7 +291,7 @@ namespace NLTOS.Tests
                 {
                     MessageBox.Show("Application Cancelled Successfully.", "Cancelled", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     //refresh the form again.
-                    frmListLocalDrivingLicesnseApplications_Load(null, null);
+                    frmListLocalDrivingLicenseApplications_Load(null, null);
                 }
                 else
                 {
@@ -316,7 +316,7 @@ namespace NLTOS.Tests
                 {
                     MessageBox.Show("Application Deleted Successfully.", "Deleted", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     //refresh the form again.
-                    frmListLocalDrivingLicesnseApplications_Load(null, null);
+                    frmListLocalDrivingLicenseApplications_Load(null, null);
                 }
                 else
                 {

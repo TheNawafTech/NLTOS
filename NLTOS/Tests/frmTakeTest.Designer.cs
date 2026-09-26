@@ -40,7 +40,7 @@ namespace NLTOS.Tests
             this.pictureBox7 = new System.Windows.Forms.PictureBox();
             this.pictureBox4 = new System.Windows.Forms.PictureBox();
             this.lblUserMessage = new System.Windows.Forms.Label();
-            this.ctrlSecheduledTest1 = new NLTOS.Tests.ctrlSecheduledTest();
+            this.ctrlScheduledTest1 = new NLTOS.Tests.ctrlScheduledTest();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox7)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).BeginInit();
             this.SuspendLayout();
@@ -163,16 +163,16 @@ namespace NLTOS.Tests
             this.lblUserMessage.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.lblUserMessage.Visible = false;
             // 
-            // ctrlSecheduledTest1
+            // ctrlScheduledTest1
             // 
-            this.ctrlSecheduledTest1.BackColor = System.Drawing.Color.White;
-            this.ctrlSecheduledTest1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.ctrlSecheduledTest1.Location = new System.Drawing.Point(13, 14);
-            this.ctrlSecheduledTest1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.ctrlSecheduledTest1.Name = "ctrlSecheduledTest1";
-            this.ctrlSecheduledTest1.Size = new System.Drawing.Size(588, 582);
-            this.ctrlSecheduledTest1.TabIndex = 0;
-            this.ctrlSecheduledTest1.TestTypeID = NLTOS_Business.clsTestType.enTestType.VisionTest;
+            this.ctrlScheduledTest1.BackColor = System.Drawing.Color.White;
+            this.ctrlScheduledTest1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.ctrlScheduledTest1.Location = new System.Drawing.Point(13, 14);
+            this.ctrlScheduledTest1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.ctrlScheduledTest1.Name = "ctrlScheduledTest1";
+            this.ctrlScheduledTest1.Size = new System.Drawing.Size(588, 582);
+            this.ctrlScheduledTest1.TabIndex = 0;
+            this.ctrlScheduledTest1.TestTypeID = NLTOS_Business.clsTestType.enTestType.VisionTest;
             // 
             // frmTakeTest
             // 
@@ -191,7 +191,7 @@ namespace NLTOS.Tests
             this.Controls.Add(this.label10);
             this.Controls.Add(this.pictureBox4);
             this.Controls.Add(this.label8);
-            this.Controls.Add(this.ctrlSecheduledTest1);
+            this.Controls.Add(this.ctrlScheduledTest1);
             this.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
@@ -208,7 +208,7 @@ namespace NLTOS.Tests
 
         #endregion
 
-        private ctrlSecheduledTest ctrlSecheduledTest1;
+        private ctrlScheduledTest ctrlScheduledTest1;
         private System.Windows.Forms.PictureBox pictureBox7;
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.PictureBox pictureBox4;

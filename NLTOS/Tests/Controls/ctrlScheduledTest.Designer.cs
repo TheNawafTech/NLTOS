@@ -1,6 +1,6 @@
 ﻿namespace NLTOS.Tests
 {
-    partial class ctrlSecheduledTest
+    partial class ctrlScheduledTest
     {
         /// <summary> 
         /// Required designer variable.
@@ -353,7 +353,7 @@
             this.pbTestTypeImage.TabIndex = 152;
             this.pbTestTypeImage.TabStop = false;
             // 
-            // ctrlSecheduledTest
+            // ctrlScheduledTest
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -361,7 +361,7 @@
             this.Controls.Add(this.gbTestType);
             this.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.Name = "ctrlSecheduledTest";
+            this.Name = "ctrlScheduledTest";
             this.Size = new System.Drawing.Size(583, 577);
             this.gbTestType.ResumeLayout(false);
             this.gbTestType.PerformLayout();

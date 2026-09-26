@@ -16,7 +16,7 @@ namespace NLTOS.Applications
 {
 
 
-    public partial class frmAddUpdateLocalDrivingLicesnseApplication: Form
+    public partial class frmAddUpdateLocalDrivingLicenseApplication: Form
     {
 
         public enum enMode { AddNew = 0, Update = 1 };
@@ -26,13 +26,13 @@ namespace NLTOS.Applications
         private int _SelectedPersonID = -1;
         clsLocalDrivingLicenseApplication _LocalDrivingLicenseApplication;
 
-        public frmAddUpdateLocalDrivingLicesnseApplication()
+        public frmAddUpdateLocalDrivingLicenseApplication()
         {
             InitializeComponent();
             _Mode = enMode.AddNew;
         }
 
-        public frmAddUpdateLocalDrivingLicesnseApplication(int LocalDrivingLicenseApplicationID)
+        public frmAddUpdateLocalDrivingLicenseApplication(int LocalDrivingLicenseApplicationID)
         {
             InitializeComponent();
 
@@ -116,7 +116,7 @@ namespace NLTOS.Applications
 
         }
 
-        private void frmAddUpdateLocalDrivingLicesnseApplication_Load(object sender, EventArgs e)
+        private void frmAddUpdateLocalDrivingLicenseApplication_Load(object sender, EventArgs e)
         {
             _ResetDefaultValues();
 
@@ -225,7 +225,7 @@ namespace NLTOS.Applications
 
         }
 
-        private void frmAddUpdateLocalDrivingLicesnseApplication_Activated(object sender, EventArgs e)
+        private void frmAddUpdateLocalDrivingLicenseApplication_Activated(object sender, EventArgs e)
         {
             ctrlPersonCardWithFilter1.FilterFocus();
         }

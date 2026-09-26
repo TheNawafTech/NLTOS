@@ -16,11 +16,11 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace NLTOS.Applications.International_License
 {
-    public partial class frmListInternationalLicesnseApplications : Form
+    public partial class frmListInternationalLicenseApplications : Form
     {
         private DataTable _dtInternationalLicenseApplications;
 
-        public frmListInternationalLicesnseApplications()
+        public frmListInternationalLicenseApplications()
         {
             InitializeComponent();
         }
@@ -30,7 +30,7 @@ namespace NLTOS.Applications.International_License
             this.Close();
         }
 
-        private void frmListInternationalLicesnseApplications_Load(object sender, EventArgs e)
+        private void frmListInternationalLicenseApplications_Load(object sender, EventArgs e)
         {
             _dtInternationalLicenseApplications = clsInternationalLicense.GetAllInternationalLicenses();
             cbFilterBy.SelectedIndex= 0;
@@ -69,7 +69,7 @@ namespace NLTOS.Applications.International_License
             frmNewInternationalLicenseApplication frm = new frmNewInternationalLicenseApplication();
             frm.ShowDialog();
             //refresh
-            frmListInternationalLicesnseApplications_Load(null,null);
+            frmListInternationalLicenseApplications_Load(null,null);
 
         }
 
