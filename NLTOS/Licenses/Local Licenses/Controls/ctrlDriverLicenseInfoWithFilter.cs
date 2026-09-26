@@ -18,14 +18,6 @@ namespace NLTOS.Licenses.Controls
         // Define a custom event handler delegate with parameters
         public event Action<int> OnLicenseSelected;
         // Create a protected method to raise the event with a parameter
-        protected virtual void PersonSelected(int LicenseID)
-        {
-            Action<int> handler = OnLicenseSelected;
-            if (handler != null)
-            {
-                handler(LicenseID); // Raise the event with the parameter
-            }
-        }
 
         public ctrlDriverLicenseInfoWithFilter()
         {

@@ -120,10 +120,6 @@ namespace NLTOS
         }
 
       
-        private void vehiclesLicensesServicesToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            MessageBox.Show("This Feature Is Not Implemented Yet!", "Not Ready", MessageBoxButtons.OK, MessageBoxIcon.Information);
-        }
 
         private void manageLocalDrivingLicenseApplicationsToolStripMenuItem_Click(object sender, EventArgs e)
         {

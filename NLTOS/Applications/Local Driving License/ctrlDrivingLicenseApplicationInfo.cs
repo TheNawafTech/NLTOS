@@ -49,20 +49,6 @@ namespace NLTOS.Controls.ApplicationControls
                 _FillLocalDrivingLicenseApplicationInfo();
         }
 
-        public void LoadApplicationInfoByApplicationID(int ApplicationID)
-        {
-            _LocalDrivingLicenseApplication = clsLocalDrivingLicenseApplication.FindByApplicationID(ApplicationID);
-            if (_LocalDrivingLicenseApplication == null)
-            {
-                _ResetLocalDrivingLicenseApplicationInfo();
-
-
-                MessageBox.Show("No Application with ApplicationID = " + LocalDrivingLicenseApplicationID.ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-         
-                _FillLocalDrivingLicenseApplicationInfo();
-        }
 
         private void _FillLocalDrivingLicenseApplicationInfo()
         {

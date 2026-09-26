@@ -151,80 +151,8 @@ namespace NLTOS.Tests
                 e.Handled = !char.IsDigit(e.KeyChar) && !char.IsControl(e.KeyChar);
         }
 
-        private void vistionTestToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-
-            int LocalDrivingLicenseApplicationID = (int)dgvLocalDrivingLicenseApplications.CurrentRow.Cells[0].Value;
-
-            clsTestAppointment Appointment =
-                clsTestAppointment.GetLastTestAppointment(LocalDrivingLicenseApplicationID, clsTestType.enTestType.VisionTest);
-
-            if (Appointment == null)
-            {
-                MessageBox.Show("No Vision Test Appointment Found!", "Set Appointment", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
 
 
-            frmTakeTest frm = new frmTakeTest(Appointment.TestAppointmentID, clsTestType.enTestType.VisionTest);
-            frm.ShowDialog();
-
-
-        }
-
-        private void writtenTestToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            int LocalDrivingLicenseApplicationID = (int)dgvLocalDrivingLicenseApplications.CurrentRow.Cells[0].Value;
-
-
-            if (!clsLocalDrivingLicenseApplication.DoesPassTestType(LocalDrivingLicenseApplicationID, clsTestType.enTestType.VisionTest))
-            {
-                MessageBox.Show("Person Should Pass the Vision Test First!", "Not Allowed", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-
-            clsTestAppointment Appointment =
-               clsTestAppointment.GetLastTestAppointment(LocalDrivingLicenseApplicationID, clsTestType.enTestType.WrittenTest);
-
-
-            if (Appointment == null)
-            {
-                MessageBox.Show("No Written Test Appointment Found!", "Set Appointment", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-
-
-            frmTakeTest frm = new frmTakeTest(Appointment.TestAppointmentID, clsTestType.enTestType.WrittenTest);
-            frm.ShowDialog();
-
-        }
-
-        private void streetTestToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            int LocalDrivingLicenseApplicationID = (int)dgvLocalDrivingLicenseApplications.CurrentRow.Cells[0].Value;
-
-            if (!clsLocalDrivingLicenseApplication.DoesPassTestType(LocalDrivingLicenseApplicationID, clsTestType.enTestType.WrittenTest))
-            {
-                MessageBox.Show("Person Should Pass the Written Test First!", "Not Allowed", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-
-            clsTestAppointment Appointment =
-             clsTestAppointment.GetLastTestAppointment(LocalDrivingLicenseApplicationID, clsTestType.enTestType.StreetTest);
-
-
-            if (Appointment == null)
-            {
-                MessageBox.Show("No Street Test Appointment Found!", "Set Appointment", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-
-
-            frmTakeTest frm = new frmTakeTest(Appointment.TestAppointmentID, clsTestType.enTestType.StreetTest);
-            frm.ShowDialog();
-
-
-        }
 
         private void _ScheduleTest(clsTestType.enTestType TestType)
         {

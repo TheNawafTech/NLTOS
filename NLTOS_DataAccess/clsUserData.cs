@@ -104,55 +104,6 @@ namespace NLTOS_DataAccess
             return isFound;
         }
 
-        public static bool GetUserInfoByUsernameAndPassword(string UserName,  string Password, 
-            ref int UserID, ref int PersonID, ref bool IsActive)
-        {
-            bool isFound = false;
-
-            SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
-
-            string query = "SELECT * FROM Users WHERE Username = @Username and Password=@Password;";
-
-            SqlCommand command = new SqlCommand(query, connection);
-
-            command.Parameters.AddWithValue("@Username", UserName);
-            command.Parameters.AddWithValue("@Password", Password);
-
-
-            try
-            {
-                connection.Open();
-                SqlDataReader reader = command.ExecuteReader();
-
-                if (reader.Read())
-                {
-                    // The record was found
-                    isFound = true;
-                    UserID= (int)reader["UserID"];
-                    PersonID = (int)reader["PersonID"];
-                    UserName = (string)reader["UserName"];
-                    Password = (string)reader["Password"];
-                    IsActive = (bool)reader["IsActive"];
-
-
-                }
-                else
-                {
-                    // The record was not found
-                    isFound = false;
-                }
-
-                reader.Close();
-
-
-            }
-            finally
-            {
-                connection.Close();
-            }
-
-            return isFound;
-        }
 
         // Looks the user up by username only and returns the stored password hash, so the
         // business layer can verify it. A salted hash cannot be matched inside the query.
@@ -436,34 +387,6 @@ namespace NLTOS_DataAccess
             return isFound;
         }
 
-        public static bool DoesPersonHaveUser44(int PersonID)
-        {
-            bool isFound = false;
-
-            SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
-
-            string query = "SELECT Found=1 FROM Users WHERE PersonID = @PersonID";
-
-            SqlCommand command = new SqlCommand(query, connection);
-
-            command.Parameters.AddWithValue("@PersonID", PersonID);
-
-            try
-            {
-                connection.Open();
-                SqlDataReader reader = command.ExecuteReader();
-
-                isFound = reader.HasRows;
-
-                reader.Close();
-            }
-            finally
-            {
-                connection.Close();
-            }
-
-            return isFound;
-        }
 
     }
 }

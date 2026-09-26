@@ -140,11 +140,6 @@ namespace NLTOS_Buisness
             return clsApplicationData.UpdateStatus (ApplicationID,2);
         }
 
-        public bool SetComplete()
-
-        {
-            return clsApplicationData.UpdateStatus(ApplicationID, 3);
-        }
 
         public bool Save()
         {

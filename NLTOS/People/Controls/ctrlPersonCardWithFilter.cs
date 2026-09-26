@@ -18,14 +18,6 @@ namespace NLTOS.Controls
         // Define a custom event handler delegate with parameters
         public event Action<int> OnPersonSelected;
         // Create a protected method to raise the event with a parameter
-        protected virtual void PersonSelected(int PersonID)
-        {
-            Action<int> handler = OnPersonSelected; 
-            if (handler != null)
-            {
-                handler(PersonID); // Raise the event with the parameter
-            }
-        }
 
 
        private bool _ShowAddPerson=true;
@@ -129,20 +121,6 @@ namespace NLTOS.Controls
          
         }
 
-        private void txtFilterValue_Validating(object sender, CancelEventArgs e)
-        {
-            
-            if (string.IsNullOrEmpty(txtFilterValue.Text.Trim()))
-            {
-                e.Cancel = true;
-                errorProvider1.SetError(txtFilterValue, "This field is required!");
-            }
-            else
-            {
-                //e.Cancel = false;
-                errorProvider1.SetError(txtFilterValue, null);
-            }
-        }
 
         private void btnAddNewPerson_Click(object sender, EventArgs e)
         {

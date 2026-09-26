@@ -86,33 +86,6 @@ namespace NLTOS_Buisness
 
         }
 
-        public static clsLocalDrivingLicenseApplication FindByApplicationID(int ApplicationID)
-        {
-            // 
-            int LocalDrivingLicenseApplicationID = -1, LicenseClassID = -1;
-
-            bool IsFound = clsLocalDrivingLicenseApplicationData.GetLocalDrivingLicenseApplicationInfoByApplicationID 
-                (ApplicationID, ref LocalDrivingLicenseApplicationID, ref LicenseClassID);
-
-
-            if (IsFound)
-            {
-                //now we find the base application
-                clsApplication Application = clsApplication.FindBaseApplication(ApplicationID);
-
-                //we return new object of that person with the right data
-                return new clsLocalDrivingLicenseApplication(
-                    LocalDrivingLicenseApplicationID, Application.ApplicationID,
-                    Application.ApplicantPersonID,
-                                     Application.ApplicationDate, Application.ApplicationTypeID,
-                                    (enApplicationStatus)Application.ApplicationStatus, Application.LastStatusDate,
-                                     Application.PaidFees, Application.CreatedByUserID, LicenseClassID);
-            }
-            else
-                return null;
-
-
-        }
 
         public bool  Save()
         {
@@ -189,32 +162,6 @@ namespace NLTOS_Buisness
             return clsLocalDrivingLicenseApplicationData.DoesPassTestType( this.LocalDrivingLicenseApplicationID,(int) TestTypeID);
         }
 
-        public bool DoesPassPreviousTest(clsTestType.enTestType CurrentTestType)
-        {
-
-            switch (CurrentTestType)
-            {
-                case clsTestType.enTestType.VisionTest:
-                    //in this case no required prvious test to pass.
-                    return true;
-
-                case clsTestType.enTestType.WrittenTest:
-                    //Written Test, you cannot sechdule it before person passes the vision test.
-                    //we check if pass visiontest 1.
-
-                    return this.DoesPassTestType(clsTestType.enTestType.VisionTest);
-                   
-
-                case clsTestType.enTestType.StreetTest:
-
-                    //Street Test, you cannot sechdule it before person passes the written test.
-                    //we check if pass Written 2.
-                    return this.DoesPassTestType(clsTestType.enTestType.WrittenTest);
-
-                default: 
-                    return false;
-            }
-        }
 
         public static bool DoesPassTestType(int LocalDrivingLicenseApplicationID, clsTestType.enTestType TestTypeID)
 
@@ -239,17 +186,7 @@ namespace NLTOS_Buisness
             return clsLocalDrivingLicenseApplicationData.TotalTrialsPerTest(LocalDrivingLicenseApplicationID, (int)TestTypeID);
         }
 
-        public static bool AttendedTest(int LocalDrivingLicenseApplicationID, clsTestType.enTestType TestTypeID)
 
-        {
-            return clsLocalDrivingLicenseApplicationData.TotalTrialsPerTest(LocalDrivingLicenseApplicationID, (int)TestTypeID) >0;
-        }
-
-        public  bool AttendedTest( clsTestType.enTestType TestTypeID)
-
-        {
-            return clsLocalDrivingLicenseApplicationData.TotalTrialsPerTest(this.LocalDrivingLicenseApplicationID, (int)TestTypeID) > 0;
-        }
 
         public static bool IsThereAnActiveScheduledTest(int LocalDrivingLicenseApplicationID, clsTestType.enTestType TestTypeID)
 

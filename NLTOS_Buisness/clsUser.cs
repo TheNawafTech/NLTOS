@@ -91,22 +91,6 @@ namespace NLTOS_Buisness
             else
                 return null;
         }
-        public static clsUser FindByUsernameAndPassword(string UserName, string Password)
-        {
-            int UserID = -1;
-            int PersonID = -1;
-
-            bool IsActive = false;
-
-            bool IsFound = clsUserData.GetUserInfoByUsernameAndPassword
-                                (UserName, Password, ref UserID, ref PersonID, ref IsActive);
-
-            if (IsFound)
-                //we return new object of that User with the right data
-                return new clsUser(UserID, PersonID, UserName, Password, IsActive);
-            else
-                return null;
-        }
 
         // Used by the login screen: the account is fetched by username, then the supplied
         // password is verified against the stored hash by VerifyPassword.
