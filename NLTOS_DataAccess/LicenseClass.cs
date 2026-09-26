@@ -163,8 +163,8 @@ namespace NLTOS_DataAccess
             DefaultValidityLength,ClassFees)
                             Values ( 
             @ClassName,@ClassDescription,@MinimumAllowedAge, 
-            @DefaultValidityLength,@ClassFees)
-                            where LicenseClassID = @LicenseClassID;
+            @DefaultValidityLength,@ClassFees);
+
                             SELECT SCOPE_IDENTITY();";
             
           

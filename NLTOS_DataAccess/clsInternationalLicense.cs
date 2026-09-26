@@ -290,10 +290,40 @@ namespace NLTOS_DataAccess
              int DriverID, int IssuedUsingLocalLicenseID,
              DateTime IssueDate, DateTime ExpirationDate, bool IsActive, int CreatedByUserID)
         {
-
             int rowsAffected = 0;
+
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
 
+            try
+            {
+                connection.Open();
+
+                rowsAffected = UpdateInternationalLicense(connection, null,
+                    InternationalLicenseID, ApplicationID, DriverID, IssuedUsingLocalLicenseID,
+                    IssueDate, ExpirationDate, IsActive, CreatedByUserID);
+            }
+            finally
+            {
+                connection.Close();
+            }
+
+            return (rowsAffected > 0);
+        }
+
+        /// <summary>
+        /// Updates an international licence on a connection the caller already owns, and
+        /// returns how many rows that changed, so a caller inside a transaction can tell
+        /// a licence that was updated from one that was not there to update.
+        ///
+        /// Opens nothing, closes nothing, commits nothing and handles no exception.
+        /// A null transaction runs it outside one. Internal deliberately.
+        /// </summary>
+        internal static int UpdateInternationalLicense(
+            SqlConnection connection, SqlTransaction transaction,
+            int InternationalLicenseID, int ApplicationID,
+            int DriverID, int IssuedUsingLocalLicenseID,
+            DateTime IssueDate, DateTime ExpirationDate, bool IsActive, int CreatedByUserID)
+        {
             string query = @"UPDATE InternationalLicenses
                            SET 
                               ApplicationID=@ApplicationID,
@@ -306,6 +336,7 @@ namespace NLTOS_DataAccess
                          WHERE InternationalLicenseID=@InternationalLicenseID";
 
             SqlCommand command = new SqlCommand(query, connection);
+            command.Transaction = transaction;
 
             command.Parameters.AddWithValue("@InternationalLicenseID", InternationalLicenseID);
             command.Parameters.AddWithValue("@ApplicationID", ApplicationID);
@@ -313,22 +344,57 @@ namespace NLTOS_DataAccess
             command.Parameters.AddWithValue("@IssuedUsingLocalLicenseID", IssuedUsingLocalLicenseID);
             command.Parameters.AddWithValue("@IssueDate", IssueDate);
             command.Parameters.AddWithValue("@ExpirationDate", ExpirationDate);
-            
             command.Parameters.AddWithValue("@IsActive", IsActive);
             command.Parameters.AddWithValue("@CreatedByUserID", CreatedByUserID);
 
-            try
+            return command.ExecuteNonQuery();
+        }
+
+        /// <summary>
+        /// Updates an international licence together with the application it belongs to,
+        /// inside a single transaction on a single connection.
+        ///
+        /// The two rows describe one issued licence between them, so changing one without
+        /// the other leaves an application whose fees, status or applicant no longer
+        /// agree with the licence it paid for. Leaving the block without reaching Commit
+        /// disposes the transaction, which rolls both updates back, so a failure needs no
+        /// handling here and travels on unchanged.
+        ///
+        /// An update that matches no row changes nothing and raises nothing, so each step
+        /// is checked by the number of rows it changed: if either row is not there,
+        /// neither is updated.
+        /// </summary>
+        public static void UpdateInternationalLicenseAndApplication(
+            int InternationalLicenseID, int DriverID, int IssuedUsingLocalLicenseID,
+            DateTime IssueDate, DateTime ExpirationDate, bool IsActive,
+            int ApplicationID, int ApplicantPersonID, DateTime ApplicationDate, int ApplicationTypeID,
+            byte ApplicationStatus, DateTime LastStatusDate, float PaidFees, int CreatedByUserID)
+        {
+            using (SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString))
             {
                 connection.Open();
-                rowsAffected = command.ExecuteNonQuery();
 
-            }
-            finally
-            {
-                connection.Close();
-            }
+                using (SqlTransaction transaction = connection.BeginTransaction())
+                {
+                    int applicationRowsUpdated = clsApplicationData.UpdateApplication(connection, transaction,
+                        ApplicationID, ApplicantPersonID, ApplicationDate, ApplicationTypeID,
+                        ApplicationStatus, LastStatusDate, PaidFees, CreatedByUserID);
 
-            return (rowsAffected > 0);
+                    if (applicationRowsUpdated != 1)
+                        throw new InvalidOperationException(
+                            "The application behind the international licence could not be updated.");
+
+                    int licenceRowsUpdated = UpdateInternationalLicense(connection, transaction,
+                        InternationalLicenseID, ApplicationID, DriverID, IssuedUsingLocalLicenseID,
+                        IssueDate, ExpirationDate, IsActive, CreatedByUserID);
+
+                    if (licenceRowsUpdated != 1)
+                        throw new InvalidOperationException(
+                            "The international licence could not be updated.");
+
+                    transaction.Commit();
+                }
+            }
         }
 
         public static int GetActiveInternationalLicenseIDByDriverID(int DriverID)
